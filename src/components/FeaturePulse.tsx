@@ -135,7 +135,7 @@ export default function FeaturePulse({
           aria-expanded={isOpen}
           aria-controls={tooltipId}
           onClick={() => setIsOpen((current) => !current)}
-          className="relative z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-[#ff9a56] bg-[#FF6B00] text-white shadow-[0_8px_18px_-12px_rgba(255,107,0,0.9)] active:scale-[0.94] active:bg-[#e66000]"
+          className="relative z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-[#6b90ff] bg-[#3B71FE] text-white shadow-[0_8px_18px_-12px_rgba(59,113,254,0.9)] active:scale-[0.94] active:bg-[#2860ee]"
           animate={
             isClearing
               ? { scale: [1, 1.2, 0.4], opacity: [1, 1, 0] }
@@ -148,7 +148,7 @@ export default function FeaturePulse({
           }
         >
           <motion.span
-            className="absolute inset-0 rounded-full border border-[#ff9a56]"
+            className="absolute inset-0 rounded-full border border-[#6b90ff]"
             animate={{ scale: [1, 1.9], opacity: [0.5, 0] }}
             transition={{ duration: 1.1, repeat: Number.POSITIVE_INFINITY, ease: 'easeOut' }}
           />
@@ -171,12 +171,16 @@ export default function FeaturePulse({
               transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
               style={
                 autoOpen
-                  ? { top: `${portalTop}px`, left: '50%', transform: 'translateX(-50%)' }
+                  ? { top: `${portalTop}px` }
                   : { top: `${tooltipAnchor.top}px`, left: `${tooltipAnchor.left}px`, transform: 'translateX(-50%)' }
               }
-              className="fixed z-[9999] w-[calc(100vw-2rem)] max-w-[340px] rounded-3xl border border-[#3a2a21] bg-[#171717] p-4 text-left shadow-[0_20px_42px_-28px_rgba(255,107,0,0.95)]"
+              className={`fixed z-[9999] w-[calc(100vw-2rem)] rounded-3xl border border-[#1a2a5e] bg-[#0D1626] p-4 text-left shadow-[0_20px_42px_-28px_rgba(59,113,254,0.6)] ${
+                autoOpen
+                  ? 'left-1/2 max-w-[398px] -translate-x-1/2'
+                  : 'max-w-[340px]'
+              }`}
             >
-              <p id={tooltipTitleId} className="text-sm font-black uppercase tracking-[0.16em] text-[#FF6B00]">
+              <p id={tooltipTitleId} className="text-sm font-black uppercase tracking-[0.16em] text-[#3B71FE]">
                 {title}
               </p>
               <p id={tooltipMessageId} className="mt-2 text-sm leading-relaxed text-zinc-200">
@@ -187,7 +191,7 @@ export default function FeaturePulse({
                   <button
                     type="button"
                     onClick={handleAction}
-                    className="h-9 cursor-pointer rounded-2xl bg-[#FF6B00] px-4 text-xs font-black uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#ff7d24] active:bg-[#e66000]"
+                    className="h-9 cursor-pointer rounded-2xl bg-[#3B71FE] px-4 text-xs font-black uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
                   >
                     {actionLabel ?? 'Got It'}
                   </button>

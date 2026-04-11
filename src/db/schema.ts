@@ -70,6 +70,7 @@ export interface AppSettings {
   hasCompletedOnboarding: boolean
   preferredRoutineType: string
   daysPerWeek: number // 3, 4, or 5 — drives routine recommendations in onboarding
+  userName?: string   // set during IdentitySplash; gates first-run flow
 }
 
 export type TempSessionPhase = 'active' | 'resting'

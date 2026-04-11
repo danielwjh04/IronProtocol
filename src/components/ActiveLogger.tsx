@@ -118,18 +118,12 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   }, [phase])
 
   // ── Auto-focus weight input when exercise has no history ───────────────────
-  // The planner signals "no previous data" by embedding "(Baseline)" in the
-  // progressionGoal. In that state the field shows 20 kg (upper) / 40 kg
-  // (lower) as a placeholder. Auto-focusing lets the user immediately type
-  // their real starting weight without an extra tap.
   useEffect(() => {
     const ex = exercises[currentExIndex]
     if (ex?.progressionGoal.includes('(Baseline)') && phase === 'active') {
       weightInputRef.current?.focus()
       weightInputRef.current?.select()
     }
-    // Intentionally scoped to exercise slot changes only — phase transitions
-    // (resting → active) do not re-focus to avoid interrupting mid-set edits.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExIndex])
 
@@ -141,6 +135,12 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   const timerProgress = restSecondsLeft / restSeconds
   const timerOffset = timerCircumference * (1 - timerProgress)
   const showProgressionPulse = onboardingTour?.showProgressionPulse ?? false
+
+  // ── Completed sets for the currently active exercise ──────────────────────
+  const currentExCompletedSets = useMemo(
+    () => completedSets.filter(s => s.exerciseId === currentEx.exerciseId),
+    [completedSets, currentEx.exerciseId],
+  )
 
   async function persistDraft(nextState: {
     currentExIndex: number
@@ -273,16 +273,18 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   // ── Done screen ───────────────────────────────────────────────────────────
   if (phase === 'done') {
     return (
-      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col items-center justify-center gap-6 bg-[#0A0A0A] px-4 pb-28 pt-6 text-zinc-100">
-        <motion.div whileTap={{ scale: 0.95 }} className="w-full rounded-3xl border border-zinc-800 bg-[#171717] p-6 text-center">
-          <p className="text-3xl font-black text-white">Workout Complete!</p>
-          <p className="mt-2 text-zinc-400">{completedSets.length} sets committed.</p>
-        </motion.div>
+      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col items-center justify-center gap-6 bg-[#0A0E1A] px-4 pb-28 pt-6 text-zinc-100">
+        <div className="rounded-3xl bg-gradient-to-br from-[#ec4899]/15 to-[#3B71FE]/15 p-[1px] w-full">
+          <motion.div whileTap={{ scale: 0.95 }} className="w-full rounded-3xl bg-[#0D1626] p-6 text-center">
+            <p className="text-3xl font-black text-white">Workout Complete!</p>
+            <p className="mt-2 text-zinc-400">{completedSets.length} sets committed.</p>
+          </motion.div>
+        </div>
         <motion.button
           whileTap={{ scale: 0.95 }}
           type="button"
           onClick={onDone}
-          className="h-16 w-full cursor-pointer rounded-3xl bg-[#FF6B00] px-6 text-xl font-black text-white transition-colors hover:bg-[#ff7d24] active:bg-[#e66000]"
+          className="h-16 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-xl font-black text-white shadow-[0_8px_24px_-8px_rgba(59,113,254,0.6)] transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
         >
           Back To Dashboard
         </motion.button>
@@ -292,16 +294,18 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
 
   // ── Active / Resting screen ────────────────────────────────────────────────
   return (
-    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0A0A] px-4 pb-28 pt-6 text-zinc-100">
-      <motion.header whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">Active Session</p>
+    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-6 text-zinc-100">
+      {/* ── Header ──────────────────────────────────────────────────────────── */}
+      <motion.header whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Active Session</p>
         <h2 className={`${tierIntensityClass(currentEx.tier)} mt-3 font-black text-white`}>
           {currentEx.exerciseName}
         </h2>
         <p className="mt-2 text-sm text-zinc-300">Set {displaySetNum} of {currentEx.sets}</p>
       </motion.header>
 
-      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-4">
+      {/* ── Exercise list ───────────────────────────────────────────────────── */}
+      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
         <ul className="flex flex-col gap-3">
           {exercises.map((exercise, index) => {
             const isCurrent = index === currentExIndex
@@ -310,8 +314,8 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                 key={exercise.exerciseId}
                 className={`rounded-2xl border p-3 ${
                   isCurrent
-                    ? 'border-[#FF6B00] bg-[#2a1a10]'
-                    : 'border-zinc-700 bg-zinc-900'
+                    ? 'border-[#3B71FE] bg-[#3B71FE]/10'
+                    : 'border-[#3B71FE]/15 bg-[#091020]'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -332,7 +336,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                       )}
                     </p>
                   </div>
-                  <span className="rounded-full border border-zinc-600 px-2 py-1 text-xs font-bold text-zinc-200">
+                  <span className="rounded-full border border-[#3B71FE]/30 px-2 py-1 text-xs font-bold text-zinc-200">
                     T{exercise.tier}
                   </span>
                 </div>
@@ -342,8 +346,9 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
         </ul>
       </motion.section>
 
+      {/* ── Rest Timer ──────────────────────────────────────────────────────── */}
       {phase === 'resting' && (
-        <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-5">
+        <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
           <div className="flex items-center justify-center">
             <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Rest timer">
               <circle
@@ -351,7 +356,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                 cy="60"
                 r={timerRadius}
                 fill="none"
-                stroke="#3f3f46"
+                stroke="rgba(59,113,254,0.15)"
                 strokeWidth="10"
               />
               <circle
@@ -359,7 +364,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                 cy="60"
                 r={timerRadius}
                 fill="none"
-                stroke="#FF6B00"
+                stroke="#3B71FE"
                 strokeWidth="10"
                 strokeLinecap="round"
                 strokeDasharray={timerCircumference}
@@ -381,13 +386,46 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
           <p className="mt-3 text-center text-sm font-semibold text-zinc-300">
             Recover now. Set {displaySetNum} begins at zero.
           </p>
+          {/* ── Zero Friction: Skip Rest ─────────────────────────────────── */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            type="button"
+            onClick={() => setPhase('active')}
+            className="mt-4 h-12 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-sm font-black uppercase tracking-[0.12em] text-white shadow-[0_6px_18px_-6px_rgba(59,113,254,0.55)] transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
+          >
+            Start Next Set →
+          </motion.button>
         </motion.section>
       )}
 
-      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-4">
+      {/* ── Active Set Progression Log ──────────────────────────────────────── */}
+      {currentExCompletedSets.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] px-4 py-3"
+        >
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-400/60">
+            {currentEx.exerciseName} — Log
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {currentExCompletedSets.map((s, i) => (
+              <span
+                key={s.orderIndex}
+                className="rounded-full border border-[#3B71FE]/30 bg-[#3B71FE]/10 px-3 py-1 text-xs font-black text-white"
+              >
+                S{i + 1}: {s.weight}kg × {s.reps}
+              </span>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {/* ── Weight / Reps inputs ─────────────────────────────────────────────── */}
+      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-2">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Weight (kg)</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400/70">Weight (kg)</span>
             <input
               ref={weightInputRef}
               type="number"
@@ -397,11 +435,11 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                 setWeight(newWeight)
                 void persistDraft({ currentExIndex, currentSetInEx, weight: newWeight, reps, phase, restSecondsLeft, completedSets })
               }}
-              className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-center text-2xl font-black text-white"
+              className="w-full rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-4 py-3 text-center text-2xl font-black text-white focus:border-[#3B71FE] focus:outline-none"
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Reps</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400/70">Reps</span>
             <input
               type="number"
               value={reps}
@@ -410,12 +448,13 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                 setReps(newReps)
                 void persistDraft({ currentExIndex, currentSetInEx, weight, reps: newReps, phase, restSecondsLeft, completedSets })
               }}
-              className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-center text-2xl font-black text-white"
+              className="w-full rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-4 py-3 text-center text-2xl font-black text-white focus:border-[#3B71FE] focus:outline-none"
             />
           </label>
         </div>
       </motion.section>
 
+      {/* ── Complete Set ─────────────────────────────────────────────────────── */}
       <motion.button
         whileTap={{ scale: 0.95 }}
         type="button"
@@ -423,8 +462,8 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
         disabled={phase === 'resting'}
         className={`h-16 w-full cursor-pointer rounded-3xl px-6 text-xl font-black text-white transition-colors ${
           phase === 'resting'
-            ? 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
-            : 'bg-[#FF6B00] hover:bg-[#ff7d24] active:bg-[#e66000]'
+            ? 'cursor-not-allowed bg-[#3B71FE]/15 text-zinc-500'
+            : 'bg-[#3B71FE] shadow-[0_8px_24px_-8px_rgba(59,113,254,0.55)] hover:bg-[#5585ff] active:bg-[#2860ee]'
         }`}
       >
         Complete Set
@@ -436,7 +475,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
         onClick={() => {
           void handleCancelWorkout()
         }}
-        className="h-12 w-full cursor-pointer rounded-3xl border border-zinc-600 bg-transparent px-5 text-sm font-bold uppercase tracking-[0.1em] text-zinc-300 transition-colors hover:border-zinc-500 hover:bg-zinc-900/40 hover:text-zinc-100 active:bg-zinc-800/40"
+        className="h-12 w-full cursor-pointer rounded-3xl border border-[#3B71FE]/20 bg-transparent px-5 text-sm font-bold uppercase tracking-[0.1em] text-zinc-300 transition-colors hover:border-[#3B71FE]/40 hover:bg-[#3B71FE]/5 hover:text-zinc-100 active:bg-[#3B71FE]/10"
       >
         Cancel Workout
       </motion.button>

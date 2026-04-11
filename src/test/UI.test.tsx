@@ -82,7 +82,7 @@ describe('HomePage', () => {
 
   it('renders dashboard controls only after onboarding is complete', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
 
     render(<HomePage db={db} />)
 
@@ -98,7 +98,7 @@ describe('HomePage', () => {
 
   it('displays the planner exercise blueprint automatically', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
 
     const mockPlan: PlannedWorkout = {
       routineType: 'PPL',
@@ -133,7 +133,7 @@ describe('HomePage', () => {
 
   it('renders a Setup Required bento when planner returns an empty routineType', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
 
     const coldStartMissingRoutine: PlannedWorkout = {
       routineType: '',
@@ -156,7 +156,7 @@ describe('HomePage', () => {
 
   it('renders only the IronProtocol onboarding card when onboarding is incomplete', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
 
     render(<HomePage db={db} />)
 
@@ -170,7 +170,7 @@ describe('HomePage', () => {
 
   it('auto-advances onboarding tour steps with Next and reaches Finish on step 2', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
 
     render(<HomePage db={db} />)
 
@@ -198,7 +198,7 @@ describe('HomePage', () => {
 
   it('uses GZCL selection on initialize and does not fall back to Burpees', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
 
     vi.mocked(generateWorkout).mockImplementation(async ({ routineType }) => {
       if (routineType === 'GZCL') {
@@ -256,7 +256,7 @@ describe('HomePage', () => {
 
   it('shows a Resume Active Workout bento when a temp session draft exists', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
     await db.tempSessions.put({
       id: TEMP_SESSION_ID,
       routineType: 'PPL',
@@ -296,7 +296,7 @@ describe('HomePage', () => {
 
   it('discards a temp draft and re-evaluates back to dashboard without refresh', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: true, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
     await db.tempSessions.put({
       id: TEMP_SESSION_ID,
       routineType: 'PPL',
@@ -347,7 +347,7 @@ describe('HomePage', () => {
 
   it('prioritizes recovery state over onboarding when temp_session exists', async () => {
     await db.open()
-    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3 })
+    await db.settings.put({ id: APP_SETTINGS_ID, hasCompletedOnboarding: false, preferredRoutineType: 'PPL', daysPerWeek: 3, userName: 'TestUser' })
     await db.tempSessions.put({
       id: TEMP_SESSION_ID,
       routineType: 'PPL',

@@ -44,9 +44,9 @@ export default function App() {
 
     if (route === '/settings') {
       return (
-        <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0A0A] px-4 pb-28 pt-5 text-zinc-100">
-          <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-300">Settings</p>
+        <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-5 text-zinc-100">
+          <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Settings</p>
             <h1 className="mt-3 text-3xl font-black text-zinc-100">Routine Preferences</h1>
             <p className="mt-3 text-sm text-zinc-200">
               Production controls for offline readiness, export ownership, and portable safety backups.
@@ -54,7 +54,7 @@ export default function App() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               type="button"
-              className="mt-4 h-11 rounded-2xl border border-zinc-700 bg-zinc-900 px-4 text-sm font-bold text-zinc-100 transition-colors hover:border-zinc-500 active:bg-zinc-800"
+              className="mt-4 h-11 rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-4 text-sm font-bold text-zinc-100 transition-colors hover:border-[#3B71FE]/40 active:bg-[#091020]"
             >
               Local Mode Active
             </motion.button>
@@ -70,7 +70,7 @@ export default function App() {
   }, [route])
 
   return (
-    <div className="relative min-h-svh bg-[#0A0A0A]">
+    <div className="relative min-h-svh bg-[#0A0E1A]">
       {currentPage}
       <BottomNav currentPath={route} onNavigate={handleNavigate} />
     </div>

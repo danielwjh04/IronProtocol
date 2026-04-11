@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { motion } from 'framer-motion'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import ActiveLogger from '../components/ActiveLogger'
+import IdentitySplash from '../components/IdentitySplash'
 import OnboardingHero from '../components/OnboardingHero'
 import { db as defaultDb } from '../db/db'
 import { ensureIronExerciseLibrary } from '../db/seedExercises'
@@ -254,8 +255,9 @@ export default function HomePage({ db = defaultDb }: Props) {
   }, [plan, fullPlan])
 
   async function handleFinishSetup(): Promise<void> {
-    await db.settings.put({
-      id: APP_SETTINGS_ID,
+    // update (partial) preserves userName; put would risk clobbering it if
+    // onboardingRecord is stale or undefined at call time.
+    await db.settings.update(APP_SETTINGS_ID, {
       hasCompletedOnboarding: true,
       preferredRoutineType: routineType,
       daysPerWeek: onboardingRecord?.daysPerWeek ?? 3,
@@ -268,8 +270,8 @@ export default function HomePage({ db = defaultDb }: Props) {
       setRoutineType(selectedRoutineType)
       setHasHydratedRoutine(true)
       await ensureIronExerciseLibrary(db)
-      await db.settings.put({
-        id: APP_SETTINGS_ID,
+      // update (partial) preserves userName regardless of React state staleness.
+      await db.settings.update(APP_SETTINGS_ID, {
         hasCompletedOnboarding: false,
         preferredRoutineType: selectedRoutineType,
         daysPerWeek: onboardingRecord?.daysPerWeek ?? 3,
@@ -339,44 +341,51 @@ export default function HomePage({ db = defaultDb }: Props) {
 
   if (tempSession) {
     return (
-      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0A0A] px-4 pb-28 pt-5 text-zinc-100">
-        <motion.section
-          whileTap={{ scale: 0.95 }}
-          className="rounded-3xl border border-[#FF6B00] bg-[#24150b] p-5 shadow-[0_16px_34px_-22px_rgba(255,107,0,0.95)]"
-        >
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#FF6B00]">Recovery Draft</p>
-          <h1 className="mt-3 text-3xl font-black text-zinc-100">Resume Active Workout</h1>
-          <p className="mt-2 text-sm font-semibold text-zinc-200">
-            A temporary session was found. Resume first to prevent data loss.
-          </p>
-          <motion.button
+      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-5 text-zinc-100">
+        <div className="rounded-3xl bg-gradient-to-br from-[#ec4899]/15 to-[#3B71FE]/15 p-[1px]">
+          <motion.section
             whileTap={{ scale: 0.95 }}
-            type="button"
-            onClick={() => {
-              openLoggerWithPlan(buildPlanFromDraft(tempSession), tempSession)
-            }}
-            className="mt-5 h-14 w-full cursor-pointer rounded-3xl bg-[#FF6B00] px-6 text-base font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#ff7d24] active:bg-[#e66000]"
+            className="rounded-3xl bg-[#0D1626] p-5 shadow-[0_16px_34px_-22px_rgba(59,113,254,0.5)]"
           >
-            Resume Active Workout
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            type="button"
-            onClick={() => {
-              void handleDiscardDraft()
-            }}
-            className="mt-3 h-12 w-full cursor-pointer rounded-3xl border border-zinc-600 bg-transparent px-6 text-sm font-bold uppercase tracking-[0.1em] text-zinc-300 transition-colors hover:border-zinc-500 hover:bg-zinc-900/40 hover:text-zinc-100 active:bg-zinc-800/40"
-          >
-            Discard Draft
-          </motion.button>
-        </motion.section>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#3B71FE]">Recovery Draft</p>
+            <h1 className="mt-3 text-3xl font-black text-zinc-100">Resume Active Workout</h1>
+            <p className="mt-2 text-sm font-semibold text-zinc-200">
+              A temporary session was found. Resume first to prevent data loss.
+            </p>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              onClick={() => {
+                openLoggerWithPlan(buildPlanFromDraft(tempSession), tempSession)
+              }}
+              className="mt-5 h-14 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-base font-black uppercase tracking-[0.12em] text-white shadow-[0_8px_24px_-8px_rgba(59,113,254,0.6)] transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
+            >
+              Resume Active Workout
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              onClick={() => {
+                void handleDiscardDraft()
+              }}
+              className="mt-3 h-12 w-full cursor-pointer rounded-3xl border border-[#3B71FE]/20 bg-transparent px-6 text-sm font-bold uppercase tracking-[0.1em] text-zinc-300 transition-colors hover:border-[#3B71FE]/40 hover:bg-[#3B71FE]/5 hover:text-zinc-100 active:bg-[#3B71FE]/10"
+            >
+              Discard Draft
+            </motion.button>
+          </motion.section>
+        </div>
       </main>
     )
   }
 
+  // ── Identity gate: show splash if no userName yet ──────────────────────────
+  if (onboardingRecord !== undefined && !onboardingRecord?.userName) {
+    return <IdentitySplash db={db} />
+  }
+
   if (onboardingActive) {
     return (
-      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0A0A] px-4 pb-28 pt-5 text-zinc-100">
+      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-5 text-zinc-100">
         <motion.section
           key="onboarding-hero"
           initial={{ opacity: 0, y: 8 }}
@@ -413,68 +422,71 @@ export default function HomePage({ db = defaultDb }: Props) {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0A0A] px-4 pb-28 pt-5 text-zinc-100">
-      <motion.section
-        key="dashboard-blueprint"
-        initial={{ opacity: 0, scale: 0.92, y: 14, transformOrigin: '50% 88%' }}
-        animate={{ opacity: 1, scale: 1, y: 0, transformOrigin: '50% 88%' }}
-        exit={{ opacity: 0, scale: 0.98, y: -6 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="rounded-3xl border border-zinc-800 bg-[#171717] p-5 shadow-[0_16px_30px_-20px_rgba(0,0,0,0.7)]"
-      >
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">Session Blueprint</p>
-          <span className="rounded-2xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs font-black text-zinc-100">
-            Workout Day {detectedSessionIndex + 1} of {cycleLength}
-          </span>
-        </div>
-        <h1 className="mt-3 text-4xl font-black tracking-tight text-zinc-50">{sessionLabel}</h1>
-        <p className="mt-2 text-sm font-semibold text-zinc-300">Est. {Math.round(plan?.estimatedMinutes ?? 0)} min</p>
-
-        <ul className="mt-4 flex flex-col gap-2">
-          {plan?.exercises.map((exercise) => (
-            <motion.li
-              layout="position"
-              key={exercise.exerciseId}
-              className="flex items-center justify-between rounded-2xl border border-zinc-700 bg-zinc-900 px-3 py-3"
-            >
-              <div>
-                <p className="text-base font-black text-zinc-100">{exercise.exerciseName}</p>
-                <p className="text-xs text-zinc-400">{exercise.sets} sets × {exercise.reps} reps</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="rounded-full border border-zinc-600 px-2 py-1 text-xs font-bold text-zinc-200">T{exercise.tier}</span>
-                <span className="text-lg font-black text-[#FF6B00]">{exercise.weight} kg</span>
-              </div>
-            </motion.li>
-          ))}
-        </ul>
-
-        <motion.button
+    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-5 text-zinc-100">
+      {/* ── Session Blueprint ─────────────────────────────────────────────── */}
+      <div className="rounded-3xl bg-gradient-to-br from-[#ec4899]/15 to-[#3B71FE]/15 p-[1px]">
+        <motion.section
+          key="dashboard-blueprint"
+          initial={{ opacity: 0, scale: 0.92, y: 14, transformOrigin: '50% 88%' }}
+          animate={{ opacity: 1, scale: 1, y: 0, transformOrigin: '50% 88%' }}
+          exit={{ opacity: 0, scale: 0.98, y: -6 }}
           whileTap={{ scale: 0.95 }}
-          type="button"
-          onClick={() => {
-            if (plan) {
-              openLoggerWithPlan(plan, null)
-            }
-          }}
-          disabled={!plan || loading || routineSetupRequired}
-          className="mt-5 h-16 w-full cursor-pointer rounded-3xl bg-[#FF6B00] px-6 text-xl font-black text-white transition-all hover:bg-[#ff7d24] active:scale-[0.98] active:bg-[#e66000] disabled:cursor-not-allowed disabled:bg-zinc-700"
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="rounded-3xl bg-[#0D1626] p-5 shadow-[0_16px_30px_-20px_rgba(59,113,254,0.35)]"
         >
-          {routineSetupRequired ? 'Choose Routine to Continue' : (loading ? 'Syncing Session...' : 'Start Recommended Session')}
-        </motion.button>
-        {error && (
-          <p className="mt-3 text-sm font-semibold text-red-300">{error}</p>
-        )}
-      </motion.section>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Session Blueprint</p>
+            <span className="rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-3 py-2 text-xs font-black text-zinc-100">
+              Workout Day {detectedSessionIndex + 1} of {cycleLength}
+            </span>
+          </div>
+          <h1 className="mt-3 text-4xl font-black tracking-tight text-zinc-50">{sessionLabel}</h1>
+          <p className="mt-2 text-sm font-semibold text-zinc-300">Est. {Math.round(plan?.estimatedMinutes ?? 0)} min</p>
+
+          <ul className="mt-4 flex flex-col gap-2">
+            {plan?.exercises.map((exercise) => (
+              <motion.li
+                layout="position"
+                key={exercise.exerciseId}
+                className="flex items-center justify-between rounded-2xl border border-[#3B71FE]/15 bg-[#091020] px-3 py-3"
+              >
+                <div>
+                  <p className="text-base font-black text-zinc-100">{exercise.exerciseName}</p>
+                  <p className="text-xs text-zinc-400">{exercise.sets} sets × {exercise.reps} reps</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full border border-[#3B71FE]/30 px-2 py-1 text-xs font-bold text-zinc-200">T{exercise.tier}</span>
+                  <span className="text-lg font-black text-[#3B71FE]">{exercise.weight} kg</span>
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            type="button"
+            onClick={() => {
+              if (plan) {
+                openLoggerWithPlan(plan, null)
+              }
+            }}
+            disabled={!plan || loading || routineSetupRequired}
+            className="mt-5 h-16 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-xl font-black text-white shadow-[0_8px_24px_-8px_rgba(59,113,254,0.55)] transition-all hover:bg-[#5585ff] active:scale-[0.98] active:bg-[#2860ee] disabled:cursor-not-allowed disabled:bg-[#3B71FE]/20 disabled:text-zinc-600 disabled:shadow-none"
+          >
+            {routineSetupRequired ? 'Choose Routine to Continue' : (loading ? 'Syncing Session...' : 'Start Recommended Session')}
+          </motion.button>
+          {error && (
+            <p className="mt-3 text-sm font-semibold text-red-300">{error}</p>
+          )}
+        </motion.section>
+      </div>
 
       {routineSetupRequired && (
         <motion.section
           whileTap={{ scale: 0.95 }}
-          className="rounded-3xl border border-[#FF6B00] bg-[#25170e] p-4 shadow-[0_10px_24px_-16px_rgba(255,107,0,0.9)]"
+          className="rounded-3xl border border-[#3B71FE]/40 bg-[#0f1f44] p-4 shadow-[0_10px_24px_-16px_rgba(59,113,254,0.5)]"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#FF6B00]">Setup Required</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#3B71FE]">Setup Required</p>
           <p className="mt-2 text-sm font-semibold text-zinc-100">
             A routine must be selected before planning can continue.
           </p>
@@ -487,15 +499,16 @@ export default function HomePage({ db = defaultDb }: Props) {
                 handleRoutineSelect(defaultRoutine.type)
               }
             }}
-            className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-[#FF6B00] px-4 text-sm font-black text-white transition-colors hover:bg-[#ff7d24] active:bg-[#e66000]"
+            className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-[#3B71FE] px-4 text-sm font-black text-white transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
           >
             Choose Routine
           </motion.button>
         </motion.section>
       )}
 
-      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">Training Goal</p>
+      {/* ── Training Goal ─────────────────────────────────────────────────── */}
+      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Training Goal</p>
         <div className="mt-3 grid grid-cols-2 gap-2">
           {(['Hypertrophy', 'Power'] as const).map((goal) => (
             <motion.button
@@ -505,8 +518,8 @@ export default function HomePage({ db = defaultDb }: Props) {
               onClick={() => setTrainingGoal(goal)}
               className={`cursor-pointer rounded-2xl border px-3 py-3 text-sm font-bold transition-all active:scale-[0.98] ${
                 trainingGoal === goal
-                  ? 'border-[#FF6B00] bg-[#2a1a10] text-[#FF6B00] active:bg-[#24170f]'
-                  : 'border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500 active:bg-zinc-800'
+                  ? 'border-[#3B71FE] bg-[#3B71FE]/15 text-[#3B71FE] active:bg-[#3B71FE]/20'
+                  : 'border-[#3B71FE]/15 bg-[#091020] text-zinc-300 hover:border-[#3B71FE]/30 active:bg-[#091020]'
               }`}
             >
               {goal}
@@ -515,12 +528,13 @@ export default function HomePage({ db = defaultDb }: Props) {
         </div>
       </motion.section>
 
-      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-4 min-h-[208px]">
+      {/* ── QoS Governor ──────────────────────────────────────────────────── */}
+      <motion.section whileTap={{ scale: 0.95 }} className="min-h-[208px] rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
         <div className="flex items-center justify-between">
-          <label htmlFor="time-available" className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+          <label htmlFor="time-available" className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">
             Time Available
           </label>
-          <span className="text-sm font-black text-[#FF6B00]">{timeAvailable} min</span>
+          <span className="text-sm font-black text-[#3B71FE]">{timeAvailable} min</span>
         </div>
         <div className="mt-4">
           <input
@@ -531,23 +545,23 @@ export default function HomePage({ db = defaultDb }: Props) {
             step={5}
             value={timeAvailable}
             onChange={(event) => setTimeAvailable(Number(event.target.value))}
-            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-zinc-800 accent-[#FF6B00]"
+            className="w-full cursor-pointer appearance-none"
           />
         </div>
 
-        <div className="mt-4 rounded-2xl border border-zinc-700 bg-zinc-900 p-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">QoS Preview</p>
+        <div className="mt-4 rounded-2xl border border-[#3B71FE]/15 bg-[#091020] p-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-400/50">QoS Preview</p>
           {trimmedExercises.length === 0 ? (
             <p className="mt-2 text-sm text-zinc-300">No exercises trimmed at this time window.</p>
           ) : (
             <ul className="mt-2 flex flex-col gap-2">
               {trimmedExercises.map((exercise) => (
-                <li key={exercise.exerciseId} className="flex items-center justify-between rounded-xl border border-zinc-700 px-3 py-2">
+                <li key={exercise.exerciseId} className="flex items-center justify-between rounded-xl border border-[#3B71FE]/15 px-3 py-2">
                   <div>
                     <p className="text-sm font-bold text-zinc-100">{exercise.exerciseName}</p>
                     <p className="text-xs font-bold text-zinc-300">{exercise.progressionGoal}</p>
                   </div>
-                  <span className="rounded-full border border-zinc-600 px-2 py-1 text-xs font-bold text-zinc-200">
+                  <span className="rounded-full border border-[#3B71FE]/30 px-2 py-1 text-xs font-bold text-zinc-200">
                     T{exercise.tier}
                   </span>
                 </li>

@@ -70,19 +70,19 @@ export default function CalibrateBaselinesCard({ db }: Props) {
   return (
     <motion.section
       whileTap={{ scale: 0.98 }}
-      className="rounded-3xl border border-zinc-800 bg-[#171717] p-6 shadow-[0_18px_38px_-24px_rgba(255,107,0,0.6)]"
+      className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-6 shadow-[0_18px_38px_-24px_rgba(59,113,254,0.35)]"
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#FF6B00]">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#3B71FE]">
             T1 Calibration
           </p>
           <h2 className="mt-1 text-2xl font-black text-zinc-100">
             Calibrate Baselines
           </h2>
         </div>
-        <span className="rounded-xl border border-zinc-700 bg-zinc-900 px-2 py-1 text-xs font-black uppercase tracking-widest text-zinc-400">
+        <span className="rounded-xl border border-[#3B71FE]/20 bg-[#091020] px-2 py-1 text-xs font-black uppercase tracking-widest text-zinc-400">
           Day 1
         </span>
       </div>
@@ -107,7 +107,7 @@ export default function CalibrateBaselinesCard({ db }: Props) {
                 value={weights[key]}
                 onChange={(e) => handleChange(key, e.target.value)}
                 placeholder="—"
-                className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 pr-10 text-center text-2xl font-black text-white placeholder-zinc-600 transition-colors focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]/40"
+                className="w-full rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-4 py-3 pr-10 text-center text-2xl font-black text-white placeholder-zinc-600 transition-colors focus:border-[#3B71FE] focus:outline-none focus:ring-1 focus:ring-[#3B71FE]/30"
               />
               <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-500">
                 {hint}
@@ -123,7 +123,7 @@ export default function CalibrateBaselinesCard({ db }: Props) {
         type="button"
         onClick={() => { void handleSave() }}
         disabled={saving}
-        className="mt-5 h-14 w-full cursor-pointer rounded-3xl bg-[#FF6B00] px-6 text-base font-black uppercase tracking-[0.12em] text-white shadow-[0_16px_30px_-18px_rgba(255,107,0,1)] transition-all hover:bg-[#ff7d24] active:scale-[0.98] active:bg-[#e66000] disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:shadow-none"
+        className="mt-5 h-14 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-base font-black uppercase tracking-[0.12em] text-white shadow-[0_16px_30px_-18px_rgba(59,113,254,0.7)] transition-all hover:bg-[#5585ff] active:scale-[0.98] active:bg-[#2860ee] disabled:cursor-not-allowed disabled:bg-[#3B71FE]/20 disabled:text-zinc-600 disabled:shadow-none"
       >
         {saving ? 'Locking In…' : 'Lock In Baselines'}
       </motion.button>
@@ -137,7 +137,7 @@ export default function CalibrateBaselinesCard({ db }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.25 }}
-            className="mt-3 text-center text-sm font-semibold text-[#FF6B00]"
+            className="mt-3 text-center text-sm font-semibold text-[#3B71FE]"
           >
             ✓ Baselines locked in — planner updated.
           </motion.p>

@@ -3,11 +3,11 @@
 
 :root {
   color-scheme: dark;
-  --safety-orange: #FF6B00;
-  --surface-bg: #0A0A0A;
-  --surface-card: #171717;
-  --surface-border: #27272a;
-  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  --electric-blue: #3B71FE;
+  --surface-bg: #0A0E1A;
+  --surface-card: #0D1626;
+  --surface-border: #1a2a5e;
+  font-family: 'Barlow', 'Inter', 'Segoe UI', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -27,8 +27,8 @@ body,
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 20% -10%, rgba(255, 107, 0, 0.16), transparent 50%),
-    radial-gradient(circle at 90% 120%, rgba(255, 107, 0, 0.08), transparent 44%),
+    radial-gradient(circle at 20% -10%, rgba(59, 113, 254, 0.13), transparent 50%),
+    radial-gradient(circle at 90% 120%, rgba(124, 58, 254, 0.07), transparent 44%),
     var(--surface-bg);
   color: #fafafa;
 }
@@ -43,4 +43,46 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+/* ── Electric Blue QoS Slider ────────────────────────────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: rgba(59, 113, 254, 0.18);
+  border-radius: 9999px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #3B71FE;
+  box-shadow: 0 0 0 3px rgba(59, 113, 254, 0.22), 0 0 14px rgba(59, 113, 254, 0.55);
+  cursor: pointer;
+  margin-top: -8px;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: rgba(59, 113, 254, 0.18);
+  border-radius: 9999px;
+  border: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: #3B71FE;
+  box-shadow: 0 0 0 3px rgba(59, 113, 254, 0.22), 0 0 14px rgba(59, 113, 254, 0.55);
+  cursor: pointer;
 }
