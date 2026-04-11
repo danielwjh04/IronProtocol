@@ -95,7 +95,7 @@ describe('ActiveLogger', () => {
   // After the user taps Complete Set the UI must transition to a visible
   // resting state and show the upcoming set number so they know what's next.
 
-  it('shows a resting indicator and advances to Set 2 after completing Set 1', () => {
+  it('shows a resting indicator and advances to Set 2 after completing Set 1', async () => {
     render(<ActiveLogger plan={BENCH_PLAN} db={db} />)
 
     fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
@@ -106,6 +106,13 @@ describe('ActiveLogger', () => {
     // The counter must have advanced. UI must show "Set 2" somewhere
     // (e.g. "Set 2 of 3") so the user knows what's coming.
     expect(screen.getByText(/set\s*2\s*of\s*3/i)).toBeInTheDocument()
+
+    // Drain the async DB write triggered by the click so afterEach does not
+    // close the database while the write is still in flight.
+    await waitFor(async () => {
+      const draft = await db.tempSessions.get(TEMP_SESSION_ID)
+      expect(draft).toBeDefined()
+    })
   })
 
   it('writes a temp session draft after each completed set', async () => {

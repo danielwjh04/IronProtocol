@@ -17,6 +17,21 @@ vi.mock('../planner/autoPlanner', async (importOriginal) => {
   }
 })
 
+// Bypass the 2.5 s CoreIgnition boot sequence in tests.
+// The real component fires onComplete via setTimeout(fn, 2500); RTL v16 wraps
+// each waitFor poll in act(), which does NOT advance real timers, so the
+// settings page would never render. Mocking with useEffect makes act() flush
+// the callback synchronously after mount.
+vi.mock('../components/CoreIgnition', async () => {
+  const { useEffect } = await import('react')
+  return {
+    default: function MockCoreIgnition({ onComplete }: { onComplete: () => void }) {
+      useEffect(() => { onComplete() }, [])
+      return null
+    },
+  }
+})
+
 // RTL auto-cleanup doesn't fire in per-file jsdom environments without
 // Vitest globals enabled, so we register it manually.
 afterEach(() => cleanup())

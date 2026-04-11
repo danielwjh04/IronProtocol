@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Props {
   /** Called once the 2.5 s boot sequence finishes */
@@ -47,7 +47,13 @@ function PulsingBarbell() {
 export default function CoreIgnition({ onComplete }: Props) {
   const [visibleLines, setVisibleLines] = useState<string[]>([])
 
-  // Fire each log line on its delay, then call onComplete after total duration
+  // Capture the latest onComplete in a ref so the effect never re-runs due to
+  // an unstable callback reference (callers often pass an inline arrow function).
+  const onCompleteRef = useRef(onComplete)
+  onCompleteRef.current = onComplete
+
+  // Fire each log line on its delay, then call onComplete after total duration.
+  // Empty deps: runs once on mount — the ref keeps onCompleteRef.current fresh.
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = []
 
@@ -62,10 +68,10 @@ export default function CoreIgnition({ onComplete }: Props) {
       )
     })
 
-    timers.push(setTimeout(onComplete, TOTAL_DURATION_MS))
+    timers.push(setTimeout(() => onCompleteRef.current(), TOTAL_DURATION_MS))
 
     return () => timers.forEach(clearTimeout)
-  }, [onComplete])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <motion.main
