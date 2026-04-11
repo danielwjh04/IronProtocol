@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach, beforeEach } from 'vitest'
-import { APP_SETTINGS_ID, DailyTarget, IronProtocolDB, PersonalBest } from '../db/schema'
+import { APP_SETTINGS_ID, IronProtocolDB } from '../db/schema'
+import type { DailyTarget, PersonalBest } from '../db/schema'
 
 // Happy Path — these tests define the contract the DB implementation must satisfy.
 // This contract guards schema availability and migration versioning.
@@ -14,10 +15,10 @@ describe('IronProtocolDB — Happy Path', () => {
     await db.delete()
   })
 
-  it('opens at schema version 10', async () => {
+  it('opens at schema version 11', async () => {
     db = new IronProtocolDB()
     await db.open()
-    expect(db.verno).toBe(10)
+    expect(db.verno).toBe(11)
   })
 
   it('exposes exercises, workouts, sets, settings, tempSessions, baselines, dailyTargets, and personalBests tables', async () => {
@@ -78,5 +79,40 @@ describe('v10 schema — DailyTargets and PersonalBests', () => {
     await db.personalBests.put(pb)
     const retrieved = await db.personalBests.get('ex-bench-001')
     expect(retrieved).toEqual(pb)
+  })
+})
+
+describe('v11 schema — onboarding fields', () => {
+  let db: IronProtocolDB
+
+  beforeEach(() => { db = new IronProtocolDB() })
+  afterEach(async () => { if (db.isOpen()) await db.close(); await db.delete() })
+
+  it('persists northStar, purposeChip, and qosMinutes on AppSettings', async () => {
+    await db.open()
+    await db.settings.put({
+      id: APP_SETTINGS_ID,
+      hasCompletedOnboarding: false,
+      preferredRoutineType: 'PPL',
+      daysPerWeek: 4,
+      userName: 'Atlas',
+      northStar: 'Build elite strength',
+      purposeChip: 'strength',
+      qosMinutes: 60,
+    })
+    const settings = await db.settings.get(APP_SETTINGS_ID)
+    expect(settings?.userName).toBe('Atlas')
+    expect(settings?.northStar).toBe('Build elite strength')
+    expect(settings?.purposeChip).toBe('strength')
+    expect(settings?.qosMinutes).toBe(60)
+  })
+
+  it('existing settings rows without new fields remain valid (fields are optional)', async () => {
+    await db.open()
+    const settings = await db.settings.get(APP_SETTINGS_ID)
+    expect(settings).toBeDefined()
+    expect(settings?.northStar).toBeUndefined()
+    expect(settings?.purposeChip).toBeUndefined()
+    expect(settings?.qosMinutes).toBeUndefined()
   })
 })

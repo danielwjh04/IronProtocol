@@ -65,12 +65,17 @@ export interface PersonalBest {
   flagged: boolean     // true = newly achieved, unread by the user
 }
 
+export type PurposeChip = 'strength' | 'hypertrophy' | 'fat-loss' | 'endurance' | 'health'
+
 export interface AppSettings {
   id: string
   hasCompletedOnboarding: boolean
   preferredRoutineType: string
   daysPerWeek: number // 3, 4, or 5 — drives routine recommendations in onboarding
   userName?: string   // set during IdentitySplash; gates first-run flow
+  northStar?: string       // free-text goal from onboarding
+  purposeChip?: PurposeChip // training intent from onboarding
+  qosMinutes?: number      // session time budget from onboarding (15–120)
 }
 
 export type TempSessionPhase = 'active' | 'resting'
@@ -334,6 +339,21 @@ export class IronProtocolDB extends Dexie {
     // personalBests indexes exerciseId only; flagged is not indexed because the
     // expected table size (≤ one row per exercise) makes a full scan negligible.
     this.version(10).stores({
+      exercises:     'id, name, muscleGroup, tier, *tags',
+      workouts:      'id, date, routineType, sessionIndex',
+      sets:          'id, workoutId, exerciseId, orderIndex',
+      settings:      'id, preferredRoutineType',
+      tempSessions:  'id, updatedAt',
+      baselines:     'exerciseName',
+      dailyTargets:  'date',
+      personalBests: 'exerciseId',
+    })
+
+    // Version 11 — adds onboarding identity fields to settings:
+    // northStar (free-text goal), purposeChip (training intent),
+    // qosMinutes (session time budget). All optional; no data migration
+    // needed because absent rows get undefined for new fields.
+    this.version(11).stores({
       exercises:     'id, name, muscleGroup, tier, *tags',
       workouts:      'id, date, routineType, sessionIndex',
       sets:          'id, workoutId, exerciseId, orderIndex',
