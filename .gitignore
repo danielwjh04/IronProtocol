@@ -22,6 +22,9 @@ dist-ssr
 .claude/
 .claudeignore
 
+# Git worktrees
+.worktrees/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
