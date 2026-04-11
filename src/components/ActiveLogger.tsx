@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import type { PlannedWorkout } from '../planner/autoPlanner'
@@ -12,6 +12,7 @@ import {
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 import { PersonalBestsService } from '../services/personalBestsService'
 import FeaturePulse from './FeaturePulse'
+import FunctionalWhy from './FunctionalWhy'
 
 interface Props {
   plan: PlannedWorkout
@@ -95,6 +96,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       : restSeconds,
   )
   const [completedSets,  setCompletedSets]  = useState<CompletedSet[]>(resumableDraft?.completedSets ?? [])
+  const [showWhy,        setShowWhy]        = useState(false)
 
   // ── Weight input ref — used for auto-focus on baseline (no-history) exercises
   const weightInputRef = useRef<HTMLInputElement>(null)
@@ -125,6 +127,11 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       weightInputRef.current?.select()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentExIndex])
+
+  // ── Collapse the Why panel whenever the active exercise changes ────────────
+  useEffect(() => {
+    setShowWhy(false)
   }, [currentExIndex])
 
   // ── Derived display values ─────────────────────────────────────────────────
@@ -296,16 +303,50 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   return (
     <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-6 text-zinc-100">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <motion.header whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Active Session</p>
-        <h2 className={`${tierIntensityClass(currentEx.tier)} mt-3 font-black text-white`}>
-          {currentEx.exerciseName}
-        </h2>
-        <p className="mt-2 text-sm text-zinc-300">Set {displaySetNum} of {currentEx.sets}</p>
+      <motion.header layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Active Session</p>
+            <h2 className={`${tierIntensityClass(currentEx.tier)} mt-3 font-black text-white`}>
+              {currentEx.exerciseName}
+            </h2>
+            <p className="mt-2 text-sm text-zinc-300">Set {displaySetNum} of {currentEx.sets}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowWhy(prev => !prev)}
+            aria-pressed={showWhy}
+            aria-label="Toggle exercise purpose"
+            className={`mt-3 shrink-0 rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] transition-colors ${
+              showWhy
+                ? 'border-zinc-50 bg-zinc-50 text-[#0A0E1A]'
+                : 'border-[#3B71FE]/40 bg-transparent text-blue-400/80 hover:border-[#3B71FE]/70 hover:text-blue-400'
+            }`}
+          >
+            WHY
+          </button>
+        </div>
+
+        {/* ── Functional Why panel ───────────────────────────────────────────── */}
+        <AnimatePresence initial={false}>
+          {showWhy && (
+            <motion.div
+              key="why-panel"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.32, ease: [0.4, 0, 0.2, 1] }}
+              style={{ overflow: 'hidden' }}
+              className="mt-4"
+            >
+              <FunctionalWhy exerciseName={currentEx.exerciseName} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.header>
 
       {/* ── Exercise list ───────────────────────────────────────────────────── */}
-      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
+      <motion.section layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
         <ul className="flex flex-col gap-3">
           {exercises.map((exercise, index) => {
             const isCurrent = index === currentExIndex
@@ -422,7 +463,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       )}
 
       {/* ── Weight / Reps inputs ─────────────────────────────────────────────── */}
-      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
+      <motion.section layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-2">
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400/70">Weight (kg)</span>

@@ -21,7 +21,6 @@ dist-ssr
 # AI & Local Tools (Ghost Mode)
 .claude/
 .claudeignore
-CLAUDE.md
 
 # Editor directories and files
 .vscode/*

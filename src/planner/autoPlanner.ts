@@ -37,29 +37,29 @@ export interface PreflightAuditReport {
 
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
-const BASELINE_WEIGHT = { upper: 20, lower: 40 } as const
+export const BASELINE_WEIGHT = { upper: 20, lower: 40 } as const
 const REST_MINUTES_BY_GOAL = {
   Hypertrophy: 90 / 60,
   Power: 180 / 60,
 } as const
 
-const TIER_REP_RANGES: Record<ExerciseTier, { min: number; max: number }> = {
+export const TIER_REP_RANGES: Record<ExerciseTier, { min: number; max: number }> = {
   1: { min: 3, max: 5 },
   2: { min: 8, max: 10 },
   3: { min: 12, max: 15 },
 }
 
-const TIER_DEFAULT_SETS: Record<ExerciseTier, number> = {
+export const TIER_DEFAULT_SETS: Record<ExerciseTier, number> = {
   1: 5,
   2: 3,
   3: 3,
 }
 
-function baselineRepGoal(tier: ExerciseTier): string {
+export function baselineRepGoal(tier: ExerciseTier): string {
   return `Goal: ${TIER_REP_RANGES[tier].min} Reps (Baseline)`
 }
 
-const SMALLEST_INCREMENT_KG = 2.5
+export const SMALLEST_INCREMENT_KG = 2.5
 
 // Muscle groups classified as lower body; everything else is upper.
 const LOWER_BODY_GROUPS = new Set(['Legs', 'Quads', 'Hamstrings', 'Glutes', 'Calves'])
@@ -339,7 +339,7 @@ function normalizeStoredRoutineType(routineType: string): CanonicalRoutineType |
   }
 }
 
-function inferAxis(exercise: Exercise): 'upper' | 'lower' {
+export function inferAxis(exercise: Exercise): 'upper' | 'lower' {
   const normalizedTags = exercise.tags.map((tag) => tag.toLowerCase())
   if (normalizedTags.some((tag) => LOWER_TAGS.has(tag))) {
     return 'lower'
@@ -481,7 +481,7 @@ function mapRecentSetsByExercise(recentSessionSets: WorkoutSet[]): Map<string, W
   return byExercise
 }
 
-function planExerciseFromHistory(
+export function planExerciseFromHistory(
   exercise: Exercise,
   previousSets: WorkoutSet[],
   userBaselineKg?: number,

@@ -2,6 +2,8 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { motion } from 'framer-motion'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import ActiveLogger from '../components/ActiveLogger'
+import ThinkingTerminal from '../components/ThinkingTerminal'
+import DraftBlueprintReview from '../components/DraftBlueprintReview'
 import IdentitySplash from '../components/IdentitySplash'
 import OnboardingHero from '../components/OnboardingHero'
 import { db as defaultDb } from '../db/db'
@@ -76,7 +78,10 @@ export default function HomePage({ db = defaultDb }: Props) {
   const [fullPlan, setFullPlan] = useState<PlannedWorkout | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isLogging, setIsLogging] = useState(false)
+  
+  type SessionPhase = 'idle' | 'thinking' | 'review' | 'logging'
+  const [sessionPhase, setSessionPhase] = useState<SessionPhase>('idle')
+  
   const [activePlan, setActivePlan] = useState<PlannedWorkout | null>(null)
   const [activeDraft, setActiveDraft] = useState<TempSession | null>(null)
   const [onboardingFlow, setOnboardingFlow] = useState<OnboardingFlowState>(INITIAL_ONBOARDING_FLOW)
@@ -306,14 +311,21 @@ export default function HomePage({ db = defaultDb }: Props) {
   }
 
   function openLoggerWithPlan(nextPlan: PlannedWorkout, nextDraft: TempSession | null): void {
+    if (nextDraft !== null) {
+      setActivePlan(nextPlan)
+      setActiveDraft(nextDraft)
+      setSessionPhase('logging')
+      return
+    }
+
     setActivePlan(nextPlan)
     setActiveDraft(nextDraft)
-    setIsLogging(true)
+    setSessionPhase('thinking')
   }
 
   async function handleDiscardDraft(): Promise<void> {
     await db.tempSessions.delete(TEMP_SESSION_ID)
-    setIsLogging(false)
+    setSessionPhase('idle')
     setActivePlan(null)
     setActiveDraft(null)
     setPlannerRefreshTick((current) => current + 1)
@@ -321,14 +333,47 @@ export default function HomePage({ db = defaultDb }: Props) {
 
   const loggerPlan = activePlan ?? plan
 
-  if (isLogging && loggerPlan) {
+  // ── Thinking phase ─────────────────────────────────────────────────────────
+  if (sessionPhase === 'thinking' && loggerPlan) {
+    return (
+      <ThinkingTerminal
+        plan={loggerPlan}
+        onComplete={() => {
+          setSessionPhase('review')
+        }}
+      />
+    )
+  }
+
+  // ── Review phase ───────────────────────────────────────────────────────────
+  if (sessionPhase === 'review' && loggerPlan) {
+    return (
+      <DraftBlueprintReview
+        plan={loggerPlan}
+        db={db}
+        onConfirm={() => {
+          setSessionPhase('logging')
+        }}
+        onCancel={() => {
+          setSessionPhase('idle')
+          setActivePlan(null)
+        }}
+        onUpdatePlan={(updatedPlan) => {
+          setActivePlan(updatedPlan)
+        }}
+      />
+    )
+  }
+
+  // ── Logging phase ──────────────────────────────────────────────────────────
+  if (sessionPhase === 'logging' && loggerPlan) {
     return (
       <ActiveLogger
         plan={loggerPlan}
         db={db}
         initialDraft={activeDraft}
         onDone={() => {
-          setIsLogging(false)
+          setSessionPhase('idle')
           setActivePlan(null)
           setActiveDraft(null)
         }}
