@@ -1,0 +1,445 @@
+import { motion } from 'framer-motion'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import type { PlannedWorkout } from '../planner/autoPlanner'
+import {
+  TEMP_SESSION_ID,
+  type ExerciseTier,
+  type IronProtocolDB,
+  type TempSessionCompletedSet,
+  type TempSession,
+} from '../db/schema'
+import { parseTempSessionDraft } from '../validation/tempSessionSchema'
+import { PersonalBestsService } from '../services/personalBestsService'
+import FeaturePulse from './FeaturePulse'
+
+interface Props {
+  plan: PlannedWorkout
+  db: IronProtocolDB
+  initialDraft?: TempSession | null
+  onDone?: () => void
+  onCancel?: () => void
+  onboardingTour?: {
+    showProgressionPulse: boolean
+    onProgressionPulseCleared: () => void
+  }
+}
+
+type CompletedSet = TempSessionCompletedSet
+
+type Phase = 'active' | 'resting' | 'done'
+
+function tierIntensityClass(tier: ExerciseTier): string {
+  if (tier === 1) {
+    return 'text-2xl'
+  }
+  if (tier === 2) {
+    return 'text-xl'
+  }
+  return 'text-lg'
+}
+
+export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel, onboardingTour }: Props) {
+  const exercises = plan.exercises.length > 0
+    ? plan.exercises
+    : [{
+        exerciseId: 'fallback-gpp',
+        exerciseName: 'Bodyweight Circuit',
+        weight: 0,
+        reps: 12,
+        sets: 3,
+        tier: 3 as ExerciseTier,
+        progressionGoal: 'Goal: 12 Reps (Baseline)',
+      }]
+
+  const pbService = useMemo(() => new PersonalBestsService(db), [db])
+
+  const resumableDraft = (() => {
+    if (!initialDraft) {
+      return null
+    }
+
+    try {
+      const parsed = parseTempSessionDraft(initialDraft)
+      const matchingPlan =
+        parsed.routineType === plan.routineType
+        && parsed.sessionIndex === plan.sessionIndex
+        && parsed.exercises.length === exercises.length
+        && parsed.exercises.every((exercise, index) => exercise.exerciseId === exercises[index]?.exerciseId)
+      return matchingPlan ? parsed : null
+    } catch {
+      return null
+    }
+  })()
+
+  // Derive rest period from the plan: estimatedMinutes = totalSets × restMinutes
+  const totalAllSets = exercises.reduce((sum, ex) => sum + ex.sets, 0)
+  const restSeconds  = Math.max(30, Math.round((plan.estimatedMinutes * 60) / totalAllSets))
+
+  const initialExIndex = resumableDraft
+    ? Math.min(resumableDraft.currentExIndex, Math.max(0, exercises.length - 1))
+    : 0
+  const initialExercise = exercises[initialExIndex]
+  const initialSetInEx = resumableDraft
+    ? Math.min(resumableDraft.currentSetInEx, Math.max(0, initialExercise.sets - 1))
+    : 0
+
+  const [currentExIndex, setCurrentExIndex] = useState(initialExIndex)
+  const [currentSetInEx, setCurrentSetInEx] = useState(initialSetInEx) // 0-based within exercise
+  const [weight,         setWeight]         = useState(resumableDraft?.weight ?? initialExercise.weight)
+  const [reps,           setReps]           = useState(resumableDraft?.reps ?? initialExercise.reps)
+  const [phase,          setPhase]          = useState<Phase>(resumableDraft?.phase ?? 'active')
+  const [restSecondsLeft, setRestSecondsLeft] = useState(
+    resumableDraft?.phase === 'resting'
+      ? Math.max(0, resumableDraft.restSecondsLeft)
+      : restSeconds,
+  )
+  const [completedSets,  setCompletedSets]  = useState<CompletedSet[]>(resumableDraft?.completedSets ?? [])
+
+  // ── Weight input ref — used for auto-focus on baseline (no-history) exercises
+  const weightInputRef = useRef<HTMLInputElement>(null)
+
+  // ── Rest countdown timer ───────────────────────────────────────────────────
+  useEffect(() => {
+    if (phase !== 'resting') return
+
+    const timerId = setInterval(() => {
+      setRestSecondsLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerId)
+          setPhase('active')
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timerId)
+  }, [phase])
+
+  // ── Auto-focus weight input when exercise has no history ───────────────────
+  // The planner signals "no previous data" by embedding "(Baseline)" in the
+  // progressionGoal. In that state the field shows 20 kg (upper) / 40 kg
+  // (lower) as a placeholder. Auto-focusing lets the user immediately type
+  // their real starting weight without an extra tap.
+  useEffect(() => {
+    const ex = exercises[currentExIndex]
+    if (ex?.progressionGoal.includes('(Baseline)') && phase === 'active') {
+      weightInputRef.current?.focus()
+      weightInputRef.current?.select()
+    }
+    // Intentionally scoped to exercise slot changes only — phase transitions
+    // (resting → active) do not re-focus to avoid interrupting mid-set edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentExIndex])
+
+  // ── Derived display values ─────────────────────────────────────────────────
+  const currentEx      = exercises[currentExIndex]
+  const displaySetNum  = currentSetInEx + 1 // 1-based set number for the NEXT (or current) set
+  const timerRadius = 44
+  const timerCircumference = 2 * Math.PI * timerRadius
+  const timerProgress = restSecondsLeft / restSeconds
+  const timerOffset = timerCircumference * (1 - timerProgress)
+  const showProgressionPulse = onboardingTour?.showProgressionPulse ?? false
+
+  async function persistDraft(nextState: {
+    currentExIndex: number
+    currentSetInEx: number
+    weight: number
+    reps: number
+    phase: Phase
+    restSecondsLeft: number
+    completedSets: CompletedSet[]
+  }): Promise<void> {
+    const validatedDraft = parseTempSessionDraft({
+      id: TEMP_SESSION_ID,
+      routineType: plan.routineType,
+      sessionIndex: plan.sessionIndex,
+      estimatedMinutes: plan.estimatedMinutes,
+      exercises,
+      currentExIndex: nextState.currentExIndex,
+      currentSetInEx: nextState.currentSetInEx,
+      weight: nextState.weight,
+      reps: nextState.reps,
+      phase: nextState.phase,
+      restSecondsLeft: nextState.restSecondsLeft,
+      completedSets: nextState.completedSets,
+      updatedAt: Date.now(),
+    })
+
+    await db.tempSessions.put(validatedDraft)
+  }
+
+  // ── Complete Set handler ───────────────────────────────────────────────────
+  async function handleCompleteSet() {
+    const newSet: CompletedSet = {
+      exerciseId: currentEx.exerciseId,
+      weight,
+      reps,
+      orderIndex: completedSets.length,
+    }
+    const newCompleted = [...completedSets, newSet]
+
+    const isLastSetInEx = currentSetInEx === currentEx.sets - 1
+    const isLastEx      = currentExIndex  === exercises.length - 1
+    const isFinalSet    = isLastSetInEx && isLastEx
+
+    if (isFinalSet) {
+      // PB check before atomic commit — still in the same handler tick.
+      await pbService.checkAndUpdate(currentEx.exerciseId, weight, reps)
+      // ── Atomic commit ────────────────────────────────────────────────────
+      const workoutId = uuidv4()
+      await db.workouts.add({
+        id: workoutId,
+        date: Date.now(),
+        routineType: plan.routineType,
+        sessionIndex: plan.sessionIndex,
+        notes: '',
+      })
+      await Promise.all(
+        newCompleted.map(s =>
+          db.sets.add({
+            id: uuidv4(),
+            workoutId,
+            exerciseId: s.exerciseId,
+            weight:     s.weight,
+            reps:       s.reps,
+            orderIndex: s.orderIndex,
+          })
+        )
+      )
+      await db.tempSessions.delete(TEMP_SESSION_ID)
+      setCompletedSets(newCompleted)
+      setPhase('done')
+    } else {
+      let nextExIndex = currentExIndex
+      let nextSetInEx = currentSetInEx + 1
+      let nextWeight = weight
+      let nextReps = reps
+
+      setCompletedSets(newCompleted)
+
+      if (isLastSetInEx) {
+        // Advance to next exercise — reset inputs to plan values
+        const nextIdx = currentExIndex + 1
+        const nextExercise = exercises[nextIdx]
+        nextExIndex = nextIdx
+        nextSetInEx = 0
+        nextWeight = nextExercise.weight
+        nextReps = nextExercise.reps
+        setCurrentExIndex(nextIdx)
+        setCurrentSetInEx(0)
+        setWeight(nextExercise.weight)
+        setReps(nextExercise.reps)
+      } else {
+        // Same exercise, next set — weight/reps cascade by staying unchanged
+        setCurrentSetInEx(nextSetInEx)
+      }
+
+      setRestSecondsLeft(restSeconds)
+      setPhase('resting')
+
+      // PB check and draft persist happen after UI state updates so React
+      // re-renders the resting screen immediately without waiting for DB I/O.
+      await pbService.checkAndUpdate(currentEx.exerciseId, weight, reps)
+      await persistDraft({
+        currentExIndex: nextExIndex,
+        currentSetInEx: nextSetInEx,
+        weight: nextWeight,
+        reps: nextReps,
+        phase: 'resting',
+        restSecondsLeft: restSeconds,
+        completedSets: newCompleted,
+      })
+    }
+  }
+
+  async function handleCancelWorkout(): Promise<void> {
+    const confirmed = window.confirm('Are you sure? This will delete your current progress.')
+    if (!confirmed) {
+      return
+    }
+
+    await db.tempSessions.delete(TEMP_SESSION_ID)
+
+    if (onCancel) {
+      onCancel()
+      return
+    }
+
+    onDone?.()
+  }
+
+  // ── Done screen ───────────────────────────────────────────────────────────
+  if (phase === 'done') {
+    return (
+      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col items-center justify-center gap-6 bg-[#0A0A0A] px-4 pb-28 pt-6 text-zinc-100">
+        <motion.div whileTap={{ scale: 0.95 }} className="w-full rounded-3xl border border-zinc-800 bg-[#171717] p-6 text-center">
+          <p className="text-3xl font-black text-white">Workout Complete!</p>
+          <p className="mt-2 text-zinc-400">{completedSets.length} sets committed.</p>
+        </motion.div>
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          type="button"
+          onClick={onDone}
+          className="h-16 w-full cursor-pointer rounded-3xl bg-[#FF6B00] px-6 text-xl font-black text-white transition-colors hover:bg-[#ff7d24] active:bg-[#e66000]"
+        >
+          Back To Dashboard
+        </motion.button>
+      </main>
+    )
+  }
+
+  // ── Active / Resting screen ────────────────────────────────────────────────
+  return (
+    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0A0A] px-4 pb-28 pt-6 text-zinc-100">
+      <motion.header whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">Active Session</p>
+        <h2 className={`${tierIntensityClass(currentEx.tier)} mt-3 font-black text-white`}>
+          {currentEx.exerciseName}
+        </h2>
+        <p className="mt-2 text-sm text-zinc-300">Set {displaySetNum} of {currentEx.sets}</p>
+      </motion.header>
+
+      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-4">
+        <ul className="flex flex-col gap-3">
+          {exercises.map((exercise, index) => {
+            const isCurrent = index === currentExIndex
+            return (
+              <li
+                key={exercise.exerciseId}
+                className={`rounded-2xl border p-3 ${
+                  isCurrent
+                    ? 'border-[#FF6B00] bg-[#2a1a10]'
+                    : 'border-zinc-700 bg-zinc-900'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className={`${tierIntensityClass(exercise.tier)} font-black text-zinc-100`}>{exercise.exerciseName}</p>
+                    <p className="relative mt-1 text-xs font-bold text-zinc-300">
+                      {exercise.progressionGoal}
+                      {isCurrent && showProgressionPulse && onboardingTour && (
+                        <FeaturePulse
+                          title="The Math"
+                          pulseAriaLabel="Reveal double progression law"
+                          message="No more guessing. We only increase weight if you hit Max Reps on every set. Otherwise, we push your volume (Reps)."
+                          isVisible
+                          isCleared={false}
+                          onClear={onboardingTour.onProgressionPulseCleared}
+                          className="absolute -right-2 -top-2"
+                        />
+                      )}
+                    </p>
+                  </div>
+                  <span className="rounded-full border border-zinc-600 px-2 py-1 text-xs font-bold text-zinc-200">
+                    T{exercise.tier}
+                  </span>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      </motion.section>
+
+      {phase === 'resting' && (
+        <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-5">
+          <div className="flex items-center justify-center">
+            <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Rest timer">
+              <circle
+                cx="60"
+                cy="60"
+                r={timerRadius}
+                fill="none"
+                stroke="#3f3f46"
+                strokeWidth="10"
+              />
+              <circle
+                cx="60"
+                cy="60"
+                r={timerRadius}
+                fill="none"
+                stroke="#FF6B00"
+                strokeWidth="10"
+                strokeLinecap="round"
+                strokeDasharray={timerCircumference}
+                strokeDashoffset={timerOffset}
+                transform="rotate(-90 60 60)"
+              />
+              <text
+                x="60"
+                y="64"
+                textAnchor="middle"
+                fontSize="26"
+                fontWeight="800"
+                fill="#fafafa"
+              >
+                {restSecondsLeft}s
+              </text>
+            </svg>
+          </div>
+          <p className="mt-3 text-center text-sm font-semibold text-zinc-300">
+            Recover now. Set {displaySetNum} begins at zero.
+          </p>
+        </motion.section>
+      )}
+
+      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-4">
+        <div className="grid grid-cols-2 gap-3">
+          <label className="flex flex-col gap-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Weight (kg)</span>
+            <input
+              ref={weightInputRef}
+              type="number"
+              value={weight}
+              onChange={e => {
+                const newWeight = Number(e.target.value)
+                setWeight(newWeight)
+                void persistDraft({ currentExIndex, currentSetInEx, weight: newWeight, reps, phase, restSecondsLeft, completedSets })
+              }}
+              className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-center text-2xl font-black text-white"
+            />
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">Reps</span>
+            <input
+              type="number"
+              value={reps}
+              onChange={e => {
+                const newReps = Number(e.target.value)
+                setReps(newReps)
+                void persistDraft({ currentExIndex, currentSetInEx, weight, reps: newReps, phase, restSecondsLeft, completedSets })
+              }}
+              className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-center text-2xl font-black text-white"
+            />
+          </label>
+        </div>
+      </motion.section>
+
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        type="button"
+        onClick={handleCompleteSet}
+        disabled={phase === 'resting'}
+        className={`h-16 w-full cursor-pointer rounded-3xl px-6 text-xl font-black text-white transition-colors ${
+          phase === 'resting'
+            ? 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+            : 'bg-[#FF6B00] hover:bg-[#ff7d24] active:bg-[#e66000]'
+        }`}
+      >
+        Complete Set
+      </motion.button>
+
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        type="button"
+        onClick={() => {
+          void handleCancelWorkout()
+        }}
+        className="h-12 w-full cursor-pointer rounded-3xl border border-zinc-600 bg-transparent px-5 text-sm font-bold uppercase tracking-[0.1em] text-zinc-300 transition-colors hover:border-zinc-500 hover:bg-zinc-900/40 hover:text-zinc-100 active:bg-zinc-800/40"
+      >
+        Cancel Workout
+      </motion.button>
+    </main>
+  )
+}
