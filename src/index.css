@@ -1,6 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --color-navy: #0A0E1A;
+  --color-navy-card: #0D1626;
+  --color-navy-border: #1a2a5e;
+  --color-electric: #3B71FE;
+  --color-pink: #FF89D6;
+  --color-vivid-red: #FF3B3B;
+  --font-display: 'Barlow', sans-serif;
+  --font-ui: 'Inter', 'Segoe UI', sans-serif;
+}
+
 :root {
   color-scheme: dark;
   --electric-blue: #3B71FE;
