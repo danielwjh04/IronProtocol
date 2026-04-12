@@ -1,0 +1,4 @@
+  warning: could not transcribe public\assets\exercises\back-squat-correct.webm: Video transcription requires faster-whisper. Run: pip install 'graphifyy[video]'
+  warning: could not transcribe public\assets\exercises\back-squat-mistake.webm: Video transcription requires faster-whisper. Run: pip install 'graphifyy[video]'
+  warning: could not transcribe public\assets\exercises\deadlift-mistake.webm: Video transcription requires faster-whisper. Run: pip install 'graphifyy[video]'
+[]

@@ -1,5 +1,6 @@
 import type { Exercise, ExerciseTier, IronProtocolDB, Workout, WorkoutSet } from '../db/schema'
 import { ensureIronExerciseLibrary } from '../db/seedExercises'
+import { getFunctionalInfo } from '../data/functionalMapping'
 
 export interface PlannedExercise {
   readonly exerciseId: string
@@ -26,6 +27,8 @@ export interface GenerateWorkoutParams {
   sessionIndex?: number // optional override used for deterministic previews
 }
 
+type TrainingGoal = GenerateWorkoutParams['trainingGoal']
+
 export interface PreflightAuditReport {
   passed: boolean
   danglingWorkoutRefs: number
@@ -38,10 +41,42 @@ export interface PreflightAuditReport {
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 export const BASELINE_WEIGHT = { upper: 20, lower: 40 } as const
-const REST_MINUTES_BY_GOAL = {
-  Hypertrophy: 90 / 60,
-  Power: 180 / 60,
+
+const GOAL_TIER_PRESCRIPTIONS: Record<TrainingGoal, Record<ExerciseTier, { sets: number; reps: number }>> = {
+  Hypertrophy: {
+    1: { sets: 3, reps: 8 },
+    2: { sets: 3, reps: 12 },
+    3: { sets: 3, reps: 15 },
+  },
+  Power: {
+    1: { sets: 5, reps: 3 },
+    2: { sets: 4, reps: 6 },
+    3: { sets: 3, reps: 8 },
+  },
 } as const
+
+const REST_SECONDS_BY_GOAL_AND_TIER: Record<TrainingGoal, Record<ExerciseTier, number>> = {
+  Hypertrophy: {
+    1: 90,
+    2: 60,
+    3: 60,
+  },
+  Power: {
+    1: 180,
+    2: 90,
+    3: 90,
+  },
+} as const
+
+const TEMPO_SECONDS_PER_REP = 4
+const TRANSITION_SECONDS_PER_EXERCISE = 120
+const EXPANSION_TRIGGER_GAP_MINUTES = 12
+const MAX_TOTAL_EXERCISES = 8
+const VOLUME_STRETCH_MAX_SETS_BY_TIER: Partial<Record<ExerciseTier, number>> = {
+  1: 6,
+  2: 6,
+  3: 5,
+}
 
 export const TIER_REP_RANGES: Record<ExerciseTier, { min: number; max: number }> = {
   1: { min: 3, max: 5 },
@@ -288,9 +323,41 @@ function bodyRegion(muscleGroup: string): 'upper' | 'lower' {
   return LOWER_BODY_GROUPS.has(muscleGroup) ? 'lower' : 'upper'
 }
 
-function calcEstimatedMinutes(exercises: PlannedExercise[], restMinutes: number): number {
-  const totalSets = exercises.reduce((acc, ex) => acc + ex.sets, 0)
-  return totalSets * restMinutes
+function normalizeExerciseName(name: string): string {
+  return name.trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+function applyGoalPrescription(exercise: PlannedExercise, trainingGoal: TrainingGoal): PlannedExercise {
+  const prescribed = GOAL_TIER_PRESCRIPTIONS[trainingGoal][exercise.tier]
+  return {
+    ...exercise,
+    sets: prescribed.sets,
+    reps: prescribed.reps,
+  }
+}
+
+// Global duration formula (non-negotiable for expansion math):
+// (sets * reps * 4s tempo) + ((sets - 1) * rest) + 120s transition
+export function estimateExerciseDurationSeconds(
+  exercise: PlannedExercise,
+  trainingGoal: TrainingGoal,
+): number {
+  const baseRestSeconds = REST_SECONDS_BY_GOAL_AND_TIER[trainingGoal][exercise.tier]
+  const restSeconds = trainingGoal === 'Power'
+    ? baseRestSeconds * 1.5
+    : baseRestSeconds
+  const tempoSeconds = exercise.sets * exercise.reps * TEMPO_SECONDS_PER_REP
+  const intraExerciseRestSeconds = Math.max(exercise.sets - 1, 0) * restSeconds
+  return tempoSeconds + intraExerciseRestSeconds + TRANSITION_SECONDS_PER_EXERCISE
+}
+
+export function calcEstimatedMinutes(exercises: readonly PlannedExercise[], trainingGoal: TrainingGoal): number {
+  const totalSeconds = exercises.reduce(
+    (acc, exercise) => acc + estimateExerciseDurationSeconds(exercise, trainingGoal),
+    0,
+  )
+
+  return Math.ceil(totalSeconds / 60)
 }
 
 function isUuidV4(value: string): boolean {
@@ -398,7 +465,7 @@ function dedupePlannedById(exercises: PlannedExercise[]): PlannedExercise[] {
   const seenIds = new Set<string>()
   const seenNames = new Set<string>()
   return exercises.filter((exercise) => {
-    const nameKey = exercise.exerciseName.toLowerCase()
+    const nameKey = normalizeExerciseName(exercise.exerciseName)
     if (seenIds.has(exercise.exerciseId) || seenNames.has(nameKey)) {
       return false
     }
@@ -406,6 +473,193 @@ function dedupePlannedById(exercises: PlannedExercise[]): PlannedExercise[] {
     seenNames.add(nameKey)
     return true
   })
+}
+
+function buildVolumeExpansionCandidates(
+  allExercises: Exercise[],
+  sessionExercises: Exercise[],
+  rule: RoutineSessionRule,
+): Exercise[] {
+  const sessionMuscleGroups = new Set(
+    sessionExercises.map((exercise) => exercise.muscleGroup.toLowerCase()),
+  )
+
+  const tierCandidates = dedupeExercisesById([
+    ...sessionExercises.filter((exercise) => exercise.tier === 2 || exercise.tier === 3),
+    ...allExercises.filter((exercise) => exercise.tier === 2 || exercise.tier === 3),
+  ])
+  const sessionTagMatches = tierCandidates.filter((exercise) => rule.tags.some((tag) => hasSessionTag(exercise, tag)))
+  const muscleMatches = sessionTagMatches.filter((exercise) => (
+    sessionMuscleGroups.has(exercise.muscleGroup.toLowerCase())
+  ))
+
+  const resolvedPool = muscleMatches.length > 0 ? muscleMatches : sessionTagMatches
+  const resolvedIds = new Set(resolvedPool.map((exercise) => exercise.id))
+
+  // Core and pre-hab are universal: if day-specific synergists run dry, allow
+  // unassigned core/pre-hab movements from the broader pool.
+  const universalCoreAndPrehab = tierCandidates.filter((exercise) => {
+    if (resolvedIds.has(exercise.id)) {
+      return false
+    }
+    const category = classifyExpansionName(exercise.name)
+    return category === 'core' || category === 'prehab'
+  })
+
+  return dedupeExercisesById([...resolvedPool, ...universalCoreAndPrehab])
+}
+
+type ExpansionCategory = 'synergist' | 'core' | 'prehab'
+
+function classifyExpansionName(exerciseName: string): ExpansionCategory {
+  const info = getFunctionalInfo(exerciseName)
+
+  if (info?.category === 'Core') {
+    return 'core'
+  }
+
+  if (info && /\bpre[\s-]?hab\b/i.test(info.purpose)) {
+    return 'prehab'
+  }
+
+  return 'synergist'
+}
+
+function classifyExpansionCandidate(exercise: PlannedExercise): ExpansionCategory {
+  return classifyExpansionName(exercise.exerciseName)
+}
+
+function buildCategoryExpansionQueue(
+  candidateExercises: readonly PlannedExercise[],
+  trainingGoal: TrainingGoal,
+): PlannedExercise[] {
+  const synergist: PlannedExercise[] = []
+  const core: PlannedExercise[] = []
+  const prehab: PlannedExercise[] = []
+
+  for (const exercise of candidateExercises) {
+    const bucket = classifyExpansionCandidate(exercise)
+    if (bucket === 'core') {
+      core.push(exercise)
+      continue
+    }
+    if (bucket === 'prehab') {
+      prehab.push(exercise)
+      continue
+    }
+    synergist.push(exercise)
+  }
+
+  const byDurationThenName = (a: PlannedExercise, b: PlannedExercise): number => {
+    const durationDelta = estimateExerciseDurationSeconds(a, trainingGoal) - estimateExerciseDurationSeconds(b, trainingGoal)
+    if (durationDelta !== 0) {
+      return durationDelta
+    }
+    return a.exerciseName.localeCompare(b.exerciseName)
+  }
+
+  const prioritizedSynergist = [...synergist].sort((a, b) => {
+    if (a.tier !== b.tier) {
+      // Synergist pool prioritizes Tier 2 before Tier 3.
+      return a.tier - b.tier
+    }
+    return byDurationThenName(a, b)
+  })
+
+  const prioritizedCore = [...core].sort(byDurationThenName)
+  const prioritizedPrehab = [...prehab].sort(byDurationThenName)
+
+  return [...prioritizedSynergist, ...prioritizedCore, ...prioritizedPrehab]
+}
+
+function expandForTimeBudget(
+  currentExercises: readonly PlannedExercise[],
+  candidateExercises: readonly PlannedExercise[],
+  trainingGoal: TrainingGoal,
+  timeAvailable: number,
+): PlannedExercise[] {
+  let expandedExercises = [...currentExercises]
+  let estimatedMinutes = calcEstimatedMinutes(expandedExercises, trainingGoal)
+
+  if ((timeAvailable - estimatedMinutes) < EXPANSION_TRIGGER_GAP_MINUTES) {
+    return expandedExercises
+  }
+
+  const seenIds = new Set(expandedExercises.map((exercise) => exercise.exerciseId))
+  const seenNames = new Set(expandedExercises.map((exercise) => normalizeExerciseName(exercise.exerciseName)))
+  const rankedCandidates = buildCategoryExpansionQueue(candidateExercises, trainingGoal)
+
+  for (const candidate of rankedCandidates) {
+    if (expandedExercises.length >= MAX_TOTAL_EXERCISES) {
+      break
+    }
+
+    const normalizedName = normalizeExerciseName(candidate.exerciseName)
+    if (seenIds.has(candidate.exerciseId) || seenNames.has(normalizedName)) {
+      continue
+    }
+
+    const nextBlueprint = [...expandedExercises, candidate]
+    expandedExercises = nextBlueprint
+    seenIds.add(candidate.exerciseId)
+    seenNames.add(normalizedName)
+    // Recompute gap with the standardized global formula each iteration.
+    estimatedMinutes = calcEstimatedMinutes(expandedExercises, trainingGoal)
+
+    if (expandedExercises.length >= MAX_TOTAL_EXERCISES) {
+      break
+    }
+
+    if ((timeAvailable - estimatedMinutes) < EXPANSION_TRIGGER_GAP_MINUTES) {
+      break
+    }
+  }
+
+  if ((timeAvailable - estimatedMinutes) >= EXPANSION_TRIGGER_GAP_MINUTES) {
+    // Last resort: stretch volume by adding +1 set per pass to eligible tiers
+    // when no additional valid exercises can be slotted.
+    while ((timeAvailable - estimatedMinutes) >= EXPANSION_TRIGGER_GAP_MINUTES) {
+      let hasMutated = false
+
+      for (let index = 0; index < expandedExercises.length; index += 1) {
+        const exercise = expandedExercises[index]
+        const isStretchEligibleTier = exercise.tier === 1 || exercise.tier === 2 || exercise.tier === 3
+
+        if (!isStretchEligibleTier) {
+          continue
+        }
+
+        const maxSets = VOLUME_STRETCH_MAX_SETS_BY_TIER[exercise.tier]
+
+        if (!maxSets || exercise.sets >= maxSets) {
+          continue
+        }
+
+        const nextExercise: PlannedExercise = {
+          ...exercise,
+          sets: exercise.sets + 1,
+        }
+
+        expandedExercises = expandedExercises.map((current, currentIndex) => (
+          currentIndex === index ? nextExercise : current
+        ))
+
+        estimatedMinutes = calcEstimatedMinutes(expandedExercises, trainingGoal)
+        hasMutated = true
+
+        if ((timeAvailable - estimatedMinutes) < EXPANSION_TRIGGER_GAP_MINUTES) {
+          break
+        }
+      }
+
+      // Bail out instantly if a full pass cannot add sets (all tiers are at cap).
+      if (!hasMutated) {
+        break
+      }
+    }
+  }
+
+  return expandedExercises
 }
 
 function getBlueprint(routineType: CanonicalRoutineType, sessionIndex: number): RoutineBlueprint {
@@ -462,6 +716,28 @@ function tierCapForTime(timeAvailable: number): ExerciseTier {
     return 2
   }
   return 3
+}
+
+function buildCoreBlueprintByTier(
+  progressedExercises: readonly PlannedExercise[],
+  tierCap: ExerciseTier,
+): PlannedExercise[] {
+  const capped = progressedExercises.filter((exercise) => exercise.tier <= tierCap)
+  const targetTiers: ExerciseTier[] = tierCap === 1 ? [1] : tierCap === 2 ? [1, 2] : [1, 2, 3]
+  const core: PlannedExercise[] = []
+
+  for (const tier of targetTiers) {
+    const candidate = capped.find((exercise) => exercise.tier === tier)
+    if (candidate) {
+      core.push(candidate)
+    }
+  }
+
+  if (core.length > 0) {
+    return core
+  }
+
+  return capped.slice(0, 1)
 }
 
 function mapRecentSetsByExercise(recentSessionSets: WorkoutSet[]): Map<string, WorkoutSet[]> {
@@ -587,10 +863,10 @@ export function planRoutineWorkoutPure({
 
   const sessionExercises = getBlueprintExercises(blueprint, exercises)
   if (sessionExercises.length === 0) {
-    const restMinutes = REST_MINUTES_BY_GOAL[trainingGoal]
+    const fallbackExercises = GPP_EXERCISES.map((exercise) => applyGoalPrescription(exercise, trainingGoal))
     return {
-      exercises: GPP_EXERCISES,
-      estimatedMinutes: calcEstimatedMinutes(GPP_EXERCISES, restMinutes),
+      exercises: fallbackExercises,
+      estimatedMinutes: calcEstimatedMinutes(fallbackExercises, trainingGoal),
       routineType: canonicalRoutineType,
       sessionIndex,
     }
@@ -609,25 +885,14 @@ export function planRoutineWorkoutPure({
     sessionExercises
       .map((exercise) => {
         const userBaseline = resolvedBaselines.get(exercise.name.toLowerCase())
-        return planExerciseFromHistory(exercise, setsByExercise.get(exercise.id) ?? [], userBaseline)
+        const historicalPlan = planExerciseFromHistory(exercise, setsByExercise.get(exercise.id) ?? [], userBaseline)
+        return applyGoalPrescription(historicalPlan, trainingGoal)
       })
       .sort((a, b) => (a.tier - b.tier) || a.exerciseName.localeCompare(b.exerciseName)),
   )
 
   const tierCap = tierCapForTime(effectiveTime)
-  let qosFiltered = progressed.filter((exercise) => exercise.tier <= tierCap)
-
-  const restMinutes = REST_MINUTES_BY_GOAL[trainingGoal]
-  if (
-    qosFiltered.length > 0
-    && qosFiltered.every((exercise) => exercise.tier === 1)
-    && calcEstimatedMinutes(qosFiltered, restMinutes) > effectiveTime
-  ) {
-    qosFiltered = qosFiltered.map((exercise) => ({
-      ...exercise,
-      sets: Math.min(exercise.sets, 3),
-    }))
-  }
+  const qosFiltered = buildCoreBlueprintByTier(progressed, tierCap)
 
   // ── Hybrid Focus Injection ────────────────────────────────────────────────────
   // Inject up to 2 T3 exercises for user-selected focus muscle groups that are
@@ -650,7 +915,8 @@ export function planRoutineWorkoutPure({
       if (candidate) {
         const userBaseline = resolvedBaselines.get(candidate.name.toLowerCase())
         // Always treat injected focus exercises as cold-start for clean baseline reps.
-        injections.push(planExerciseFromHistory(candidate, [], userBaseline))
+        const injectedExercise = planExerciseFromHistory(candidate, [], userBaseline)
+        injections.push(applyGoalPrescription(injectedExercise, trainingGoal))
         includedIds.add(candidate.id)
       }
     }
@@ -658,9 +924,25 @@ export function planRoutineWorkoutPure({
     finalExercises = [...finalExercises, ...injections]
   }
 
+  if (tierCap === 3 && calcEstimatedMinutes(finalExercises, trainingGoal) < effectiveTime) {
+    const expansionCandidates = dedupePlannedById(
+      buildVolumeExpansionCandidates(exercises, sessionExercises, blueprint.rule)
+        .map((exercise) => {
+          const userBaseline = resolvedBaselines.get(exercise.name.toLowerCase())
+          const historicalPlan = planExerciseFromHistory(exercise, setsByExercise.get(exercise.id) ?? [], userBaseline)
+          return applyGoalPrescription(historicalPlan, trainingGoal)
+        })
+        .sort((a, b) => (a.tier - b.tier) || a.exerciseName.localeCompare(b.exerciseName)),
+    )
+
+    finalExercises = expandForTimeBudget(finalExercises, expansionCandidates, trainingGoal, effectiveTime)
+  }
+
+  const dedupedFinalExercises = dedupePlannedById(finalExercises)
+
   return {
-    exercises: finalExercises,
-    estimatedMinutes: calcEstimatedMinutes(finalExercises, restMinutes),
+    exercises: dedupedFinalExercises,
+    estimatedMinutes: calcEstimatedMinutes(dedupedFinalExercises, trainingGoal),
     routineType: canonicalRoutineType,
     sessionIndex,
   }

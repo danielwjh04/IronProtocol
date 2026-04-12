@@ -23,7 +23,10 @@ export const tempSessionSchema = z.object({
 	routineType: z.string().min(1),
 	sessionIndex: z.number().int().nonnegative(),
 	estimatedMinutes: z.number().nonnegative(),
-	exercises: z.array(tempSessionExerciseSchema),
+	exercises: z.array(tempSessionExerciseSchema).refine(
+		(exercises) => new Set(exercises.map((exercise) => exercise.exerciseId)).size === exercises.length,
+		{ message: 'Duplicate exercise ids are not allowed in temp session drafts' },
+	),
 	currentExIndex: z.number().int().nonnegative(),
 	currentSetInEx: z.number().int().nonnegative(),
 	weight: z.number(),

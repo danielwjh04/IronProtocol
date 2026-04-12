@@ -1,11 +1,14 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { motion } from 'framer-motion'
-import { useDeferredValue, useEffect, useMemo, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import ActiveLogger from '../components/ActiveLogger'
+import BaselineCalibration from '../components/BaselineCalibration'
 import ThinkingTerminal from '../components/ThinkingTerminal'
+import WorkoutIgnition from '../components/WorkoutIgnition'
 import DraftBlueprintReview from '../components/DraftBlueprintReview'
 import IdentitySplash from '../components/IdentitySplash'
 import OnboardingHero from '../components/OnboardingHero'
+import SessionBlueprint from '../components/SessionBlueprint'
 import { db as defaultDb } from '../db/db'
 import { ensureIronExerciseLibrary } from '../db/seedExercises'
 import {
@@ -68,6 +71,13 @@ function buildPlanFromDraft(draft: TempSession): PlannedWorkout {
   }
 }
 
+function clonePlan(sourcePlan: PlannedWorkout): PlannedWorkout {
+  return {
+    ...sourcePlan,
+    exercises: [...sourcePlan.exercises],
+  }
+}
+
 export default function HomePage({ db = defaultDb }: Props) {
   const [routineType, setRoutineType] = useState<CanonicalRoutineType>('PPL')
   const [trainingGoal, setTrainingGoal] = useState<'Hypertrophy' | 'Power'>('Hypertrophy')
@@ -79,12 +89,14 @@ export default function HomePage({ db = defaultDb }: Props) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
-  type SessionPhase = 'idle' | 'thinking' | 'review' | 'logging'
+  type SessionPhase = 'idle' | 'review' | 'ignition' | 'logging'
   const [sessionPhase, setSessionPhase] = useState<SessionPhase>('idle')
   
   const [activePlan, setActivePlan] = useState<PlannedWorkout | null>(null)
   const [activeDraft, setActiveDraft] = useState<TempSession | null>(null)
+  const latestLabPlanRef = useRef<PlannedWorkout | null>(null)
   const [onboardingFlow, setOnboardingFlow] = useState<OnboardingFlowState>(INITIAL_ONBOARDING_FLOW)
+  const [showOnboardingThinkingBridge, setShowOnboardingThinkingBridge] = useState(false)
 
   const deferredTimeAvailable = useDeferredValue(timeAvailable)
 
@@ -223,6 +235,10 @@ export default function HomePage({ db = defaultDb }: Props) {
     }
   }, [plannerInputs, activitySignal, plannerRefreshTick])
 
+  useEffect(() => {
+    latestLabPlanRef.current = plan
+  }, [plan])
+
   const selectedRoutine = ROUTINE_OPTIONS.find((option) => option.type === routineType)
   const cycleLength = selectedRoutine?.cycleLength ?? 1
   const detectedSessionIndex = plan?.sessionIndex ?? 0
@@ -249,15 +265,6 @@ export default function HomePage({ db = defaultDb }: Props) {
       return 'Setup Required'
     }
   }, [plan, routineSetupRequired])
-
-  const trimmedExercises = useMemo(() => {
-    if (!plan || !fullPlan) {
-      return []
-    }
-
-    const includedIds = new Set(plan.exercises.map((exercise) => exercise.exerciseId))
-    return fullPlan.exercises.filter((exercise) => !includedIds.has(exercise.exerciseId))
-  }, [plan, fullPlan])
 
   async function handleFinishSetup(): Promise<void> {
     // update (partial) preserves userName; put would risk clobbering it if
@@ -310,17 +317,23 @@ export default function HomePage({ db = defaultDb }: Props) {
     setHasHydratedRoutine(true)
   }
 
+  function handleCalibrationComplete(): void {
+    setShowOnboardingThinkingBridge(true)
+  }
+
   function openLoggerWithPlan(nextPlan: PlannedWorkout, nextDraft: TempSession | null): void {
+    const resolvedPlan = clonePlan(nextPlan)
+
     if (nextDraft !== null) {
-      setActivePlan(nextPlan)
+      setActivePlan(resolvedPlan)
       setActiveDraft(nextDraft)
       setSessionPhase('logging')
       return
     }
 
-    setActivePlan(nextPlan)
+    setActivePlan(resolvedPlan)
     setActiveDraft(nextDraft)
-    setSessionPhase('thinking')
+    setSessionPhase('review')
   }
 
   async function handleDiscardDraft(): Promise<void> {
@@ -333,33 +346,28 @@ export default function HomePage({ db = defaultDb }: Props) {
 
   const loggerPlan = activePlan ?? plan
 
-  // ── Thinking phase ─────────────────────────────────────────────────────────
-  if (sessionPhase === 'thinking' && loggerPlan) {
-    return (
-      <ThinkingTerminal
-        plan={loggerPlan}
-        onComplete={() => {
-          setSessionPhase('review')
-        }}
-      />
-    )
-  }
-
   // ── Review phase ───────────────────────────────────────────────────────────
   if (sessionPhase === 'review' && loggerPlan) {
     return (
       <DraftBlueprintReview
         plan={loggerPlan}
-        db={db}
-        onConfirm={() => {
-          setSessionPhase('logging')
+        onStartWorkout={() => {
+          setSessionPhase('ignition')
         }}
-        onCancel={() => {
+        onModifyBlueprint={() => {
           setSessionPhase('idle')
           setActivePlan(null)
         }}
-        onUpdatePlan={(updatedPlan) => {
-          setActivePlan(updatedPlan)
+      />
+    )
+  }
+
+  // ── Workout Ignition phase ────────────────────────────────────────────────
+  if (sessionPhase === 'ignition' && loggerPlan) {
+    return (
+      <WorkoutIgnition
+        onComplete={() => {
+          setSessionPhase('logging')
         }}
       />
     )
@@ -379,6 +387,34 @@ export default function HomePage({ db = defaultDb }: Props) {
         }}
         onCancel={() => {
           void handleDiscardDraft()
+        }}
+      />
+    )
+  }
+
+  if (onboardingRecord === undefined) {
+    return (
+      <main className="mx-auto flex min-h-svh w-full max-w-[430px] bg-navy" />
+    )
+  }
+
+  // ── Identity gate: first screen after CoreIgnition if no Call Sign ─────────
+  if (!onboardingRecord?.userName) {
+    return <IdentitySplash db={db} />
+  }
+
+  // ── Baseline gate: after identity, before full onboarding completion ───────
+  if (onboardingRecord.hasCompletedOnboarding === false) {
+    return <BaselineCalibration db={db} onCalibrationComplete={handleCalibrationComplete} />
+  }
+
+  // ── Architect bridge: forced 10-second reasoning sequence before dashboard ──
+  if (showOnboardingThinkingBridge) {
+    return (
+      <ThinkingTerminal
+        mode="onboarding"
+        onComplete={() => {
+          setShowOnboardingThinkingBridge(false)
         }}
       />
     )
@@ -423,11 +459,6 @@ export default function HomePage({ db = defaultDb }: Props) {
     )
   }
 
-  // ── Identity gate: show splash if no userName yet ──────────────────────────
-  if (onboardingRecord !== undefined && !onboardingRecord?.userName) {
-    return <IdentitySplash db={db} />
-  }
-
   if (onboardingActive) {
     return (
       <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-5 text-zinc-100">
@@ -467,154 +498,42 @@ export default function HomePage({ db = defaultDb }: Props) {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-5 text-zinc-100">
-      {/* ── Session Blueprint ─────────────────────────────────────────────── */}
-      <div className="rounded-3xl bg-gradient-to-br from-[#ec4899]/15 to-[#3B71FE]/15 p-[1px]">
-        <motion.section
-          key="dashboard-blueprint"
-          initial={{ opacity: 0, scale: 0.92, y: 14, transformOrigin: '50% 88%' }}
-          animate={{ opacity: 1, scale: 1, y: 0, transformOrigin: '50% 88%' }}
-          exit={{ opacity: 0, scale: 0.98, y: -6 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="rounded-3xl bg-[#0D1626] p-5 shadow-[0_16px_30px_-20px_rgba(59,113,254,0.35)]"
-        >
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Session Blueprint</p>
-            <span className="rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-3 py-2 text-xs font-black text-zinc-100">
-              Workout Day {detectedSessionIndex + 1} of {cycleLength}
-            </span>
-          </div>
-          <h1 className="mt-3 text-4xl font-black tracking-tight text-zinc-50">{sessionLabel}</h1>
-          <p className="mt-2 text-sm font-semibold text-zinc-300">Est. {Math.round(plan?.estimatedMinutes ?? 0)} min</p>
+    <SessionBlueprint
+      db={db}
+      plan={plan}
+      fullPlan={fullPlan}
+      loading={loading}
+      error={error}
+      sessionLabel={sessionLabel}
+      cycleLength={cycleLength}
+      sessionIndex={detectedSessionIndex}
+      routineType={routineType}
+      trainingGoal={trainingGoal}
+      timeAvailable={timeAvailable}
+      routineSetupRequired={routineSetupRequired}
+      onTrainingGoalChange={setTrainingGoal}
+      onTimeAvailableChange={setTimeAvailable}
+      onChooseDefaultRoutine={() => {
+        const defaultRoutine = ROUTINE_OPTIONS[0]
+        if (defaultRoutine) {
+          handleRoutineSelect(defaultRoutine.type)
+        }
+      }}
+      onUpdatePlan={(updatedPlan) => {
+        const nextPlan = clonePlan(updatedPlan)
+        latestLabPlanRef.current = nextPlan
+        setPlan(nextPlan)
+      }}
+      onLockBlueprint={() => {
+        const finalizedPlan = latestLabPlanRef.current ?? plan
+        if (!finalizedPlan) {
+          return
+        }
 
-          <ul className="mt-4 flex flex-col gap-2">
-            {plan?.exercises.map((exercise) => (
-              <motion.li
-                layout="position"
-                key={exercise.exerciseId}
-                className="flex items-center justify-between rounded-2xl border border-[#3B71FE]/15 bg-[#091020] px-3 py-3"
-              >
-                <div>
-                  <p className="text-base font-black text-zinc-100">{exercise.exerciseName}</p>
-                  <p className="text-xs text-zinc-400">{exercise.sets} sets × {exercise.reps} reps</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full border border-[#3B71FE]/30 px-2 py-1 text-xs font-bold text-zinc-200">T{exercise.tier}</span>
-                  <span className="text-lg font-black text-[#3B71FE]">{exercise.weight} kg</span>
-                </div>
-              </motion.li>
-            ))}
-          </ul>
-
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            type="button"
-            onClick={() => {
-              if (plan) {
-                openLoggerWithPlan(plan, null)
-              }
-            }}
-            disabled={!plan || loading || routineSetupRequired}
-            className="mt-5 h-16 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-xl font-black text-white shadow-[0_8px_24px_-8px_rgba(59,113,254,0.55)] transition-all hover:bg-[#5585ff] active:scale-[0.98] active:bg-[#2860ee] disabled:cursor-not-allowed disabled:bg-[#3B71FE]/20 disabled:text-zinc-600 disabled:shadow-none"
-          >
-            {routineSetupRequired ? 'Choose Routine to Continue' : (loading ? 'Syncing Session...' : 'Start Recommended Session')}
-          </motion.button>
-          {error && (
-            <p className="mt-3 text-sm font-semibold text-red-300">{error}</p>
-          )}
-        </motion.section>
-      </div>
-
-      {routineSetupRequired && (
-        <motion.section
-          whileTap={{ scale: 0.95 }}
-          className="rounded-3xl border border-[#3B71FE]/40 bg-[#0f1f44] p-4 shadow-[0_10px_24px_-16px_rgba(59,113,254,0.5)]"
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#3B71FE]">Setup Required</p>
-          <p className="mt-2 text-sm font-semibold text-zinc-100">
-            A routine must be selected before planning can continue.
-          </p>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            type="button"
-            onClick={() => {
-              const defaultRoutine = ROUTINE_OPTIONS[0]
-              if (defaultRoutine) {
-                handleRoutineSelect(defaultRoutine.type)
-              }
-            }}
-            className="mt-4 h-12 w-full cursor-pointer rounded-2xl bg-[#3B71FE] px-4 text-sm font-black text-white transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
-          >
-            Choose Routine
-          </motion.button>
-        </motion.section>
-      )}
-
-      {/* ── Training Goal ─────────────────────────────────────────────────── */}
-      <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Training Goal</p>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {(['Hypertrophy', 'Power'] as const).map((goal) => (
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              key={goal}
-              type="button"
-              onClick={() => setTrainingGoal(goal)}
-              className={`cursor-pointer rounded-2xl border px-3 py-3 text-sm font-bold transition-all active:scale-[0.98] ${
-                trainingGoal === goal
-                  ? 'border-[#3B71FE] bg-[#3B71FE]/15 text-[#3B71FE] active:bg-[#3B71FE]/20'
-                  : 'border-[#3B71FE]/15 bg-[#091020] text-zinc-300 hover:border-[#3B71FE]/30 active:bg-[#091020]'
-              }`}
-            >
-              {goal}
-            </motion.button>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* ── QoS Governor ──────────────────────────────────────────────────── */}
-      <motion.section whileTap={{ scale: 0.95 }} className="min-h-[208px] rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
-        <div className="flex items-center justify-between">
-          <label htmlFor="time-available" className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">
-            Time Available
-          </label>
-          <span className="text-sm font-black text-[#3B71FE]">{timeAvailable} min</span>
-        </div>
-        <div className="mt-4">
-          <input
-            id="time-available"
-            type="range"
-            min={15}
-            max={120}
-            step={5}
-            value={timeAvailable}
-            onChange={(event) => setTimeAvailable(Number(event.target.value))}
-            className="w-full cursor-pointer appearance-none"
-          />
-        </div>
-
-        <div className="mt-4 rounded-2xl border border-[#3B71FE]/15 bg-[#091020] p-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-400/50">QoS Preview</p>
-          {trimmedExercises.length === 0 ? (
-            <p className="mt-2 text-sm text-zinc-300">No exercises trimmed at this time window.</p>
-          ) : (
-            <ul className="mt-2 flex flex-col gap-2">
-              {trimmedExercises.map((exercise) => (
-                <li key={exercise.exerciseId} className="flex items-center justify-between rounded-xl border border-[#3B71FE]/15 px-3 py-2">
-                  <div>
-                    <p className="text-sm font-bold text-zinc-100">{exercise.exerciseName}</p>
-                    <p className="text-xs font-bold text-zinc-300">{exercise.progressionGoal}</p>
-                  </div>
-                  <span className="rounded-full border border-[#3B71FE]/30 px-2 py-1 text-xs font-bold text-zinc-200">
-                    T{exercise.tier}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </motion.section>
-    </main>
+        setActiveDraft(null)
+        setActivePlan(clonePlan(finalizedPlan))
+        setSessionPhase('review')
+      }}
+    />
   )
 }

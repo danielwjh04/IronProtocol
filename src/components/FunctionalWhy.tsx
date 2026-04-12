@@ -19,8 +19,6 @@ function AnatomyPlaceholder({
 }) {
   const accentColor = formGuard ? '#FF89D6' : '#3B71FE'
   const accentOpacity = formGuard ? '0.75' : '0.5'
-  const baseColor = formGuard ? '#FFFFFF' : '#0A0E1A'
-  const baseOpacity = formGuard ? '0.15' : '0.25'
 
   return (
     <div

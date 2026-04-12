@@ -30,6 +30,13 @@ type CompletedSet = TempSessionCompletedSet
 
 type Phase = 'active' | 'resting' | 'done'
 
+function isDatabaseClosedError(error: unknown): boolean {
+  return typeof error === 'object'
+    && error !== null
+    && 'name' in error
+    && (error as { name?: string }).name === 'DatabaseClosedError'
+}
+
 function tierIntensityClass(tier: ExerciseTier): string {
   if (tier === 1) {
     return 'text-2xl'
@@ -158,106 +165,118 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     restSecondsLeft: number
     completedSets: CompletedSet[]
   }): Promise<void> {
-    const validatedDraft = parseTempSessionDraft({
-      id: TEMP_SESSION_ID,
-      routineType: plan.routineType,
-      sessionIndex: plan.sessionIndex,
-      estimatedMinutes: plan.estimatedMinutes,
-      exercises,
-      currentExIndex: nextState.currentExIndex,
-      currentSetInEx: nextState.currentSetInEx,
-      weight: nextState.weight,
-      reps: nextState.reps,
-      phase: nextState.phase,
-      restSecondsLeft: nextState.restSecondsLeft,
-      completedSets: nextState.completedSets,
-      updatedAt: Date.now(),
-    })
+    try {
+      const validatedDraft = parseTempSessionDraft({
+        id: TEMP_SESSION_ID,
+        routineType: plan.routineType,
+        sessionIndex: plan.sessionIndex,
+        estimatedMinutes: plan.estimatedMinutes,
+        exercises,
+        currentExIndex: nextState.currentExIndex,
+        currentSetInEx: nextState.currentSetInEx,
+        weight: nextState.weight,
+        reps: nextState.reps,
+        phase: nextState.phase,
+        restSecondsLeft: nextState.restSecondsLeft,
+        completedSets: nextState.completedSets,
+        updatedAt: Date.now(),
+      })
 
-    await db.tempSessions.put(validatedDraft)
+      await db.tempSessions.put(validatedDraft)
+    } catch (error) {
+      if (!isDatabaseClosedError(error)) {
+        throw error
+      }
+    }
   }
 
   // ── Complete Set handler ───────────────────────────────────────────────────
   async function handleCompleteSet() {
-    const newSet: CompletedSet = {
-      exerciseId: currentEx.exerciseId,
-      weight,
-      reps,
-      orderIndex: completedSets.length,
-    }
-    const newCompleted = [...completedSets, newSet]
-
-    const isLastSetInEx = currentSetInEx === currentEx.sets - 1
-    const isLastEx      = currentExIndex  === exercises.length - 1
-    const isFinalSet    = isLastSetInEx && isLastEx
-
-    if (isFinalSet) {
-      // PB check before atomic commit — still in the same handler tick.
-      await pbService.checkAndUpdate(currentEx.exerciseId, weight, reps)
-      // ── Atomic commit ────────────────────────────────────────────────────
-      const workoutId = uuidv4()
-      await db.workouts.add({
-        id: workoutId,
-        date: Date.now(),
-        routineType: plan.routineType,
-        sessionIndex: plan.sessionIndex,
-        notes: '',
-      })
-      await Promise.all(
-        newCompleted.map(s =>
-          db.sets.add({
-            id: uuidv4(),
-            workoutId,
-            exerciseId: s.exerciseId,
-            weight:     s.weight,
-            reps:       s.reps,
-            orderIndex: s.orderIndex,
-          })
-        )
-      )
-      await db.tempSessions.delete(TEMP_SESSION_ID)
-      setCompletedSets(newCompleted)
-      setPhase('done')
-    } else {
-      let nextExIndex = currentExIndex
-      let nextSetInEx = currentSetInEx + 1
-      let nextWeight = weight
-      let nextReps = reps
-
-      setCompletedSets(newCompleted)
-
-      if (isLastSetInEx) {
-        // Advance to next exercise — reset inputs to plan values
-        const nextIdx = currentExIndex + 1
-        const nextExercise = exercises[nextIdx]
-        nextExIndex = nextIdx
-        nextSetInEx = 0
-        nextWeight = nextExercise.weight
-        nextReps = nextExercise.reps
-        setCurrentExIndex(nextIdx)
-        setCurrentSetInEx(0)
-        setWeight(nextExercise.weight)
-        setReps(nextExercise.reps)
-      } else {
-        // Same exercise, next set — weight/reps cascade by staying unchanged
-        setCurrentSetInEx(nextSetInEx)
+    try {
+      const newSet: CompletedSet = {
+        exerciseId: currentEx.exerciseId,
+        weight,
+        reps,
+        orderIndex: completedSets.length,
       }
+      const newCompleted = [...completedSets, newSet]
 
-      setRestSecondsLeft(restSeconds)
-      setPhase('resting')
+      const isLastSetInEx = currentSetInEx === currentEx.sets - 1
+      const isLastEx      = currentExIndex  === exercises.length - 1
+      const isFinalSet    = isLastSetInEx && isLastEx
 
-      // PB check and draft persist happen after UI state updates so React
-      // re-renders the resting screen immediately without waiting for DB I/O.
-      await pbService.checkAndUpdate(currentEx.exerciseId, weight, reps)
-      await persistDraft({
-        currentExIndex: nextExIndex,
-        currentSetInEx: nextSetInEx,
-        weight: nextWeight,
-        reps: nextReps,
-        phase: 'resting',
-        restSecondsLeft: restSeconds,
-        completedSets: newCompleted,
-      })
+      if (isFinalSet) {
+        // PB check before atomic commit — still in the same handler tick.
+        await pbService.checkAndUpdate(currentEx.exerciseId, weight, reps)
+        // ── Atomic commit ────────────────────────────────────────────────────
+        const workoutId = uuidv4()
+        await db.workouts.add({
+          id: workoutId,
+          date: Date.now(),
+          routineType: plan.routineType,
+          sessionIndex: plan.sessionIndex,
+          notes: '',
+        })
+        await Promise.all(
+          newCompleted.map(s =>
+            db.sets.add({
+              id: uuidv4(),
+              workoutId,
+              exerciseId: s.exerciseId,
+              weight:     s.weight,
+              reps:       s.reps,
+              orderIndex: s.orderIndex,
+            })
+          )
+        )
+        await db.tempSessions.delete(TEMP_SESSION_ID)
+        setCompletedSets(newCompleted)
+        setPhase('done')
+      } else {
+        let nextExIndex = currentExIndex
+        let nextSetInEx = currentSetInEx + 1
+        let nextWeight = weight
+        let nextReps = reps
+
+        setCompletedSets(newCompleted)
+
+        if (isLastSetInEx) {
+          // Advance to next exercise — reset inputs to plan values
+          const nextIdx = currentExIndex + 1
+          const nextExercise = exercises[nextIdx]
+          nextExIndex = nextIdx
+          nextSetInEx = 0
+          nextWeight = nextExercise.weight
+          nextReps = nextExercise.reps
+          setCurrentExIndex(nextIdx)
+          setCurrentSetInEx(0)
+          setWeight(nextExercise.weight)
+          setReps(nextExercise.reps)
+        } else {
+          // Same exercise, next set — weight/reps cascade by staying unchanged
+          setCurrentSetInEx(nextSetInEx)
+        }
+
+        setRestSecondsLeft(restSeconds)
+        setPhase('resting')
+
+        // PB check and draft persist happen after UI state updates so React
+        // re-renders the resting screen immediately without waiting for DB I/O.
+        await pbService.checkAndUpdate(currentEx.exerciseId, weight, reps)
+        await persistDraft({
+          currentExIndex: nextExIndex,
+          currentSetInEx: nextSetInEx,
+          weight: nextWeight,
+          reps: nextReps,
+          phase: 'resting',
+          restSecondsLeft: restSeconds,
+          completedSets: newCompleted,
+        })
+      }
+    } catch (error) {
+      if (!isDatabaseClosedError(error)) {
+        throw error
+      }
     }
   }
 
@@ -267,7 +286,13 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       return
     }
 
-    await db.tempSessions.delete(TEMP_SESSION_ID)
+    try {
+      await db.tempSessions.delete(TEMP_SESSION_ID)
+    } catch (error) {
+      if (!isDatabaseClosedError(error)) {
+        throw error
+      }
+    }
 
     if (onCancel) {
       onCancel()

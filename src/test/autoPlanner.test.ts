@@ -2,7 +2,16 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { v4 as uuidv4 } from 'uuid'
 import type { Exercise } from '../db/schema'
 import { IronProtocolDB } from '../db/schema'
-import { generateWorkout, getRecommendedRoutinesForDays, getRoutineSessionLabel, planRoutineWorkoutPure, runPlannerPreflightAudit } from '../planner/autoPlanner'
+import { getFunctionalInfo } from '../data/functionalMapping'
+import {
+  calcEstimatedMinutes,
+  estimateExerciseDurationSeconds,
+  generateWorkout,
+  getRecommendedRoutinesForDays,
+  getRoutineSessionLabel,
+  planRoutineWorkoutPure,
+  runPlannerPreflightAudit,
+} from '../planner/autoPlanner'
 
 const UPPER_MUSCLE_GROUP = 'Chest'
 const LOWER_MUSCLE_GROUP = 'Legs'
@@ -40,7 +49,7 @@ describe('autoPlanner — generateWorkout', () => {
       })
     })
 
-    it('uses Tier-1 baseline defaults (5 sets x 3 reps) for users with no history', async () => {
+    it('uses hypertrophy Tier-1 defaults (3 sets x 8 reps) for users with no history before long-gap stretch kicks in', async () => {
       await db.open()
       await db.exercises.add({
         id: uuidv4(),
@@ -56,17 +65,47 @@ describe('autoPlanner — generateWorkout', () => {
         db,
         routineType: 'PPL',
         trainingGoal: 'Hypertrophy',
-        timeAvailable: 60,
+        timeAvailable: 25,
       })
 
       expect(result.exercises).toHaveLength(1)
-      expect(result.exercises[0].sets).toBe(5)
-      expect(result.exercises[0].reps).toBe(3)
+      expect(result.exercises[0].sets).toBe(3)
+      expect(result.exercises[0].reps).toBe(8)
       expect(result.exercises[0].progressionGoal).toBe('Goal: 3 Reps (Baseline)')
     })
 
-    it('gives new users seeded iron movements with numeric baseline goals instead of GPP fallback', async () => {
+    it('gives new users numeric baseline goals for iron movements instead of GPP fallback', async () => {
       await db.open()
+
+      await db.exercises.bulkAdd([
+        {
+          id: uuidv4(),
+          name: 'Bench Press',
+          muscleGroup: UPPER_MUSCLE_GROUP,
+          tier: 1,
+          tags: ['push', 'upper', 'compound'],
+          mediaType: 'webp',
+          mediaRef: 'bench.webp',
+        },
+        {
+          id: uuidv4(),
+          name: 'Overhead Press',
+          muscleGroup: 'Shoulders',
+          tier: 1,
+          tags: ['push', 'upper', 'compound'],
+          mediaType: 'webp',
+          mediaRef: 'ohp.webp',
+        },
+        {
+          id: uuidv4(),
+          name: 'Cable Fly',
+          muscleGroup: UPPER_MUSCLE_GROUP,
+          tier: 3,
+          tags: ['push', 'upper', 'isolation'],
+          mediaType: 'webp',
+          mediaRef: 'fly.webp',
+        },
+      ])
 
       const result = await generateWorkout({
         db,
@@ -86,6 +125,36 @@ describe('autoPlanner — generateWorkout', () => {
     it('returns Squat as a Tier-1 movement for a fresh GZCL plan', async () => {
       await db.open()
 
+      await db.exercises.bulkAdd([
+        {
+          id: uuidv4(),
+          name: 'Back Squat',
+          muscleGroup: LOWER_MUSCLE_GROUP,
+          tier: 1,
+          tags: ['legs', 'compound'],
+          mediaType: 'webp',
+          mediaRef: 'squat.webp',
+        },
+        {
+          id: uuidv4(),
+          name: 'Bench Press',
+          muscleGroup: UPPER_MUSCLE_GROUP,
+          tier: 1,
+          tags: ['push', 'upper', 'compound'],
+          mediaType: 'webp',
+          mediaRef: 'bench.webp',
+        },
+        {
+          id: uuidv4(),
+          name: 'Leg Extension',
+          muscleGroup: LOWER_MUSCLE_GROUP,
+          tier: 2,
+          tags: ['legs', 'isolation'],
+          mediaType: 'webp',
+          mediaRef: 'leg-extension.webp',
+        },
+      ])
+
       const result = await generateWorkout({
         db,
         routineType: 'GZCL',
@@ -98,7 +167,7 @@ describe('autoPlanner — generateWorkout', () => {
       expect(squat?.tier).toBe(1)
     })
 
-    it('uses power rest periods in estimatedMinutes (5 sets x 3 min = 15 min)', async () => {
+    it('uses power rest periods with 1.5x multiplier in estimatedMinutes (5 sets x 4.5 min = 21 min) before stretch adjustments', async () => {
       await db.open()
       await db.exercises.add({
         id: uuidv4(),
@@ -114,10 +183,10 @@ describe('autoPlanner — generateWorkout', () => {
         db,
         routineType: 'PPL',
         trainingGoal: 'Power',
-        timeAvailable: 60,
+        timeAvailable: 35,
       })
 
-      expect(result.estimatedMinutes).toBe(15)
+      expect(result.estimatedMinutes).toBe(21)
     })
   })
 
@@ -941,5 +1010,403 @@ describe('autoPlanner — extended time ceiling (120 min)', () => {
 
     expect(at180.exercises.map(e => e.exerciseId)).toEqual(at120.exercises.map(e => e.exerciseId))
     expect(at180.estimatedMinutes).toBe(at120.estimatedMinutes)
+  })
+})
+
+describe('autoPlanner — reactive blueprint expansion and timing', () => {
+  const pushT1: Exercise = {
+    id: 'push-t1-bench',
+    name: 'Bench Press',
+    muscleGroup: 'Chest',
+    tier: 1,
+    tags: ['push', 'upper', 'compound'],
+    mediaType: 'webp',
+    mediaRef: 'bench.webp',
+  }
+
+  const pushT2: Exercise = {
+    id: 'push-t2-incline',
+    name: 'Incline Press',
+    muscleGroup: 'Chest',
+    tier: 2,
+    tags: ['push', 'upper', 'compound'],
+    mediaType: 'webp',
+    mediaRef: 'incline.webp',
+  }
+
+  const pushT3: Exercise = {
+    id: 'push-t3-fly',
+    name: 'Cable Fly',
+    muscleGroup: 'Chest',
+    tier: 3,
+    tags: ['push', 'upper', 'isolation'],
+    mediaType: 'webp',
+    mediaRef: 'fly.webp',
+  }
+
+  const MAX_TOTAL_EXERCISES = 8
+  const MAX_STRETCH_SETS_BY_TIER: Record<1 | 2 | 3, number> = {
+    1: 6,
+    2: 6,
+    3: 5,
+  }
+
+  it('applies goal-based rep and set prescriptions across all tiers', () => {
+    const extraPushT2: Exercise = {
+      id: 'push-t2-support',
+      name: 'Push Secondary Support',
+      muscleGroup: 'Shoulders',
+      tier: 2,
+      tags: ['push', 'upper', 'compound'],
+      mediaType: 'webp',
+      mediaRef: 'push-secondary-support.webp',
+    }
+    const extraPushT3: Exercise = {
+      id: 'push-t3-support',
+      name: 'Push Accessory Support',
+      muscleGroup: 'Shoulders',
+      tier: 3,
+      tags: ['push', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: 'push-accessory-support.webp',
+    }
+    const exercises = [pushT1, pushT2, pushT3, extraPushT2, extraPushT3]
+
+    const hypertrophy = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 45,
+      exercises,
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const power = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Power',
+      timeAvailable: 45,
+      exercises,
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const [hyT1, hyT2, hyT3] = hypertrophy.exercises
+    const [pwT1, pwT2, pwT3] = power.exercises
+
+    expect([hyT1.sets, hyT1.reps]).toEqual([3, 8])
+    expect([hyT2.sets, hyT2.reps]).toEqual([3, 12])
+    expect([hyT3.sets, hyT3.reps]).toEqual([3, 15])
+
+    expect([pwT1.sets, pwT1.reps]).toEqual([5, 3])
+    expect([pwT2.sets, pwT2.reps]).toEqual([4, 6])
+    expect([pwT3.sets, pwT3.reps]).toEqual([3, 8])
+  })
+
+  it('calculates estimatedMinutes from tempo, rest, and transitions', () => {
+    const exercises = [pushT1, pushT2]
+
+    const hypertrophy = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 35,
+      exercises,
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const power = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Power',
+      timeAvailable: 35,
+      exercises,
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    // Hypertrophy:
+    // T1 = (3*8*4) + (2*90) + 120 = 396s
+    // T2 = (3*12*4) + (2*60) + 120 = 384s
+    // Total = 780s => 13 min
+    expect(hypertrophy.estimatedMinutes).toBe(13)
+
+    // Power:
+    // Rest now uses 1.5x multiplier:
+    // T1 = (5*3*4) + (4*270) + 120 = 1260s
+    // T2 = (4*6*4) + (3*135) + 120 = 621s
+    // Total = 1881s => 32 min (ceil)
+    expect(power.estimatedMinutes).toBe(32)
+  })
+
+  it('caps long-budget expansion at eight exercises and preserves uniqueness', () => {
+    const extraT2 = Array.from({ length: 8 }, (_, index): Exercise => ({
+      id: `push-secondary-${index}`,
+      name: `Push Secondary ${index}`,
+      muscleGroup: index % 2 === 0 ? 'Chest' : 'Shoulders',
+      tier: 2,
+      tags: ['push', 'upper', 'compound'],
+      mediaType: 'webp',
+      mediaRef: `push-secondary-${index}.webp`,
+    }))
+
+    const extraT3 = Array.from({ length: 8 }, (_, index): Exercise => ({
+      id: `push-accessory-${index}`,
+      name: `Push Accessory ${index}`,
+      muscleGroup: index % 2 === 0 ? 'Chest' : 'Shoulders',
+      tier: 3,
+      tags: ['push', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: `push-accessory-${index}.webp`,
+    }))
+
+    const result = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 120,
+      exercises: [pushT1, pushT2, pushT3, ...extraT2, ...extraT3],
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const remainingGap = 120 - result.estimatedMinutes
+    const allExercisesAtStretchCap = result.exercises.every(
+      (exercise) => exercise.sets >= MAX_STRETCH_SETS_BY_TIER[exercise.tier],
+    )
+
+    expect(result.exercises.length).toBeGreaterThan(3)
+    expect(result.exercises.length).toBeLessThanOrEqual(MAX_TOTAL_EXERCISES)
+    expect(result.exercises.filter((exercise) => exercise.tier === 1)).toHaveLength(1)
+    expect(remainingGap < 12 || allExercisesAtStretchCap).toBe(true)
+    expect(new Set(result.exercises.map((exercise) => exercise.exerciseId)).size).toBe(result.exercises.length)
+    expect(new Set(result.exercises.map((exercise) => exercise.exerciseName.toLowerCase())).size).toBe(result.exercises.length)
+  })
+
+  it('relaxes day filtering to include universal Core/Pre-hab when push synergists are exhausted', () => {
+    const nonPushCore: Exercise = {
+      id: 'universal-core-plank',
+      name: 'Plank',
+      muscleGroup: 'Core',
+      tier: 3,
+      tags: ['core'],
+      mediaType: 'webp',
+      mediaRef: 'universal-core-plank.webp',
+    }
+
+    const nonPushPrehab: Exercise = {
+      id: 'universal-prehab-face-pull',
+      name: 'Face Pull',
+      muscleGroup: 'Shoulders',
+      tier: 3,
+      tags: ['pull', 'upper'],
+      mediaType: 'webp',
+      mediaRef: 'universal-prehab-face-pull.webp',
+    }
+
+    const result = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 120,
+      exercises: [pushT1, pushT2, pushT3, nonPushCore, nonPushPrehab],
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const expandedNames = result.exercises.map((exercise) => exercise.exerciseName)
+
+    expect(expandedNames).toContain('Plank')
+    expect(expandedNames).toContain('Face Pull')
+  })
+
+  it('uses volume stretch as a last resort and caps set increases for T1/T2/T3', () => {
+    const result = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 120,
+      exercises: [pushT1, pushT2, pushT3],
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const t1 = result.exercises.find((exercise) => exercise.exerciseId === pushT1.id)
+    const t2 = result.exercises.find((exercise) => exercise.exerciseId === pushT2.id)
+    const t3 = result.exercises.find((exercise) => exercise.exerciseId === pushT3.id)
+
+    expect(result.exercises).toHaveLength(3)
+    expect(t1?.sets).toBe(6)
+    expect(t2?.sets).toBe(6)
+    expect(t3?.sets).toBe(5)
+  })
+
+  it('scales volume stretch incrementally as timeAvailable increases', () => {
+    const at40 = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 40,
+      exercises: [pushT1, pushT2, pushT3],
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const at120 = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 120,
+      exercises: [pushT1, pushT2, pushT3],
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const at40T1 = at40.exercises.find((exercise) => exercise.exerciseId === pushT1.id)
+    const at40T2 = at40.exercises.find((exercise) => exercise.exerciseId === pushT2.id)
+    const at40T3 = at40.exercises.find((exercise) => exercise.exerciseId === pushT3.id)
+
+    const at120T1 = at120.exercises.find((exercise) => exercise.exerciseId === pushT1.id)
+    const at120T2 = at120.exercises.find((exercise) => exercise.exerciseId === pushT2.id)
+    const at120T3 = at120.exercises.find((exercise) => exercise.exerciseId === pushT3.id)
+
+    expect(at40T1).toBeDefined()
+    expect(at40T2).toBeDefined()
+    expect(at40T3).toBeDefined()
+    expect(at120T1).toBeDefined()
+    expect(at120T2).toBeDefined()
+    expect(at120T3).toBeDefined()
+
+    const at40SetTriplet = [at40T1!, at40T2!, at40T3!]
+    const at40HasRemainingHeadroom = at40SetTriplet.some(
+      (exercise) => exercise.sets < MAX_STRETCH_SETS_BY_TIER[exercise.tier],
+    )
+
+    expect(at40HasRemainingHeadroom).toBe(true)
+    expect(at120T1!.sets).toBeGreaterThanOrEqual(at40T1!.sets)
+    expect(at120T2!.sets).toBeGreaterThanOrEqual(at40T2!.sets)
+    expect(at120T3!.sets).toBeGreaterThanOrEqual(at40T3!.sets)
+
+    expect(at120T1!.sets).toBe(6)
+    expect(at120T2!.sets).toBe(6)
+    expect(at120T3!.sets).toBe(5)
+  })
+
+  it('does not expand when remaining gap is under 12 minutes', () => {
+    const extraT2: Exercise = {
+      id: 'push-secondary-gap',
+      name: 'Push Secondary Gap',
+      muscleGroup: 'Chest',
+      tier: 2,
+      tags: ['push', 'upper', 'compound'],
+      mediaType: 'webp',
+      mediaRef: 'push-secondary-gap.webp',
+    }
+
+    const result = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Power',
+      timeAvailable: 40,
+      exercises: [pushT1, pushT2, pushT3, extraT2],
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    // For Power, T1+T2+T3 base plan is ~30 minutes, so gap is 10 (< 12) and no expansion should occur.
+    expect(result.exercises).toHaveLength(3)
+    expect(result.exercises.some((exercise) => exercise.exerciseId === extraT2.id)).toBe(false)
+  })
+
+  it('prioritizes expansion candidates in Synergist -> Core -> Pre-hab order', () => {
+    const synergist: Exercise = {
+      id: 'push-arnold-priority',
+      name: 'Arnold Press',
+      muscleGroup: 'Shoulders',
+      tier: 2,
+      tags: ['push', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: 'arnold-priority.webp',
+    }
+    const core: Exercise = {
+      id: 'push-plank-priority',
+      name: 'Plank',
+      muscleGroup: 'Core',
+      tier: 3,
+      tags: ['push', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: 'plank-priority.webp',
+    }
+    const prehab: Exercise = {
+      id: 'push-face-pull-priority',
+      name: 'Face Pull',
+      muscleGroup: 'Shoulders',
+      tier: 3,
+      tags: ['push', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: 'face-pull-priority.webp',
+    }
+
+    const result = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 120,
+      exercises: [pushT1, pushT2, pushT3, synergist, core, prehab],
+      workoutsForRoutine: [],
+      sets: [],
+    })
+
+    const expandedNames = result.exercises.slice(3).map((exercise) => exercise.exerciseName)
+
+    const expansionBuckets = expandedNames.map((exerciseName) => {
+      const info = getFunctionalInfo(exerciseName)
+      if (info?.category === 'Core') {
+        return 'core'
+      }
+      if (info && /\bpre[\s-]?hab\b/i.test(info.purpose)) {
+        return 'prehab'
+      }
+      return 'synergist'
+    })
+
+    const firstCoreIndex = expansionBuckets.indexOf('core')
+    const firstPrehabIndex = expansionBuckets.indexOf('prehab')
+
+    expect(expandedNames).toContain('Plank')
+    expect(expandedNames).toContain('Face Pull')
+    expect(expansionBuckets[0]).toBe('synergist')
+    expect(firstCoreIndex).toBeGreaterThanOrEqual(0)
+    expect(firstPrehabIndex).toBeGreaterThanOrEqual(0)
+    expect(firstCoreIndex).toBeLessThan(firstPrehabIndex)
+  })
+
+  it('uses the global duration formula with mandatory 120-second transition per exercise', () => {
+    const t1Example = {
+      exerciseId: 'example-t1',
+      exerciseName: 'Bench Press',
+      weight: 80,
+      reps: 8,
+      sets: 3,
+      tier: 1 as const,
+      progressionGoal: 'Linear Progression',
+    }
+    const t2Example = {
+      exerciseId: 'example-t2',
+      exerciseName: 'Incline Press',
+      weight: 60,
+      reps: 12,
+      sets: 3,
+      tier: 2 as const,
+      progressionGoal: 'Double Progression',
+    }
+
+    // T1 hypertrophy: (3*8*4) + ((3-1)*90) + 120 = 396
+    // T2 hypertrophy: (3*12*4) + ((3-1)*60) + 120 = 384
+    expect(estimateExerciseDurationSeconds(t1Example, 'Hypertrophy')).toBe(396)
+    expect(estimateExerciseDurationSeconds(t2Example, 'Hypertrophy')).toBe(384)
+    expect(calcEstimatedMinutes([t1Example, t2Example], 'Hypertrophy')).toBe(13)
   })
 })
