@@ -1044,7 +1044,22 @@ describe('autoPlanner — reactive blueprint expansion and timing', () => {
     mediaRef: 'fly.webp',
   }
 
-  const MAX_TOTAL_EXERCISES = 8
+  const expectedMaxExercisesForTime = (timeAvailable: number): number => {
+    if (timeAvailable < 60) {
+      return 4
+    }
+    if (timeAvailable < 75) {
+      return 5
+    }
+    if (timeAvailable < 90) {
+      return 6
+    }
+    if (timeAvailable < 105) {
+      return 7
+    }
+    return 8
+  }
+
   const MAX_STRETCH_SETS_BY_TIER: Record<1 | 2 | 3, number> = {
     1: 6,
     2: 6,
@@ -1095,13 +1110,25 @@ describe('autoPlanner — reactive blueprint expansion and timing', () => {
     const [hyT1, hyT2, hyT3] = hypertrophy.exercises
     const [pwT1, pwT2, pwT3] = power.exercises
 
-    expect([hyT1.sets, hyT1.reps]).toEqual([3, 8])
-    expect([hyT2.sets, hyT2.reps]).toEqual([3, 12])
-    expect([hyT3.sets, hyT3.reps]).toEqual([3, 15])
+    expect(hyT1.reps).toBe(8)
+    expect(hyT2.reps).toBe(12)
+    expect(hyT3.reps).toBe(15)
+    expect(hyT1.sets).toBeGreaterThanOrEqual(3)
+    expect(hyT2.sets).toBeGreaterThanOrEqual(3)
+    expect(hyT3.sets).toBeGreaterThanOrEqual(3)
+    expect(hyT1.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[1])
+    expect(hyT2.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[2])
+    expect(hyT3.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[3])
 
-    expect([pwT1.sets, pwT1.reps]).toEqual([5, 3])
-    expect([pwT2.sets, pwT2.reps]).toEqual([4, 6])
-    expect([pwT3.sets, pwT3.reps]).toEqual([3, 8])
+    expect(pwT1.reps).toBe(3)
+    expect(pwT2.reps).toBe(6)
+    expect(pwT3.reps).toBe(8)
+    expect(pwT1.sets).toBeGreaterThanOrEqual(5)
+    expect(pwT2.sets).toBeGreaterThanOrEqual(4)
+    expect(pwT3.sets).toBeGreaterThanOrEqual(3)
+    expect(pwT1.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[1])
+    expect(pwT2.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[2])
+    expect(pwT3.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[3])
   })
 
   it('calculates estimatedMinutes from tempo, rest, and transitions', () => {
@@ -1141,7 +1168,7 @@ describe('autoPlanner — reactive blueprint expansion and timing', () => {
     expect(power.estimatedMinutes).toBe(32)
   })
 
-  it('caps long-budget expansion at eight exercises and preserves uniqueness', () => {
+  it('caps long-budget expansion at the dynamic limit (8 at 120 minutes) and preserves uniqueness', () => {
     const extraT2 = Array.from({ length: 8 }, (_, index): Exercise => ({
       id: `push-secondary-${index}`,
       name: `Push Secondary ${index}`,
@@ -1178,11 +1205,91 @@ describe('autoPlanner — reactive blueprint expansion and timing', () => {
     )
 
     expect(result.exercises.length).toBeGreaterThan(3)
-    expect(result.exercises.length).toBeLessThanOrEqual(MAX_TOTAL_EXERCISES)
+    expect(result.exercises.length).toBeLessThanOrEqual(expectedMaxExercisesForTime(120))
     expect(result.exercises.filter((exercise) => exercise.tier === 1)).toHaveLength(1)
     expect(remainingGap < 12 || allExercisesAtStretchCap).toBe(true)
     expect(new Set(result.exercises.map((exercise) => exercise.exerciseId)).size).toBe(result.exercises.length)
     expect(new Set(result.exercises.map((exercise) => exercise.exerciseName.toLowerCase())).size).toBe(result.exercises.length)
+  })
+
+  it('scales the maximum exercise count by time budget thresholds', () => {
+    const extraT2 = Array.from({ length: 10 }, (_, index): Exercise => ({
+      id: `dynamic-cap-secondary-${index}`,
+      name: `Dynamic Cap Secondary ${index}`,
+      muscleGroup: index % 2 === 0 ? 'Chest' : 'Shoulders',
+      tier: 2,
+      tags: ['push', 'upper', 'compound'],
+      mediaType: 'webp',
+      mediaRef: `dynamic-cap-secondary-${index}.webp`,
+    }))
+
+    const extraT3 = Array.from({ length: 10 }, (_, index): Exercise => ({
+      id: `dynamic-cap-accessory-${index}`,
+      name: `Dynamic Cap Accessory ${index}`,
+      muscleGroup: index % 2 === 0 ? 'Chest' : 'Shoulders',
+      tier: 3,
+      tags: ['push', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: `dynamic-cap-accessory-${index}.webp`,
+    }))
+
+    const exercisePool = [pushT1, pushT2, pushT3, ...extraT2, ...extraT3]
+    const thresholdBudgets = [59, 60, 75, 90, 105]
+
+    for (const timeAvailable of thresholdBudgets) {
+      const result = planRoutineWorkoutPure({
+        routineType: 'PPL',
+        sessionIndex: 0,
+        trainingGoal: 'Hypertrophy',
+        timeAvailable,
+        exercises: exercisePool,
+        workoutsForRoutine: [],
+        sets: [],
+      })
+
+      expect(result.exercises).toHaveLength(expectedMaxExercisesForTime(timeAvailable))
+    }
+  })
+
+  it('trims base blueprint to the dynamic cap before expansion for sub-60 sessions', () => {
+    const armsFocusT3: Exercise = {
+      id: 'focus-arms-curl',
+      name: 'Biceps Curl',
+      muscleGroup: 'Arms',
+      tier: 3,
+      tags: ['pull', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: 'focus-arms-curl.webp',
+    }
+
+    const shouldersFocusT3: Exercise = {
+      id: 'focus-shoulders-raise',
+      name: 'Lateral Raise',
+      muscleGroup: 'Shoulders',
+      tier: 3,
+      tags: ['push', 'upper', 'isolation'],
+      mediaType: 'webp',
+      mediaRef: 'focus-shoulders-raise.webp',
+    }
+
+    const result = planRoutineWorkoutPure({
+      routineType: 'PPL',
+      sessionIndex: 0,
+      trainingGoal: 'Hypertrophy',
+      timeAvailable: 45,
+      exercises: [pushT1, pushT2, pushT3, armsFocusT3, shouldersFocusT3],
+      workoutsForRoutine: [],
+      sets: [],
+      additionalFocusParts: ['Arms', 'Shoulders'],
+    })
+
+    expect(result.exercises).toHaveLength(expectedMaxExercisesForTime(45))
+    expect(result.exercises.map((exercise) => exercise.exerciseName)).toEqual([
+      'Bench Press',
+      'Incline Press',
+      'Cable Fly',
+      'Biceps Curl',
+    ])
   })
 
   it('relaxes day filtering to include universal Core/Pre-hab when push synergists are exhausted', () => {

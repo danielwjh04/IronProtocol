@@ -11,19 +11,19 @@
    * routine_config.md (The 10 Routine Templates)
 4. Do NOT write or propose any code until you have synchronized with these specific domain rules.
 
-## Step 2: Phase 6 Execution Plan
-Produce a numbered implementation sequence for the Multi Routine and Bento UI overhaul. The plan must cover:
-1. Updating Dexie schema to Version 2 with Tier and Tag support.
-2. Implementing the Tiered Trimming and Double Progression math in the planner.
-3. Overhauling the UI to the Bento Box aesthetic (rounded 3xl, Safety Orange accents).
-4. Wiring the Auto Detect Session logic to the workout history.
+## Step 2: Post-Pivot Execution Plan
+Produce a numbered implementation sequence for the requested task while preserving the completed Lab-vs-Gantry architecture. The plan must cover:
+1. Keeping SessionBlueprint as the only editable drafting surface (pacing, swap, reorder, lock).
+2. Keeping DraftBlueprintReview as read-only pre-launch confirmation.
+3. Preserving HomePage as a phase router only (idle -> review -> ignition -> logging).
+4. If planner logic is touched, validating time-budget behavior against the current dynamic exercise-cap model.
 5. Present the plan as a numbered checklist and wait for my explicit approval.
 
 ## Step 3: TDD Mandate (Absolute Requirement)
 After plan approval, your first action must be writing failing tests. The test suite must include:
-1. Integration Test: Confirm that completing a workout correctly triggers the +2.5kg Double Progression on the next plan.
-2. Routing Test: Verify that selecting a specific Routine (Example: PPL) returns only exercises with the correct pattern tags.
-3. Tier Test: Confirm that low Time Available inputs correctly trim Tier 3 exercises first.
+1. Planner Test: Confirm dynamic exercise-cap thresholds are respected across time buckets.
+2. Routing Test: Verify the HomePage phase transitions (idle -> review -> ignition -> logging) remain intact.
+3. Session Test: Confirm blueprint lock routes to read-only review, and modify routes back to drafting.
 4. Only begin implementation once these tests fail for the correct logical reasons.
 
 ## Step 4: Quality Gates

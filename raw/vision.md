@@ -37,11 +37,13 @@ Forces a 10-second labor window while generating a routine to build trust and gi
 UI: Terminal feed (> Mapping [Goal] to [Time] min QoS limit...) matching the boot sequence aesthetic.
 
 📝 IV. SCREEN-BY-SCREEN UI SPECIFICATIONS
-1. Blueprint Audit Screen [🚧 PENDING]:
+1. Blueprint Pipeline (Lab vs Gantry) [✅ BUILT]:
 
-Sticky arc-gauge header for Momentum.
+Drafting Lab: SessionBlueprint.tsx is the interactive planning surface (time pacing, goal tuning, exercise reorder, and swap).
 
-Soft Pink "X" triggers "Quick Swap" chips or deletion of exercises.
+Launch Gantry: DraftBlueprintReview.tsx is a read-only final check before workout ignition.
+
+Flow Contract: HomePage routes idle -> review -> ignition -> logging, keeping drafting and launch confirmation fully separated.
 
 2. The Workout Ignition [🚧 PENDING]:
 

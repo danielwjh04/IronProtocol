@@ -71,7 +71,6 @@ const REST_SECONDS_BY_GOAL_AND_TIER: Record<TrainingGoal, Record<ExerciseTier, n
 const TEMPO_SECONDS_PER_REP = 4
 const TRANSITION_SECONDS_PER_EXERCISE = 120
 const EXPANSION_TRIGGER_GAP_MINUTES = 12
-const MAX_TOTAL_EXERCISES = 8
 const VOLUME_STRETCH_MAX_SETS_BY_TIER: Partial<Record<ExerciseTier, number>> = {
   1: 6,
   2: 6,
@@ -578,7 +577,8 @@ function expandForTimeBudget(
   trainingGoal: TrainingGoal,
   timeAvailable: number,
 ): PlannedExercise[] {
-  let expandedExercises = [...currentExercises]
+  const maxExercisesForTime = getMaxExercisesForTime(timeAvailable)
+  let expandedExercises = [...currentExercises].slice(0, maxExercisesForTime)
   let estimatedMinutes = calcEstimatedMinutes(expandedExercises, trainingGoal)
 
   if ((timeAvailable - estimatedMinutes) < EXPANSION_TRIGGER_GAP_MINUTES) {
@@ -590,7 +590,7 @@ function expandForTimeBudget(
   const rankedCandidates = buildCategoryExpansionQueue(candidateExercises, trainingGoal)
 
   for (const candidate of rankedCandidates) {
-    if (expandedExercises.length >= MAX_TOTAL_EXERCISES) {
+    if (expandedExercises.length >= maxExercisesForTime) {
       break
     }
 
@@ -606,7 +606,7 @@ function expandForTimeBudget(
     // Recompute gap with the standardized global formula each iteration.
     estimatedMinutes = calcEstimatedMinutes(expandedExercises, trainingGoal)
 
-    if (expandedExercises.length >= MAX_TOTAL_EXERCISES) {
+    if (expandedExercises.length >= maxExercisesForTime) {
       break
     }
 
@@ -716,6 +716,22 @@ function tierCapForTime(timeAvailable: number): ExerciseTier {
     return 2
   }
   return 3
+}
+
+function getMaxExercisesForTime(timeAvailable: number): number {
+  if (timeAvailable < 60) {
+    return 4
+  }
+  if (timeAvailable < 75) {
+    return 5
+  }
+  if (timeAvailable < 90) {
+    return 6
+  }
+  if (timeAvailable < 105) {
+    return 7
+  }
+  return 8
 }
 
 function buildCoreBlueprintByTier(
@@ -924,7 +940,14 @@ export function planRoutineWorkoutPure({
     finalExercises = [...finalExercises, ...injections]
   }
 
-  if (tierCap === 3 && calcEstimatedMinutes(finalExercises, trainingGoal) < effectiveTime) {
+  const maxExercisesForTime = getMaxExercisesForTime(effectiveTime)
+  finalExercises = finalExercises.slice(0, maxExercisesForTime)
+
+  if (
+    tierCap === 3
+    && finalExercises.length < maxExercisesForTime
+    && calcEstimatedMinutes(finalExercises, trainingGoal) < effectiveTime
+  ) {
     const expansionCandidates = dedupePlannedById(
       buildVolumeExpansionCandidates(exercises, sessionExercises, blueprint.rule)
         .map((exercise) => {
