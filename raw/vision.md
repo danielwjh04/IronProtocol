@@ -1,5 +1,5 @@
 🚀 IRONPROTOCOL: COMPLETE SYSTEM SPECIFICATION (v5.1)
-Project Identity: A "Zero Friction" local-first PWA designed as an active digital coach. It uses "Perceived Labor" (reasoning time) to build trust, tactile haptics to ground the user, and high-contrast visuals to ensure absolute focus.
+Project Identity: A Hybrid "Offline-First" PWA designed as an active digital coach. It uses Online AI APIs to handle complex macrocycle planning (The Lab), but strictly enforces a 100% Offline local-first execution environment (The Gantry) to ensure zero friction on the gym floor. It uses "Perceived Labor" to build trust, tactile haptics to ground the user, and high-contrast visuals to ensure absolute focus.
 
 🎨 I. VISUAL & INTERACTIVE DNA
 Base Colors: Deep Midnight Navy (#0A0E1A) for the void.
@@ -23,18 +23,18 @@ Trigger: "Hamburger" icon in Top-Left. Left-to-right slide-in.
 
 Content: User Hub (Name + North Star), Unit switch, Haptic slider, Database JSON export/purge.
 
-🧠 III. ONBOARDING & THE "ARCHITECT" ENGINE
-The Identity Splash (Onboarding) [🚧 PENDING]: Renders if no profile exists.
-
-Inputs: Call Sign (Name), North Star (Text area goal), Purpose (Selectable chips), Session Budget / QoS (15-120 min tactile slider), Training Frequency (3, 4, or 5 days).
+🧠 III. ONBOARDING & THE AI "ARCHITECT" ENGINE
+The Identity Splash (Onboarding) [🚧 PENDING]: Renders if no profile exists. This UI constructs the strict Prompt Contract required for the AI API.
+Inputs: Call Sign (Name), North Star (Text area goal), Purpose (Selectable chips), Session Budget / QoS (15-120 min tactile slider), Training Frequency (3, 4, or 5 days), Equipment Available, Injury Constraints.
 
 Baseline Calibration [🚧 PENDING]: High-friction, tactile UI scroll "Dials" for the user to input their starting 1RM/Working weights for the Big Three (Squat, Bench, Deadlift) after onboarding.
 
+The AI Architect Pipeline (Lab - Online Required) [🚧 PENDING]:
+The app takes the V11 AppSettings constraints and sends them to the AI API. The AI generates a 12-week `SessionBlueprint` and seeds a fallback pool of alternatives.
+
 The 10-Second Reasoning Protocol [✅ PARTIAL - ThinkingTerminal.tsx built]:
-
-Forces a 10-second labor window while generating a routine to build trust and give the ThinkingTerminal.tsx time to generate a workout program.
-
-UI: Terminal feed (> Mapping [Goal] to [Time] min QoS limit...) matching the boot sequence aesthetic.
+While the AI API is fetching the workout, the ThinkingTerminal.tsx forces a visual labor window to build trust.
+UI: Terminal feed (> Mapping [Goal] to [Time] min QoS limit...) matching the boot sequence aesthetic, masking the network latency of the API call.
 
 📝 IV. SCREEN-BY-SCREEN UI SPECIFICATIONS
 1. Blueprint Pipeline (Lab vs Gantry) [✅ BUILT]:

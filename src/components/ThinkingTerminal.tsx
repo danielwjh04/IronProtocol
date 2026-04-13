@@ -1,12 +1,11 @@
 import type { PlannedWorkout } from '../planner/autoPlanner'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 interface Props {
   mode?: 'planning' | 'onboarding'
   plan?: PlannedWorkout
   onComplete: () => void
-  durationMs?: number
 }
 
 interface TerminalLine {
@@ -14,34 +13,29 @@ interface TerminalLine {
   text: string
   atMs: number
   type: 'system' | 'data' | 'success'
-  phase?: 'biomechanics' | 'qos' | 'routine' | 'finalize'
-}
-
-interface ProtocolMilestone {
-  id: 'biomechanics' | 'qos' | 'routine'
-  label: string
-  startMs: number
-  endMs: number
 }
 
 const PLANNING_LINE_INTERVAL_MS = 220
 const PLANNING_EXIT_DELAY_MS = 400
-const ONBOARDING_DURATION_MS = 10_000
-const TICK_VIBRATION_MS = 50
-const FINAL_THUD_VIBRATION_MS = 120
-const FINAL_SURGE_START_MS = 9_000
+const ONBOARDING_LINE_INTERVAL_MS = 260
+const ONBOARDING_QUOTE_ROTATE_MS = 3_000
 
-const MILESTONES: readonly ProtocolMilestone[] = [
-  { id: 'biomechanics', label: 'Biomechanical Library', startMs: 0, endMs: 3_000 },
-  { id: 'qos', label: 'QoS Optimization', startMs: 3_000, endMs: 6_000 },
-  { id: 'routine', label: 'Routine Selection', startMs: 6_000, endMs: 9_000 },
+const ONBOARDING_QUOTES = [
+  'Discipline compounds quietly before it looks obvious.',
+  'Precision today is momentum tomorrow.',
+  'Consistency beats intensity when no one is watching.',
+  'Strong systems create strong sessions.',
+  'Small increments become massive outcomes.',
+  'Your next rep is a vote for your future self.',
+] as const
+
+const ONBOARDING_LINES: Array<Omit<TerminalLine, 'atMs'>> = [
+  { id: 'o1', type: 'system', text: '> Architect core online. Entering adaptive synthesis loop...' },
+  { id: 'o2', type: 'data', text: '> Folding constraints into progression-safe macrocycle graph...' },
+  { id: 'o3', type: 'system', text: '> Resolving exercise substitutions for offline gantry continuity...' },
+  { id: 'o4', type: 'data', text: '> Locking week-to-week load pathways against available QoS...' },
+  { id: 'o5', type: 'success', text: '> Blueprint forge active. Awaiting final convergence signal.' },
 ]
-
-function vibrate(durationMs: number): void {
-  if (typeof window !== 'undefined' && typeof window.navigator?.vibrate === 'function') {
-    window.navigator.vibrate(durationMs)
-  }
-}
 
 function buildPlanningLines(plan: PlannedWorkout): TerminalLine[] {
   const t1Count = plan.exercises.filter(e => e.tier === 1).length
@@ -63,35 +57,17 @@ function buildPlanningLines(plan: PlannedWorkout): TerminalLine[] {
   ]
 }
 
-function buildOnboardingLines(durationMs: number): TerminalLine[] {
-  const finalLineAtMs = Math.max(durationMs - 420, 0)
-
-  return [
-    { id: 'o1', atMs: 0, type: 'system', phase: 'biomechanics', text: '> Accessing Biomechanical Library...' },
-    { id: 'o2', atMs: 500, type: 'data', phase: 'biomechanics', text: '> Indexing squat, bench, and deadlift vectors...' },
-    { id: 'o3', atMs: 1_000, type: 'system', phase: 'biomechanics', text: '> Resolving force-curve constraints...' },
-    { id: 'o4', atMs: 1_500, type: 'data', phase: 'biomechanics', text: '> Calibrating movement signatures...' },
-    { id: 'o5', atMs: 2_000, type: 'success', phase: 'biomechanics', text: '> Biomechanical Library synchronized.' },
-
-    { id: 'o6', atMs: 3_000, type: 'system', phase: 'qos', text: '> Initiating QoS Optimization...' },
-    { id: 'o7', atMs: 3_500, type: 'data', phase: 'qos', text: '> Solving density under session budget...' },
-    { id: 'o8', atMs: 4_000, type: 'system', phase: 'qos', text: '> Balancing fatigue and recovery envelope...' },
-    { id: 'o9', atMs: 4_500, type: 'success', phase: 'qos', text: '> QoS Optimization stable.' },
-
-    { id: 'o10', atMs: 6_000, type: 'system', phase: 'routine', text: '> Running Routine Selection lattice...' },
-    { id: 'o11', atMs: 6_500, type: 'data', phase: 'routine', text: '> Scoring split candidates against baselines...' },
-    { id: 'o12', atMs: 7_000, type: 'system', phase: 'routine', text: '> Locking progressive overload path...' },
-    { id: 'o13', atMs: 7_500, type: 'success', phase: 'routine', text: '> Routine Selection resolved.' },
-
-    { id: 'o14', atMs: 9_000, type: 'system', phase: 'finalize', text: '> Sealing Architect Blueprint...' },
-    { id: 'o15', atMs: finalLineAtMs, type: 'success', phase: 'finalize', text: '> Ready State achieved. Dashboard release armed.' },
-  ]
+function buildOnboardingLines(): TerminalLine[] {
+  return ONBOARDING_LINES.map((line, index) => ({
+    ...line,
+    atMs: index * ONBOARDING_LINE_INTERVAL_MS,
+  }))
 }
 
-function BreathingBarbell({ intensity }: { intensity: number }) {
-  const pulseScale = 1.06 + (intensity * 0.14)
-  const pulseOpacity = 0.74 + (intensity * 0.2)
-  const pulseDuration = Math.max(0.92, 1.45 - (intensity * 0.45))
+function BreathingBarbell({ cycle }: { cycle: number }) {
+  const pulseScale = 1.08 + ((cycle % 3) * 0.01)
+  const pulseOpacity = 0.8 + ((cycle % 2) * 0.08)
+  const pulseDuration = 1.15 + ((cycle % 3) * 0.08)
 
   return (
     <motion.svg
@@ -115,29 +91,21 @@ function BreathingBarbell({ intensity }: { intensity: number }) {
   )
 }
 
-export default function ThinkingTerminal({ mode = 'planning', plan, onComplete, durationMs = ONBOARDING_DURATION_MS }: Props) {
+export default function ThinkingTerminal({ mode = 'planning', plan, onComplete }: Props) {
   const [visibleCount, setVisibleCount] = useState(0)
-  const [elapsedMs, setElapsedMs] = useState(0)
+  const [quoteIndex, setQuoteIndex] = useState(0)
   const onCompleteRef = useRef(onComplete)
 
   const isOnboarding = mode === 'onboarding'
-  const safeDurationMs = isOnboarding ? Math.max(durationMs, ONBOARDING_DURATION_MS) : 0
 
   if (!isOnboarding && !plan) {
     throw new Error('ThinkingTerminal requires a plan in planning mode.')
   }
 
   const lines = useMemo(
-    () => (isOnboarding ? buildOnboardingLines(safeDurationMs) : buildPlanningLines(plan as PlannedWorkout)),
-    [isOnboarding, plan, safeDurationMs],
+    () => (isOnboarding ? buildOnboardingLines() : buildPlanningLines(plan as PlannedWorkout)),
+    [isOnboarding, plan],
   )
-
-  const progress = isOnboarding
-    ? Math.min(elapsedMs / safeDurationMs, 1)
-    : Math.min(visibleCount / Math.max(lines.length, 1), 1)
-  const finalSurgeProgress = isOnboarding
-    ? Math.max(0, Math.min((elapsedMs - FINAL_SURGE_START_MS) / Math.max(safeDurationMs - FINAL_SURGE_START_MS, 1), 1))
-    : 0
 
   useEffect(() => {
     onCompleteRef.current = onComplete
@@ -145,43 +113,18 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete, 
 
   useEffect(() => {
     setVisibleCount(0)
-    setElapsedMs(0)
 
     const timers: ReturnType<typeof setTimeout>[] = []
-    let rafId = 0
 
     lines.forEach((line, index) => {
       timers.push(
         setTimeout(() => {
           setVisibleCount(index + 1)
-          if (isOnboarding) {
-            vibrate(TICK_VIBRATION_MS)
-          }
         }, line.atMs),
       )
     })
 
-    if (isOnboarding) {
-      const start = performance.now()
-
-      const updateProgress = (now: number): void => {
-        const nextElapsed = Math.min(now - start, safeDurationMs)
-        setElapsedMs(nextElapsed)
-        if (nextElapsed < safeDurationMs) {
-          rafId = requestAnimationFrame(updateProgress)
-        }
-      }
-
-      rafId = requestAnimationFrame(updateProgress)
-
-      timers.push(
-        setTimeout(() => {
-          setElapsedMs(safeDurationMs)
-          vibrate(FINAL_THUD_VIBRATION_MS)
-          onCompleteRef.current()
-        }, safeDurationMs),
-      )
-    } else {
+    if (!isOnboarding) {
       timers.push(
         setTimeout(() => {
           onCompleteRef.current()
@@ -191,11 +134,24 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete, 
 
     return () => {
       timers.forEach(clearTimeout)
-      if (rafId) {
-        cancelAnimationFrame(rafId)
-      }
     }
-  }, [isOnboarding, lines, safeDurationMs])
+  }, [isOnboarding, lines])
+
+  useEffect(() => {
+    if (!isOnboarding) {
+      return
+    }
+
+    setQuoteIndex(0)
+
+    const quoteTimer = setInterval(() => {
+      setQuoteIndex((current) => ((current + 1) % ONBOARDING_QUOTES.length))
+    }, ONBOARDING_QUOTE_ROTATE_MS)
+
+    return () => {
+      clearInterval(quoteTimer)
+    }
+  }, [isOnboarding])
 
   const phaseStyles: Record<TerminalLine['type'], string> = {
     success: 'text-electric',
@@ -203,19 +159,8 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete, 
     data: 'text-zinc-200',
   }
 
-  const edgeGlowOpacity = 0.17 + (progress * 0.23) + (finalSurgeProgress * 0.5)
-  const edgeGlowScale = 0.96 + (progress * 0.06) + (finalSurgeProgress * 0.12)
-  const finalEdgeSurgeOpacity = Math.max(0.05, finalSurgeProgress * 0.92)
-
-  function milestoneState(milestone: ProtocolMilestone): 'pending' | 'active' | 'complete' {
-    if (elapsedMs >= milestone.endMs) {
-      return 'complete'
-    }
-    if (elapsedMs >= milestone.startMs) {
-      return 'active'
-    }
-    return 'pending'
-  }
+  const edgeGlowOpacity = isOnboarding ? 0.38 : 0.2
+  const edgeGlowScale = isOnboarding ? 1.08 + ((quoteIndex % 3) * 0.01) : 1
 
   return (
     <main className="relative mx-auto flex min-h-svh w-full max-w-[430px] flex-col justify-center overflow-hidden bg-navy px-5 pb-24 pt-8 font-mono text-sm">
@@ -230,7 +175,7 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete, 
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        animate={{ opacity: finalEdgeSurgeOpacity, scale: 1 + (finalSurgeProgress * 0.2) }}
+        animate={{ opacity: isOnboarding ? 0.22 : 0.08, scale: isOnboarding ? 1.14 : 1.02 }}
         transition={{ type: 'spring', stiffness: 210, damping: 22 }}
       >
         <div className="absolute inset-[52px] rounded-[26px] border border-electric/70 bg-electric/45 blur-[68px]" />
@@ -259,41 +204,27 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete, 
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-electric/65">Reasoning Protocol</p>
                 <h1 className="mt-1 text-2xl font-black tracking-tight text-zinc-100">Architect Engine</h1>
               </div>
-              <BreathingBarbell intensity={Math.min(1, progress + finalSurgeProgress)} />
+              <BreathingBarbell cycle={quoteIndex} />
             </div>
 
-            <div className="mb-5 rounded-2xl border border-electric/25 bg-navy/70 p-3">
-              <div className="mb-2 h-2 rounded-full border border-white/10 bg-[#1E253A]">
-                <motion.div
-                  className="h-full rounded-full bg-electric shadow-[0_0_16px_rgba(59,113,254,0.7)]"
-                  style={{ width: `${progress * 100}%` }}
-                />
+            <div className="mb-5 rounded-2xl border border-electric/25 bg-navy/70 p-3.5">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-electric/70">
+                Strategic Directive
+              </p>
+              <div className="min-h-[72px] rounded-xl border border-white/10 bg-navy/85 px-3 py-2.5">
+                <motion.blockquote
+                  key={quoteIndex}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+                  className="text-sm font-semibold leading-relaxed text-zinc-100"
+                >
+                  "{ONBOARDING_QUOTES[quoteIndex]}"
+                </motion.blockquote>
               </div>
-              <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
-                <span>0.0s</span>
-                <span className="text-electric/85">{(Math.min(elapsedMs, safeDurationMs) / 1000).toFixed(1)}s / 10.0s</span>
-                <span>10.0s</span>
-              </div>
-            </div>
-
-            <div className="mb-5 grid grid-cols-3 gap-2">
-              {MILESTONES.map((milestone) => {
-                const status = milestoneState(milestone)
-                return (
-                  <div
-                    key={milestone.id}
-                    className={`rounded-xl border px-2.5 py-2 text-center transition-colors ${
-                      status === 'complete'
-                        ? 'border-electric/50 bg-electric/15 text-electric'
-                        : status === 'active'
-                          ? 'border-electric/70 bg-electric/25 text-zinc-100'
-                          : 'border-white/10 bg-navy/60 text-zinc-500'
-                    }`}
-                  >
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.16em]">{milestone.label}</p>
-                  </div>
-                )
-              })}
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-electric/55">
+                Rotating every 3s while your blueprint converges.
+              </p>
             </div>
           </>
         )}
@@ -324,7 +255,7 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete, 
       </motion.section>
 
       <div className="relative mt-4 px-2 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-electric/55">
-        {isOnboarding ? 'Uninterruptible reasoning handshake in progress' : 'Assembling your session blueprint'}
+        {isOnboarding ? 'Live synthesis loop active' : 'Assembling your session blueprint'}
       </div>
     </main>
   )

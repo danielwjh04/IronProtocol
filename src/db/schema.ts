@@ -32,6 +32,7 @@ export interface WorkoutSet {
   weight: number
   reps: number
   orderIndex: number
+  requiresCalibration?: boolean
 }
 
 export const APP_SETTINGS_ID = 'app'
@@ -67,6 +68,70 @@ export interface PersonalBest {
 
 export type PurposeChip = 'strength' | 'hypertrophy' | 'fat-loss' | 'endurance' | 'health'
 
+export type V11Gender = 'female' | 'male' | 'non-binary' | 'prefer-not-to-say'
+
+export interface V11PhysiologicalBaselines {
+  ageYears: number | null
+  bodyWeightKg: number | null
+  gender: V11Gender | null
+}
+
+export type V11TrainingExperienceLevel = 'beginner' | 'novice' | 'intermediate' | 'advanced'
+
+export interface V11LogisticalConstraints {
+  targetDaysPerWeek: 3 | 4 | 5 | null
+  hardSessionLimitMinutes: number | null // expected range: 15-120
+}
+
+export type V11EquipmentAvailability =
+  | 'commercial-gym'
+  | 'home-gym'
+  | 'dumbbells-only'
+  | 'bodyweight-only'
+
+export type V11PrimaryGoalFocus =
+  | 'hypertrophy'
+  | 'strength'
+  | 'endurance'
+  | 'specific-lift-target'
+
+export interface V11SpecificLiftTarget {
+  liftName: 'back-squat' | 'bench-press' | 'deadlift' | 'overhead-press' | 'custom'
+  targetWeightKg?: number
+  targetReps?: number
+  notes?: string
+}
+
+export interface V11PrimaryGoals {
+  primaryFocus: V11PrimaryGoalFocus | null
+  specificLiftTargets: V11SpecificLiftTarget[]
+}
+
+export interface V11InjuryConstraint {
+  structuralAversion: string // e.g. "No spinal loading"
+}
+
+export interface V11InjuryConstraints {
+  hasActiveConstraints: boolean
+  constraints: V11InjuryConstraint[]
+}
+
+export interface V11AppSettingsSchema {
+  physiologicalBaselines: V11PhysiologicalBaselines
+  trainingExperienceLevel: V11TrainingExperienceLevel | null
+  logisticalConstraints: V11LogisticalConstraints
+  equipmentAvailability: V11EquipmentAvailability | null
+  primaryGoals: V11PrimaryGoals
+  injuryConstraints: V11InjuryConstraints
+}
+
+export interface ActiveFallbackExercise {
+  exerciseName: string
+  reason: string
+}
+
+export type ActiveFallbackPool = Record<string, ActiveFallbackExercise[]>
+
 export interface AppSettings {
   id: string
   hasCompletedOnboarding: boolean
@@ -76,6 +141,8 @@ export interface AppSettings {
   northStar?: string       // free-text goal from onboarding
   purposeChip?: PurposeChip // training intent from onboarding
   qosMinutes?: number      // session time budget from onboarding (15–120)
+  v11PromptContract?: V11AppSettingsSchema
+  activeFallbackPool?: ActiveFallbackPool
 }
 
 export type TempSessionPhase = 'active' | 'resting'
@@ -124,6 +191,75 @@ export interface TempSession {
   restSecondsLeft: number
   completedSets: TempSessionCompletedSet[]
   updatedAt: number
+}
+
+function isSupportedTrainingDays(value: unknown): value is 3 | 4 | 5 {
+  return value === 3 || value === 4 || value === 5
+}
+
+function mapPurposeChipToPrimaryFocus(chip: PurposeChip | undefined): V11PrimaryGoalFocus | null {
+  if (chip === 'strength' || chip === 'hypertrophy' || chip === 'endurance') {
+    return chip
+  }
+  return null
+}
+
+export function createDefaultV11PromptContract(): V11AppSettingsSchema {
+  return {
+    physiologicalBaselines: {
+      ageYears: null,
+      bodyWeightKg: null,
+      gender: null,
+    },
+    trainingExperienceLevel: null,
+    logisticalConstraints: {
+      targetDaysPerWeek: null,
+      hardSessionLimitMinutes: null,
+    },
+    equipmentAvailability: null,
+    primaryGoals: {
+      primaryFocus: null,
+      specificLiftTargets: [],
+    },
+    injuryConstraints: {
+      hasActiveConstraints: false,
+      constraints: [],
+    },
+  }
+}
+
+function normalizeV11PromptContract(contract: Partial<V11AppSettingsSchema> | undefined): V11AppSettingsSchema {
+  const defaultContract = createDefaultV11PromptContract()
+  return {
+    physiologicalBaselines: {
+      ageYears: contract?.physiologicalBaselines?.ageYears ?? defaultContract.physiologicalBaselines.ageYears,
+      bodyWeightKg: contract?.physiologicalBaselines?.bodyWeightKg ?? defaultContract.physiologicalBaselines.bodyWeightKg,
+      gender: contract?.physiologicalBaselines?.gender ?? defaultContract.physiologicalBaselines.gender,
+    },
+    trainingExperienceLevel: contract?.trainingExperienceLevel ?? defaultContract.trainingExperienceLevel,
+    logisticalConstraints: {
+      targetDaysPerWeek:
+        contract?.logisticalConstraints?.targetDaysPerWeek ?? defaultContract.logisticalConstraints.targetDaysPerWeek,
+      hardSessionLimitMinutes:
+        contract?.logisticalConstraints?.hardSessionLimitMinutes
+        ?? defaultContract.logisticalConstraints.hardSessionLimitMinutes,
+    },
+    equipmentAvailability: contract?.equipmentAvailability ?? defaultContract.equipmentAvailability,
+    primaryGoals: {
+      primaryFocus: contract?.primaryGoals?.primaryFocus ?? defaultContract.primaryGoals.primaryFocus,
+      specificLiftTargets: Array.isArray(contract?.primaryGoals?.specificLiftTargets)
+        ? contract.primaryGoals.specificLiftTargets
+        : defaultContract.primaryGoals.specificLiftTargets,
+    },
+    injuryConstraints: {
+      hasActiveConstraints:
+        contract?.injuryConstraints?.hasActiveConstraints
+        ?? defaultContract.injuryConstraints.hasActiveConstraints,
+      constraints: Array.isArray(contract?.injuryConstraints?.constraints)
+        ? contract.injuryConstraints.constraints
+        : defaultContract.injuryConstraints.constraints,
+    },
+  }
 }
 
 export class IronProtocolDB extends Dexie {
@@ -364,6 +500,84 @@ export class IronProtocolDB extends Dexie {
       personalBests: 'exerciseId',
     })
 
+    // Version 12 — introduces strict V11 planner prompt contract structure
+    // inside settings while preserving legacy onboarding fields for compatibility.
+    this.version(12)
+      .stores({
+        exercises:     'id, name, muscleGroup, tier, *tags',
+        workouts:      'id, date, routineType, sessionIndex',
+        sets:          'id, workoutId, exerciseId, orderIndex',
+        settings:      'id, preferredRoutineType',
+        tempSessions:  'id, updatedAt',
+        baselines:     'exerciseName',
+        dailyTargets:  'date',
+        personalBests: 'exerciseId',
+      })
+      .upgrade(async (tx) => {
+        await tx
+          .table('settings')
+          .toCollection()
+          .modify((settings: Partial<AppSettings>) => {
+            const normalizedDaysPerWeek = isSupportedTrainingDays(settings.daysPerWeek)
+              ? settings.daysPerWeek
+              : 3
+
+            if (typeof settings.hasCompletedOnboarding !== 'boolean') {
+              settings.hasCompletedOnboarding = false
+            }
+            if (typeof settings.preferredRoutineType !== 'string' || settings.preferredRoutineType.length === 0) {
+              settings.preferredRoutineType = 'PPL'
+            }
+            settings.daysPerWeek = normalizedDaysPerWeek
+
+            const v11PromptContract = normalizeV11PromptContract(settings.v11PromptContract)
+
+            if (v11PromptContract.logisticalConstraints.targetDaysPerWeek === null) {
+              v11PromptContract.logisticalConstraints.targetDaysPerWeek = normalizedDaysPerWeek
+            }
+
+            const qos = settings.qosMinutes
+            if (
+              typeof qos === 'number'
+              && Number.isFinite(qos)
+              && qos >= 15
+              && qos <= 120
+              && v11PromptContract.logisticalConstraints.hardSessionLimitMinutes === null
+            ) {
+              v11PromptContract.logisticalConstraints.hardSessionLimitMinutes = qos
+            }
+
+            if (v11PromptContract.primaryGoals.primaryFocus === null) {
+              v11PromptContract.primaryGoals.primaryFocus = mapPurposeChipToPrimaryFocus(settings.purposeChip)
+            }
+
+            settings.v11PromptContract = v11PromptContract
+          })
+      })
+
+    // Version 13 — stores active fallback alternatives for offline Gantry swaps.
+    this.version(13)
+      .stores({
+        exercises:     'id, name, muscleGroup, tier, *tags',
+        workouts:      'id, date, routineType, sessionIndex',
+        sets:          'id, workoutId, exerciseId, orderIndex',
+        settings:      'id, preferredRoutineType',
+        tempSessions:  'id, updatedAt',
+        baselines:     'exerciseName',
+        dailyTargets:  'date',
+        personalBests: 'exerciseId',
+      })
+      .upgrade(async (tx) => {
+        await tx
+          .table('settings')
+          .toCollection()
+          .modify((settings: Partial<AppSettings>) => {
+            if (!settings.activeFallbackPool) {
+              settings.activeFallbackPool = {}
+            }
+          })
+      })
+
     // New databases (created directly at latest version) skip migration
     // upgrade callbacks, so populate seeds the onboarding settings row.
     this.on('populate', (tx) => {
@@ -372,6 +586,8 @@ export class IronProtocolDB extends Dexie {
         hasCompletedOnboarding: false,
         preferredRoutineType: 'PPL',
         daysPerWeek: 3,
+        v11PromptContract: createDefaultV11PromptContract(),
+        activeFallbackPool: {},
       } satisfies AppSettings)
     })
   }

@@ -11,7 +11,6 @@ import {
 import type { Exercise, IronProtocolDB } from '../db/schema'
 import { APP_SETTINGS_ID } from '../db/schema'
 import { getFunctionalInfo } from '../data/functionalMapping'
-import { getSmartSwapAlternatives, getSwapRepTarget } from '../services/exerciseService'
 
 interface Props {
   db: IronProtocolDB
@@ -25,6 +24,7 @@ interface Props {
   routineType: CanonicalRoutineType
   trainingGoal: 'Hypertrophy' | 'Power'
   timeAvailable: number
+  primaryActionLabel?: string
   routineSetupRequired?: boolean
   onTrainingGoalChange?: (goal: 'Hypertrophy' | 'Power') => void
   onTimeAvailableChange?: (minutes: number) => void
@@ -155,6 +155,84 @@ function vibrate(durationMs: number): void {
   }
 }
 
+interface QosResolution {
+  activeExercises: PlannedExercise[]
+  trimmedExercises: PlannedExercise[]
+  estimatedMinutes: number
+}
+
+const REST_MINUTES_BY_GOAL_AND_TIER: Record<'Hypertrophy' | 'Power', Record<1 | 2 | 3, number>> = {
+  Hypertrophy: {
+    1: 3,
+    2: 2,
+    3: 1.5,
+  },
+  Power: {
+    1: 3,
+    2: 2,
+    3: 1.5,
+  },
+}
+
+function estimateExerciseMinutes(
+  exercise: PlannedExercise,
+  trainingGoal: 'Hypertrophy' | 'Power',
+): number {
+  const restMinutes = REST_MINUTES_BY_GOAL_AND_TIER[trainingGoal][exercise.tier as 1 | 2 | 3]
+  return exercise.sets + (exercise.sets * restMinutes)
+}
+
+function resolveQosExercises(
+  exercises: readonly PlannedExercise[],
+  trainingGoal: 'Hypertrophy' | 'Power',
+  qosMinutes: number,
+): QosResolution {
+  const activeExercises = exercises.map((exercise) => cloneExercise(exercise))
+  const trimmedExercises: PlannedExercise[] = []
+
+  const calculateTotalMinutes = (plannedExercises: readonly PlannedExercise[]): number => {
+    const totalMinutes = plannedExercises.reduce(
+      (accumulated, exercise) => accumulated + estimateExerciseMinutes(exercise, trainingGoal),
+      0,
+    )
+    return Math.ceil(totalMinutes)
+  }
+
+  let estimatedMinutes = calculateTotalMinutes(activeExercises)
+
+  while (estimatedMinutes > qosMinutes && activeExercises.length > 0) {
+    const removed = activeExercises.pop()
+    if (!removed) {
+      break
+    }
+    trimmedExercises.unshift(cloneExercise(removed))
+    estimatedMinutes = calculateTotalMinutes(activeExercises)
+  }
+
+  return {
+    activeExercises,
+    trimmedExercises,
+    estimatedMinutes,
+  }
+}
+
+function applyQosToPlan(
+  sourcePlan: PlannedWorkout,
+  trainingGoal: 'Hypertrophy' | 'Power',
+  qosMinutes: number,
+): { activePlan: PlannedWorkout; trimmedExercises: PlannedExercise[] } {
+  const qosResolution = resolveQosExercises(sourcePlan.exercises, trainingGoal, qosMinutes)
+
+  return {
+    activePlan: {
+      ...sourcePlan,
+      exercises: qosResolution.activeExercises,
+      estimatedMinutes: qosResolution.estimatedMinutes,
+    },
+    trimmedExercises: qosResolution.trimmedExercises,
+  }
+}
+
 function buildUpdatedPlanFromCards(
   sourcePlan: PlannedWorkout,
   nextCards: readonly ExerciseCardModel[],
@@ -211,6 +289,30 @@ function getLocalSwapBlockedExerciseIds(
   return [...new Set(ids)]
 }
 
+function normalizeMuscleGroup(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+function dedupeExercisesByNameOrId(exercises: readonly Exercise[]): Exercise[] {
+  const seenIds = new Set<string>()
+  const seenNames = new Set<string>()
+  const deduped: Exercise[] = []
+
+  for (const exercise of exercises) {
+    const normalizedName = normalizeExerciseName(exercise.name)
+
+    if (seenIds.has(exercise.id) || seenNames.has(normalizedName)) {
+      continue
+    }
+
+    seenIds.add(exercise.id)
+    seenNames.add(normalizedName)
+    deduped.push(exercise)
+  }
+
+  return deduped
+}
+
 export default function SessionBlueprint({
   db,
   plan,
@@ -223,6 +325,7 @@ export default function SessionBlueprint({
   routineType,
   trainingGoal,
   timeAvailable,
+  primaryActionLabel = 'Start Next Workout',
   routineSetupRequired = false,
   onTrainingGoalChange,
   onTimeAvailableChange,
@@ -230,12 +333,24 @@ export default function SessionBlueprint({
   onUpdatePlan,
   onLockBlueprint,
 }: Props) {
+  const [qosSourcePlan, setQosSourcePlan] = useState<PlannedWorkout | null>(() => {
+    if (fullPlan) {
+      return clonePlan(fullPlan)
+    }
+
+    if (plan) {
+      return clonePlan(plan)
+    }
+
+    return null
+  })
   const [blueprint, setBlueprint] = useState<PlannedWorkout | null>(() => (
     plan ? clonePlan(plan) : null
   ))
   const [exerciseCards, setExerciseCards] = useState<ExerciseCardModel[]>(() => (
     reconcileExerciseCards([], plan?.exercises ?? [])
   ))
+  const [trimmedExercises, setTrimmedExercises] = useState<PlannedExercise[]>([])
   const [localTrainingGoal, setLocalTrainingGoal] = useState<'Hypertrophy' | 'Power'>(trainingGoal)
   const [workoutLengthMinutes, setWorkoutLengthMinutes] = useState<number>(() => (
     clampWorkoutLengthMinutes(timeAvailable)
@@ -249,10 +364,45 @@ export default function SessionBlueprint({
 
   const pacingRequestIdRef = useRef(0)
 
+  function commitQosSourcePlan(
+    nextSourcePlan: PlannedWorkout,
+    nextGoal: 'Hypertrophy' | 'Power',
+    nextDurationMinutes: number,
+    notifyParent: boolean,
+  ): PlannedWorkout {
+    const clonedSourcePlan = clonePlan(nextSourcePlan)
+    const { activePlan, trimmedExercises: nextTrimmedExercises } = applyQosToPlan(
+      clonedSourcePlan,
+      nextGoal,
+      nextDurationMinutes,
+    )
+    const clonedActivePlan = clonePlan(activePlan)
+
+    setQosSourcePlan(clonedSourcePlan)
+    setTrimmedExercises(nextTrimmedExercises.map((exercise) => cloneExercise(exercise)))
+    setExerciseCards((currentCards) => reconcileExerciseCards(currentCards, clonedActivePlan.exercises))
+    setBlueprint(clonedActivePlan)
+
+    if (notifyParent) {
+      onUpdatePlan(clonedActivePlan)
+    }
+
+    return clonedActivePlan
+  }
+
   useEffect(() => {
-    setBlueprint(plan ? clonePlan(plan) : null)
-    setExerciseCards((currentCards) => reconcileExerciseCards(currentCards, plan?.exercises ?? []))
-  }, [plan])
+    const incomingSourcePlan = fullPlan ? clonePlan(fullPlan) : plan ? clonePlan(plan) : null
+
+    if (!incomingSourcePlan) {
+      setQosSourcePlan(null)
+      setBlueprint(null)
+      setTrimmedExercises([])
+      setExerciseCards((currentCards) => reconcileExerciseCards(currentCards, []))
+      return
+    }
+
+    commitQosSourcePlan(incomingSourcePlan, localTrainingGoal, workoutLengthMinutes, false)
+  }, [fullPlan, plan])
 
   useEffect(() => {
     setLocalTrainingGoal(trainingGoal)
@@ -261,39 +411,6 @@ export default function SessionBlueprint({
   useEffect(() => {
     setWorkoutLengthMinutes(clampWorkoutLengthMinutes(timeAvailable))
   }, [timeAvailable])
-
-  useEffect(() => {
-    let cancelled = false
-
-    const fetchAllAlternatives = async () => {
-      try {
-        const alternativesMap: Record<string, Exercise[]> = {}
-
-        for (const card of exerciseCards) {
-          const blockedExerciseIds = getLocalSwapBlockedExerciseIds(card, exerciseCards)
-          const resolvedAlternatives = await getSmartSwapAlternatives(db, card.exercise, {
-            limit: 4,
-            blockedExerciseIds,
-          })
-          alternativesMap[card.instanceId] = resolvedAlternatives
-        }
-
-        if (!cancelled) {
-          setAlternatives(alternativesMap)
-        }
-      } catch (unknownError) {
-        if (!isDatabaseClosedError(unknownError)) {
-          throw unknownError
-        }
-      }
-    }
-
-    void fetchAllAlternatives()
-
-    return () => {
-      cancelled = true
-    }
-  }, [db, exerciseCards])
 
   async function regeneratePlanForInputs(
     nextDurationMinutes: number,
@@ -316,12 +433,7 @@ export default function SessionBlueprint({
         return
       }
 
-      const nextPlan = clonePlan(regeneratedPlan)
-      const nextCards = reconcileExerciseCards(exerciseCards, nextPlan.exercises)
-
-      setExerciseCards(cloneCards(nextCards))
-      setBlueprint(nextPlan)
-      onUpdatePlan(nextPlan)
+      commitQosSourcePlan(clonePlan(regeneratedPlan), nextGoal, nextDurationMinutes, true)
     } catch {
       // Preserve the current blueprint on regeneration failure.
     } finally {
@@ -339,6 +451,10 @@ export default function SessionBlueprint({
     setLocalTrainingGoal(nextGoal)
     onTrainingGoalChange?.(nextGoal)
 
+    if (qosSourcePlan) {
+      commitQosSourcePlan(qosSourcePlan, nextGoal, workoutLengthMinutes, true)
+    }
+
     void regeneratePlanForInputs(workoutLengthMinutes, nextGoal)
   }
 
@@ -347,6 +463,10 @@ export default function SessionBlueprint({
 
     setWorkoutLengthMinutes(nextDurationMinutes)
     onTimeAvailableChange?.(nextDurationMinutes)
+
+    if (qosSourcePlan) {
+      commitQosSourcePlan(qosSourcePlan, localTrainingGoal, nextDurationMinutes, true)
+    }
 
     void regeneratePlanForInputs(nextDurationMinutes, localTrainingGoal)
   }
@@ -357,11 +477,34 @@ export default function SessionBlueprint({
     setIsSwapLoading(true)
 
     try {
-      const blockedExerciseIds = getLocalSwapBlockedExerciseIds(card, exerciseCards)
-      const resolvedAlternatives = await getSmartSwapAlternatives(db, card.exercise, {
-        limit: 6,
-        blockedExerciseIds,
-      })
+      const blockedExerciseIds = new Set(getLocalSwapBlockedExerciseIds(card, exerciseCards))
+      const [settings, sourceOriginal, allExercises] = await Promise.all([
+        db.settings.get(APP_SETTINGS_ID),
+        db.exercises.get(card.exercise.exerciseId),
+        db.exercises.toArray(),
+      ])
+
+      const fallbackPoolEntries = Object.values(settings?.activeFallbackPool ?? {}).flat()
+      const fallbackNames = new Set(
+        fallbackPoolEntries.map((entry) => normalizeExerciseName(entry.exerciseName)),
+      )
+
+      const sourceTier = sourceOriginal?.tier ?? card.exercise.tier
+      const sourceMuscleGroup = sourceOriginal
+        ? normalizeMuscleGroup(sourceOriginal.muscleGroup)
+        : null
+
+      const resolvedAlternatives = sourceMuscleGroup
+        ? dedupeExercisesByNameOrId(
+            allExercises.filter((exercise) => (
+              exercise.id !== card.exercise.exerciseId
+              && !blockedExerciseIds.has(exercise.id)
+              && exercise.tier === sourceTier
+              && normalizeMuscleGroup(exercise.muscleGroup) === sourceMuscleGroup
+              && fallbackNames.has(normalizeExerciseName(exercise.name))
+            )),
+          ).slice(0, 6)
+        : []
 
       setAlternatives((current) => ({
         ...current,
@@ -386,7 +529,7 @@ export default function SessionBlueprint({
   }
 
   async function handleSwap(nextExercise: Exercise): Promise<void> {
-    if (!swapTarget || !blueprint || isSwapPending) {
+    if (!swapTarget || !blueprint || !qosSourcePlan || isSwapPending) {
       return
     }
 
@@ -395,44 +538,64 @@ export default function SessionBlueprint({
 
     try {
       const sourceExercise = swapTarget.exercise
-      const [settings, sourceOriginal] = await Promise.all([
-        db.settings.get(APP_SETTINGS_ID),
-        db.exercises.get(sourceExercise.exerciseId),
-      ])
+      const settings = await db.settings.get(APP_SETTINGS_ID)
+      const swapIndex = exerciseCards.findIndex((card) => card.instanceId === swapTarget.instanceId)
 
-      const adjustedReps = getSwapRepTarget({
-        sourceExerciseName: sourceExercise.exerciseName,
-        sourceTags: sourceOriginal?.tags ?? [],
-        targetExerciseName: nextExercise.name,
-        currentReps: sourceExercise.reps,
-        purposeChip: settings?.purposeChip,
-      })
-
-      const updatedCards = exerciseCards.map((card) => (
-        card.instanceId === swapTarget.instanceId
-          ? {
-              ...card,
-              exercise: {
-                ...card.exercise,
-                exerciseId: nextExercise.id,
-                exerciseName: nextExercise.name,
-                reps: adjustedReps,
-              },
-            }
-          : cloneCard(card)
-      ))
-
-      const updatedPlan = buildUpdatedPlanFromCards(blueprint, updatedCards, localTrainingGoal)
-      if (!updatedPlan) {
+      if (swapIndex < 0 || swapIndex >= qosSourcePlan.exercises.length) {
         return
       }
 
-      const nextCards = cloneCards(updatedCards)
-      const nextPlan = clonePlan(updatedPlan)
+      const nextSourceExercises = qosSourcePlan.exercises.map((exercise, index) => (
+        index === swapIndex
+          ? {
+              ...exercise,
+              exerciseId: nextExercise.id,
+              exerciseName: nextExercise.name,
+            }
+          : cloneExercise(exercise)
+      ))
 
-      setExerciseCards(nextCards)
-      setBlueprint(nextPlan)
-      onUpdatePlan(nextPlan)
+      const nextSourcePlan: PlannedWorkout = {
+        ...qosSourcePlan,
+        exercises: nextSourceExercises,
+      }
+
+      commitQosSourcePlan(nextSourcePlan, localTrainingGoal, workoutLengthMinutes, true)
+
+      const currentFallbackEntries = Object.values(settings?.activeFallbackPool ?? {}).flat()
+      const dedupedFallbackEntries: Array<{ exerciseName: string; reason: string }> = []
+      const seenFallbackNames = new Set<string>()
+
+      for (const entry of currentFallbackEntries) {
+        const normalizedName = normalizeExerciseName(entry.exerciseName)
+        if (normalizedName.length === 0 || seenFallbackNames.has(normalizedName)) {
+          continue
+        }
+
+        seenFallbackNames.add(normalizedName)
+        dedupedFallbackEntries.push(entry)
+      }
+
+      const removedFallbackName = normalizeExerciseName(nextExercise.name)
+      const addedFallbackName = normalizeExerciseName(sourceExercise.exerciseName)
+
+      const nextGlobalPool = dedupedFallbackEntries.filter(
+        (entry) => normalizeExerciseName(entry.exerciseName) !== removedFallbackName,
+      )
+
+      if (!nextGlobalPool.some((entry) => normalizeExerciseName(entry.exerciseName) === addedFallbackName)) {
+        nextGlobalPool.push({
+          exerciseName: sourceExercise.exerciseName,
+          reason: `Returned from active plan after swapping to ${nextExercise.name}`,
+        })
+      }
+
+      await db.settings.update(APP_SETTINGS_ID, {
+        activeFallbackPool: {
+          ...(settings?.activeFallbackPool ?? {}),
+          global: nextGlobalPool,
+        },
+      })
 
       setSwapTarget(null)
       setIsSwapDrawerOpen(false)
@@ -442,7 +605,7 @@ export default function SessionBlueprint({
   }
 
   function handleReorder(nextOrderIds: string[]): void {
-    if (!blueprint) {
+    if (!blueprint || !qosSourcePlan) {
       return
     }
 
@@ -462,12 +625,17 @@ export default function SessionBlueprint({
 
     vibrate(20)
 
-    const nextCards = cloneCards(reorderedCards)
-    const nextPlan = clonePlan(updatedPlan)
+    const reorderedActiveExercises = reorderedCards.map((card) => cloneExercise(card.exercise))
+    const preservedTrailingExercises = qosSourcePlan.exercises
+      .slice(reorderedActiveExercises.length)
+      .map((exercise) => cloneExercise(exercise))
 
-    setExerciseCards(nextCards)
-    setBlueprint(nextPlan)
-    onUpdatePlan(nextPlan)
+    const nextSourcePlan: PlannedWorkout = {
+      ...qosSourcePlan,
+      exercises: [...reorderedActiveExercises, ...preservedTrailingExercises],
+    }
+
+    commitQosSourcePlan(nextSourcePlan, localTrainingGoal, workoutLengthMinutes, true)
   }
 
   const resolvedPlan = blueprint
@@ -475,13 +643,7 @@ export default function SessionBlueprint({
   const swapCandidates = swapTarget ? (alternatives[swapTarget.instanceId] ?? []) : []
   const swapTargetInfo = swapTarget ? getFunctionalInfo(swapTarget.exercise.exerciseName) : null
 
-  const trimmedExercises = resolvedPlan && fullPlan
-    ? fullPlan.exercises.filter((exercise) => !resolvedPlan.exercises.some((planned) => planned.exerciseId === exercise.exerciseId))
-    : []
-
-  const estimatedMinutes = resolvedPlan
-    ? calcEstimatedMinutes(resolvedPlan.exercises, localTrainingGoal)
-    : 0
+  const estimatedMinutes = resolvedPlan?.estimatedMinutes ?? 0
 
   return (
     <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-navy px-4 pb-24 pt-5 text-zinc-100">
@@ -514,7 +676,7 @@ export default function SessionBlueprint({
         </motion.section>
       </div>
 
-      <motion.section whileTap={{ scale: 0.98 }} className="rounded-3xl border border-electric/20 bg-navy-card p-4">
+      <motion.section className="rounded-3xl border border-electric/20 bg-navy-card p-4">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-electric/70">Training Goal</p>
         <div className="mt-3 grid grid-cols-2 gap-2">
           {(['Hypertrophy', 'Power'] as const).map((goal) => (
@@ -535,7 +697,7 @@ export default function SessionBlueprint({
         </div>
       </motion.section>
 
-      <motion.section whileTap={{ scale: 0.98 }} className="rounded-3xl border border-electric/20 bg-navy-card p-4">
+      <motion.section className="rounded-3xl border border-electric/20 bg-navy-card p-4">
         <div className="flex items-center justify-between">
           <label htmlFor="drafting-lab-time" className="text-xs font-semibold uppercase tracking-[0.22em] text-electric/70">
             Time Available
@@ -551,7 +713,7 @@ export default function SessionBlueprint({
             step={5}
             value={workoutLengthMinutes}
             onChange={handleWorkoutLengthChange}
-            className="w-full cursor-pointer appearance-none"
+            className="relative z-10 w-full cursor-pointer pointer-events-auto touch-pan-x accent-electric"
           />
         </div>
 
@@ -647,7 +809,7 @@ export default function SessionBlueprint({
           className="flex h-16 w-full cursor-pointer items-center justify-center gap-2 rounded-3xl bg-electric text-xl font-black text-white shadow-[0_8px_24px_-8px_rgba(59,113,254,0.55)] disabled:cursor-not-allowed disabled:bg-electric/30 disabled:text-zinc-500 disabled:shadow-none"
         >
           <CheckCircle2 size={22} />
-          {loading ? 'Syncing Session...' : 'Lock Blueprint'}
+          {loading ? 'Syncing Session...' : primaryActionLabel}
         </motion.button>
       )}
 
@@ -694,7 +856,7 @@ export default function SessionBlueprint({
               <div className="flex flex-col gap-2 pb-2">
                 {isSwapLoading ? (
                   <div className="rounded-2xl border border-white/10 bg-navy px-3.5 py-3">
-                    <p className="text-xs font-semibold text-zinc-300">Scanning same-category alternatives...</p>
+                    <p className="text-xs font-semibold text-zinc-300">Scanning global fallback pool...</p>
                   </div>
                 ) : swapCandidates.length > 0 ? (
                   swapCandidates.slice(0, 4).map((alternative) => {

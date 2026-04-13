@@ -2,15 +2,11 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { motion } from 'framer-motion'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import ActiveLogger from '../components/ActiveLogger'
-import BaselineCalibration from '../components/BaselineCalibration'
-import ThinkingTerminal from '../components/ThinkingTerminal'
 import WorkoutIgnition from '../components/WorkoutIgnition'
 import DraftBlueprintReview from '../components/DraftBlueprintReview'
 import IdentitySplash from '../components/IdentitySplash'
-import OnboardingHero from '../components/OnboardingHero'
 import SessionBlueprint from '../components/SessionBlueprint'
 import { db as defaultDb } from '../db/db'
-import { ensureIronExerciseLibrary } from '../db/seedExercises'
 import {
   APP_SETTINGS_ID,
   TEMP_SESSION_ID,
@@ -19,23 +15,19 @@ import {
   type TempSession,
 } from '../db/schema'
 import {
+  calcEstimatedMinutes,
   generateWorkout,
   getRoutineSessionLabel,
   ROUTINE_OPTIONS,
   type CanonicalRoutineType,
+  type PlannedExercise,
   type PlannedWorkout,
 } from '../planner/autoPlanner'
+import { MACROCYCLE_WORKOUT_NOTE_PREFIX } from '../services/macrocyclePersistence'
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 
 interface Props {
   db?: IronProtocolDB
-}
-
-type OnboardingTourStep = 0 | 1 | 2
-
-interface OnboardingFlowState {
-  tourStarted: boolean
-  step: OnboardingTourStep
 }
 
 interface ActivitySnapshot {
@@ -43,9 +35,9 @@ interface ActivitySnapshot {
   setCount: number
 }
 
-const INITIAL_ONBOARDING_FLOW: OnboardingFlowState = {
-  tourStarted: false,
-  step: 0,
+interface HydratedScheduledWorkout {
+  plan: PlannedWorkout
+  dayLabel: string
 }
 
 function getPlanSignature(plan: PlannedWorkout | null): string {
@@ -78,6 +70,131 @@ function clonePlan(sourcePlan: PlannedWorkout): PlannedWorkout {
   }
 }
 
+function isMacrocycleScheduledWorkout(notes: string): boolean {
+  return notes.startsWith(MACROCYCLE_WORKOUT_NOTE_PREFIX)
+}
+
+function resolveScheduledDayLabel(notes: string, routineType: string, sessionIndex: number): string {
+  if (isMacrocycleScheduledWorkout(notes)) {
+    const [, , rawLabel] = notes.split('|')
+    const label = rawLabel?.trim()
+    if (label) {
+      return label
+    }
+  }
+
+  try {
+    return getRoutineSessionLabel(routineType, sessionIndex)
+  } catch {
+    return `Day ${sessionIndex + 1}`
+  }
+}
+
+async function loadNextScheduledWorkoutPlan(
+  db: IronProtocolDB,
+  routineType: CanonicalRoutineType,
+  trainingGoal: 'Hypertrophy' | 'Power',
+): Promise<HydratedScheduledWorkout | null> {
+  const routineWorkouts = await db.workouts.where('routineType').equals(routineType).toArray()
+
+  const scheduledWorkouts = routineWorkouts
+    .filter((workout) => isMacrocycleScheduledWorkout(workout.notes))
+    .sort((left, right) => (left.date - right.date) || (left.sessionIndex - right.sessionIndex))
+
+  if (scheduledWorkouts.length === 0) {
+    return null
+  }
+
+  const firstScheduledDate = scheduledWorkouts[0].date
+  const completedWorkoutCount = routineWorkouts.filter((workout) => (
+    !isMacrocycleScheduledWorkout(workout.notes)
+    && workout.date >= firstScheduledDate
+  )).length
+
+  if (completedWorkoutCount >= scheduledWorkouts.length) {
+    return null
+  }
+
+  const nextWorkout = scheduledWorkouts[completedWorkoutCount]
+  const workoutSets = (await db.sets.where('workoutId').equals(nextWorkout.id).toArray())
+    .sort((left, right) => left.orderIndex - right.orderIndex)
+
+  if (workoutSets.length === 0) {
+    return null
+  }
+
+  const exerciseOrder = new Map<string, number>()
+  const setAggregateByExerciseId = new Map<string, { sets: number; reps: number; weight: number }>()
+
+  for (const loggedSet of workoutSets) {
+    if (!exerciseOrder.has(loggedSet.exerciseId)) {
+      exerciseOrder.set(loggedSet.exerciseId, loggedSet.orderIndex)
+    }
+
+    const currentAggregate = setAggregateByExerciseId.get(loggedSet.exerciseId)
+    if (!currentAggregate) {
+      setAggregateByExerciseId.set(loggedSet.exerciseId, {
+        sets: 1,
+        reps: loggedSet.reps,
+        weight: loggedSet.weight,
+      })
+      continue
+    }
+
+    setAggregateByExerciseId.set(loggedSet.exerciseId, {
+      ...currentAggregate,
+      sets: currentAggregate.sets + 1,
+    })
+  }
+
+  const orderedExerciseIds = [...exerciseOrder.entries()]
+    .sort((left, right) => left[1] - right[1])
+    .map(([exerciseId]) => exerciseId)
+
+  const exerciseRows = await db.exercises.bulkGet(orderedExerciseIds)
+  const exerciseById = new Map<string, (typeof exerciseRows)[number]>()
+
+  orderedExerciseIds.forEach((exerciseId, index) => {
+    const exercise = exerciseRows[index]
+    if (exercise) {
+      exerciseById.set(exerciseId, exercise)
+    }
+  })
+
+  const exercises: PlannedExercise[] = orderedExerciseIds.flatMap((exerciseId) => {
+    const aggregate = setAggregateByExerciseId.get(exerciseId)
+    const exercise = exerciseById.get(exerciseId)
+
+    if (!aggregate || !exercise) {
+      return []
+    }
+
+    return [{
+      exerciseId,
+      exerciseName: exercise.name,
+      weight: aggregate.weight,
+      reps: aggregate.reps,
+      sets: aggregate.sets,
+      tier: exercise.tier,
+      progressionGoal: `Goal: ${aggregate.reps} Reps (Scheduled)`,
+    }]
+  })
+
+  if (exercises.length === 0) {
+    return null
+  }
+
+  return {
+    plan: {
+      exercises,
+      estimatedMinutes: calcEstimatedMinutes(exercises, trainingGoal),
+      routineType: nextWorkout.routineType,
+      sessionIndex: nextWorkout.sessionIndex,
+    },
+    dayLabel: resolveScheduledDayLabel(nextWorkout.notes, nextWorkout.routineType, nextWorkout.sessionIndex),
+  }
+}
+
 export default function HomePage({ db = defaultDb }: Props) {
   const [routineType, setRoutineType] = useState<CanonicalRoutineType>('PPL')
   const [trainingGoal, setTrainingGoal] = useState<'Hypertrophy' | 'Power'>('Hypertrophy')
@@ -86,6 +203,8 @@ export default function HomePage({ db = defaultDb }: Props) {
   const [hasHydratedRoutine, setHasHydratedRoutine] = useState(false)
   const [plan, setPlan] = useState<PlannedWorkout | null>(null)
   const [fullPlan, setFullPlan] = useState<PlannedWorkout | null>(null)
+  const [primaryActionLabel, setPrimaryActionLabel] = useState('Start Next Workout')
+  const [scheduledSessionLabel, setScheduledSessionLabel] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
@@ -95,8 +214,6 @@ export default function HomePage({ db = defaultDb }: Props) {
   const [activePlan, setActivePlan] = useState<PlannedWorkout | null>(null)
   const [activeDraft, setActiveDraft] = useState<TempSession | null>(null)
   const latestLabPlanRef = useRef<PlannedWorkout | null>(null)
-  const [onboardingFlow, setOnboardingFlow] = useState<OnboardingFlowState>(INITIAL_ONBOARDING_FLOW)
-  const [showOnboardingThinkingBridge, setShowOnboardingThinkingBridge] = useState(false)
 
   const deferredTimeAvailable = useDeferredValue(timeAvailable)
 
@@ -187,32 +304,60 @@ export default function HomePage({ db = defaultDb }: Props) {
       setError(null)
 
       try {
-        const [nextPlan, nextFullPlan] = await Promise.all([
-          generateWorkout(plannerInputs),
-          generateWorkout({
-            ...plannerInputs,
-            timeAvailable: Math.max(40, plannerInputs.timeAvailable),
-          }),
-        ])
+        let resolvedPlan: PlannedWorkout
+        let resolvedFullPlan: PlannedWorkout
+        let nextActionLabel = 'Start Next Workout'
+        let nextScheduledSessionLabel: string | null = null
+
+        let scheduledWorkoutPlan: HydratedScheduledWorkout | null = null
+        try {
+          scheduledWorkoutPlan = await loadNextScheduledWorkoutPlan(
+            plannerInputs.db,
+            plannerInputs.routineType,
+            plannerInputs.trainingGoal,
+          )
+        } catch {
+          scheduledWorkoutPlan = null
+        }
+
+        if (scheduledWorkoutPlan) {
+          resolvedPlan = scheduledWorkoutPlan.plan
+          resolvedFullPlan = scheduledWorkoutPlan.plan
+          nextActionLabel = `Start ${scheduledWorkoutPlan.dayLabel}`
+          nextScheduledSessionLabel = scheduledWorkoutPlan.dayLabel
+        } else {
+          const [nextPlan, nextFullPlan] = await Promise.all([
+            generateWorkout(plannerInputs),
+            generateWorkout({
+              ...plannerInputs,
+              timeAvailable: Math.max(40, plannerInputs.timeAvailable),
+            }),
+          ])
+          resolvedPlan = nextPlan
+          resolvedFullPlan = nextFullPlan
+        }
 
         if (cancelled) {
           return
         }
 
-        const nextPlanSignature = getPlanSignature(nextPlan)
-        const nextFullPlanSignature = getPlanSignature(nextFullPlan)
+        const nextPlanSignature = getPlanSignature(resolvedPlan)
+        const nextFullPlanSignature = getPlanSignature(resolvedFullPlan)
 
         setPlan((current) => (
           getPlanSignature(current) === nextPlanSignature
             ? current
-            : nextPlan
+            : resolvedPlan
         ))
 
         setFullPlan((current) => (
           getPlanSignature(current) === nextFullPlanSignature
             ? current
-            : nextFullPlan
+            : resolvedFullPlan
         ))
+
+        setPrimaryActionLabel(nextActionLabel)
+        setScheduledSessionLabel(nextScheduledSessionLabel)
       } catch (unknownError) {
         if (!cancelled) {
           setError(
@@ -243,20 +388,15 @@ export default function HomePage({ db = defaultDb }: Props) {
   const cycleLength = selectedRoutine?.cycleLength ?? 1
   const detectedSessionIndex = plan?.sessionIndex ?? 0
   const hasCompletedOnboarding: boolean = onboardingRecord?.hasCompletedOnboarding === true
-  const onboardingActive = !hasCompletedOnboarding
   const routineSetupRequired = Boolean(plan && plan.routineType.trim().length === 0)
-
-  const progressionPreview = useMemo(() => {
-    const leadExercise = plan?.exercises[0]
-    if (!leadExercise) {
-      return 'Syncing progression target...'
-    }
-    return `${leadExercise.exerciseName}: ${leadExercise.progressionGoal}`
-  }, [plan])
 
   const sessionLabel = useMemo(() => {
     if (!plan || routineSetupRequired) {
       return routineSetupRequired ? 'Setup Required' : 'Loading Session'
+    }
+
+    if (scheduledSessionLabel && scheduledSessionLabel.trim().length > 0) {
+      return scheduledSessionLabel
     }
 
     try {
@@ -264,61 +404,11 @@ export default function HomePage({ db = defaultDb }: Props) {
     } catch {
       return 'Setup Required'
     }
-  }, [plan, routineSetupRequired])
-
-  async function handleFinishSetup(): Promise<void> {
-    // update (partial) preserves userName; put would risk clobbering it if
-    // onboardingRecord is stale or undefined at call time.
-    await db.settings.update(APP_SETTINGS_ID, {
-      hasCompletedOnboarding: true,
-      preferredRoutineType: routineType,
-      daysPerWeek: onboardingRecord?.daysPerWeek ?? 3,
-    })
-    setOnboardingFlow(INITIAL_ONBOARDING_FLOW)
-  }
-
-  async function handleInitializeEngine(selectedRoutineType: CanonicalRoutineType): Promise<void> {
-    try {
-      setRoutineType(selectedRoutineType)
-      setHasHydratedRoutine(true)
-      await ensureIronExerciseLibrary(db)
-      // update (partial) preserves userName regardless of React state staleness.
-      await db.settings.update(APP_SETTINGS_ID, {
-        hasCompletedOnboarding: false,
-        preferredRoutineType: selectedRoutineType,
-        daysPerWeek: onboardingRecord?.daysPerWeek ?? 3,
-      })
-      setOnboardingFlow({
-        tourStarted: true,
-        step: 0,
-      })
-      setPlannerRefreshTick((current) => current + 1)
-    } catch (unknownError) {
-      setError(
-        unknownError instanceof Error
-          ? unknownError.message
-          : 'Failed to initialize routine engine.',
-      )
-    }
-  }
-
-  function handleTourNext(): void {
-    setOnboardingFlow((current) => {
-      const nextStep = Math.min(current.step + 1, 2) as OnboardingTourStep
-      return {
-        ...current,
-        step: nextStep,
-      }
-    })
-  }
+  }, [plan, routineSetupRequired, scheduledSessionLabel])
 
   function handleRoutineSelect(nextRoutineType: CanonicalRoutineType): void {
     setRoutineType(nextRoutineType)
     setHasHydratedRoutine(true)
-  }
-
-  function handleCalibrationComplete(): void {
-    setShowOnboardingThinkingBridge(true)
   }
 
   function openLoggerWithPlan(nextPlan: PlannedWorkout, nextDraft: TempSession | null): void {
@@ -398,26 +488,10 @@ export default function HomePage({ db = defaultDb }: Props) {
     )
   }
 
-  // ── Identity gate: first screen after CoreIgnition if no Call Sign ─────────
-  if (!onboardingRecord?.userName) {
+  // Strict binary onboarding gate:
+  // not completed -> IdentitySplash, completed -> dashboard/recovery flow.
+  if (!hasCompletedOnboarding) {
     return <IdentitySplash db={db} />
-  }
-
-  // ── Baseline gate: after identity, before full onboarding completion ───────
-  if (onboardingRecord.hasCompletedOnboarding === false) {
-    return <BaselineCalibration db={db} onCalibrationComplete={handleCalibrationComplete} />
-  }
-
-  // ── Architect bridge: forced 10-second reasoning sequence before dashboard ──
-  if (showOnboardingThinkingBridge) {
-    return (
-      <ThinkingTerminal
-        mode="onboarding"
-        onComplete={() => {
-          setShowOnboardingThinkingBridge(false)
-        }}
-      />
-    )
   }
 
   if (tempSession) {
@@ -459,44 +533,6 @@ export default function HomePage({ db = defaultDb }: Props) {
     )
   }
 
-  if (onboardingActive) {
-    return (
-      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-5 text-zinc-100">
-        <motion.section
-          key="onboarding-hero"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        >
-          <OnboardingHero
-            selectedRoutine={routineType}
-            sessionLabel={sessionLabel}
-            cycleLength={cycleLength}
-            sessionIndex={detectedSessionIndex}
-            timeAvailable={timeAvailable}
-            progressionPreview={progressionPreview}
-            isTourStarted={onboardingFlow.tourStarted}
-            tourStep={onboardingFlow.step}
-            onSelectRoutine={handleRoutineSelect}
-            onTimeAvailableChange={setTimeAvailable}
-            onInitialize={(selectedRoutineType) => {
-              void handleInitializeEngine(selectedRoutineType)
-            }}
-            onTourNext={handleTourNext}
-            onTourFinish={() => {
-              void handleFinishSetup()
-            }}
-          />
-        </motion.section>
-
-        {error && (
-          <p className="rounded-2xl border border-red-500/40 bg-red-900/20 p-3 text-sm font-semibold text-red-300">{error}</p>
-        )}
-      </main>
-    )
-  }
-
   return (
     <SessionBlueprint
       db={db}
@@ -510,6 +546,7 @@ export default function HomePage({ db = defaultDb }: Props) {
       routineType={routineType}
       trainingGoal={trainingGoal}
       timeAvailable={timeAvailable}
+      primaryActionLabel={primaryActionLabel}
       routineSetupRequired={routineSetupRequired}
       onTrainingGoalChange={setTrainingGoal}
       onTimeAvailableChange={setTimeAvailable}

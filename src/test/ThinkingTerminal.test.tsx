@@ -3,14 +3,23 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import ThinkingTerminal from '../components/ThinkingTerminal'
+import type { PlannedWorkout } from '../planner/autoPlanner'
 
-function mockVibrate(): ReturnType<typeof vi.fn> {
-  const vibrateMock = vi.fn().mockReturnValue(true)
-  Object.defineProperty(window.navigator, 'vibrate', {
-    configurable: true,
-    value: vibrateMock,
-  })
-  return vibrateMock
+const MOCK_PLAN: PlannedWorkout = {
+  routineType: 'PPL',
+  sessionIndex: 0,
+  estimatedMinutes: 28,
+  exercises: [
+    {
+      exerciseId: 'ex-bench',
+      exerciseName: 'Bench Press',
+      weight: 80,
+      reps: 5,
+      sets: 5,
+      tier: 1,
+      progressionGoal: 'Linear Progression: Add 2.5kg next session',
+    },
+  ],
 }
 
 describe('ThinkingTerminal onboarding mode', () => {
@@ -23,66 +32,38 @@ describe('ThinkingTerminal onboarding mode', () => {
     vi.useRealTimers()
   })
 
-  it('hits protocol milestones at the expected boundaries and completes at exactly 10s', async () => {
+  it('cycles quotes every 3 seconds and never auto-completes onboarding mode', async () => {
     const onComplete = vi.fn()
     render(<ThinkingTerminal mode="onboarding" onComplete={onComplete} />)
 
     expect(screen.getByRole('heading', { name: /architect engine/i })).toBeInTheDocument()
+    expect(screen.getByText(/discipline compounds quietly before it looks obvious/i)).toBeInTheDocument()
 
     await act(async () => {
-      vi.advanceTimersByTime(2_999)
+      vi.advanceTimersByTime(3_100)
     })
-    expect(screen.queryByText(/initiating qos optimization/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/precision today is momentum tomorrow/i)).toBeInTheDocument()
 
     await act(async () => {
-      vi.advanceTimersByTime(1)
+      vi.advanceTimersByTime(3_100)
     })
-    expect(screen.getByText(/initiating qos optimization/i)).toBeInTheDocument()
+    expect(screen.getByText(/consistency beats intensity when no one is watching/i)).toBeInTheDocument()
 
     await act(async () => {
-      vi.advanceTimersByTime(2_999)
-    })
-    expect(screen.queryByText(/running routine selection lattice/i)).not.toBeInTheDocument()
-
-    await act(async () => {
-      vi.advanceTimersByTime(1)
-    })
-    expect(screen.getByText(/running routine selection lattice/i)).toBeInTheDocument()
-
-    await act(async () => {
-      vi.advanceTimersByTime(2_999)
-    })
-    expect(screen.queryByText(/sealing architect blueprint/i)).not.toBeInTheDocument()
-
-    await act(async () => {
-      vi.advanceTimersByTime(1)
-    })
-    expect(screen.getByText(/sealing architect blueprint/i)).toBeInTheDocument()
-    expect(onComplete).not.toHaveBeenCalled()
-
-    await act(async () => {
-      vi.advanceTimersByTime(999)
+      vi.advanceTimersByTime(30_000)
     })
     expect(onComplete).not.toHaveBeenCalled()
-
-    await act(async () => {
-      vi.advanceTimersByTime(1)
-    })
-    expect(onComplete).toHaveBeenCalledTimes(1)
   })
 
-  it('fires 50ms haptic ticks for logs and a final heavy thud at completion', async () => {
-    const vibrateSpy = mockVibrate()
+  it('keeps planning mode completion semantics intact', async () => {
     const onComplete = vi.fn()
 
-    render(<ThinkingTerminal mode="onboarding" onComplete={onComplete} />)
+    render(<ThinkingTerminal mode="planning" plan={MOCK_PLAN} onComplete={onComplete} />)
 
     await act(async () => {
-      vi.advanceTimersByTime(10_000)
+      vi.advanceTimersByTime(2_160)
     })
 
-    expect(vibrateSpy).toHaveBeenCalledWith(50)
-    expect(vibrateSpy).toHaveBeenCalledWith(120)
     expect(onComplete).toHaveBeenCalledTimes(1)
   })
 })

@@ -15,10 +15,10 @@ describe('IronProtocolDB — Happy Path', () => {
     await db.delete()
   })
 
-  it('opens at schema version 11', async () => {
+  it('opens at schema version 13', async () => {
     db = new IronProtocolDB()
     await db.open()
-    expect(db.verno).toBe(11)
+    expect(db.verno).toBe(13)
   })
 
   it('exposes exercises, workouts, sets, settings, tempSessions, baselines, dailyTargets, and personalBests tables', async () => {
@@ -44,6 +44,7 @@ describe('IronProtocolDB — Happy Path', () => {
     expect(settings?.hasCompletedOnboarding).toBe(false)
     expect(settings?.preferredRoutineType).toBe('PPL')
     expect(settings?.daysPerWeek).toBe(3)
+    expect(settings?.activeFallbackPool).toEqual({})
   })
 })
 
