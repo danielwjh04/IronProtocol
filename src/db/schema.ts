@@ -66,6 +66,25 @@ export interface PersonalBest {
   flagged: boolean     // true = newly achieved, unread by the user
 }
 
+export type MuscleGroup =
+  | 'chest'
+  | 'back'
+  | 'legs'
+  | 'shoulders'
+  | 'arms'
+  | 'core'
+
+export interface RecoveryLog {
+  id: string
+  workoutId: string
+  loggedAt: number
+  sleepHours: number
+  sleepQuality: 1 | 2 | 3 | 4 | 5
+  stressLevel: 1 | 2 | 3 | 4 | 5
+  overallFatigue: 1 | 2 | 3 | 4 | 5
+  soreness: Partial<Record<MuscleGroup, 1 | 2 | 3 | 4 | 5>>
+}
+
 export type PurposeChip = 'strength' | 'hypertrophy' | 'fat-loss' | 'endurance' | 'health'
 
 export type V11Gender = 'female' | 'male' | 'non-binary' | 'prefer-not-to-say'
@@ -271,6 +290,7 @@ export class IronProtocolDB extends Dexie {
   baselines!: Dexie.Table<ExerciseBaseline, string>
   dailyTargets!: Dexie.Table<DailyTarget, string>
   personalBests!: Dexie.Table<PersonalBest, string>
+  recoveryLogs!: Dexie.Table<RecoveryLog, string>
 
   constructor() {
     super('IronProtocolDB')
@@ -577,6 +597,20 @@ export class IronProtocolDB extends Dexie {
             }
           })
       })
+
+    // Version 14 — adds recoveryLogs for post-session telemetry feeding the
+    // Recovery Auditor (Lab feature). Table starts empty; no data upgrade needed.
+    this.version(14).stores({
+      exercises:     'id, name, muscleGroup, tier, *tags',
+      workouts:      'id, date, routineType, sessionIndex',
+      sets:          'id, workoutId, exerciseId, orderIndex',
+      settings:      'id, preferredRoutineType',
+      tempSessions:  'id, updatedAt',
+      baselines:     'exerciseName',
+      dailyTargets:  'date',
+      personalBests: 'exerciseId',
+      recoveryLogs:  'id, workoutId, loggedAt',
+    })
 
     // New databases (created directly at latest version) skip migration
     // upgrade callbacks, so populate seeds the onboarding settings row.
