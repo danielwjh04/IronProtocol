@@ -77,7 +77,7 @@ export default function App() {
       {/* ── Core Ignition boot overlay ─────────────────────────────────── */}
       <AnimatePresence>
         {isIgniting && (
-          <CoreIgnition onComplete={() => setIsIgniting(false)} />
+          <CoreIgnition onComplete={() => setIsIgniting(false)} db={db} />
         )}
       </AnimatePresence>
 

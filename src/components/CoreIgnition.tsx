@@ -58,12 +58,12 @@ export default function CoreIgnition({ onComplete, db }: Props) {
   useEffect(() => {
     if (!db) return
     db.recoveryLogs.orderBy('loggedAt').reverse().limit(4).toArray()
-      .then(setRecoveryLogs).catch(() => {})
+      .then(setRecoveryLogs).catch((err) => { console.error('[CoreIgnition]', err) })
     db.workouts.orderBy('date').reverse().limit(4).toArray()
-      .then(setRecentWorkouts).catch(() => {})
+      .then(setRecentWorkouts).catch((err) => { console.error('[CoreIgnition]', err) })
     db.settings.get(APP_SETTINGS_ID).then((s) => {
       if (s?.v11PromptContract) setV11Contract(s.v11PromptContract)
-    }).catch(() => {})
+    }).catch((err) => { console.error('[CoreIgnition]', err) })
   }, [db])
 
   const { auditResult, hasLogs, isLabAvailable: labAvailable } = useRecoveryAudit(
@@ -168,11 +168,7 @@ export default function CoreIgnition({ onComplete, db }: Props) {
 
       {/* ── Recovery audit card ───────────────────────────────────────────── */}
       {hasLogs && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-4"
-        >
+        <div className="mb-4">
           <RecoveryAuditorCard
             auditResult={auditResult}
             isLabAvailable={labAvailable}
@@ -180,7 +176,7 @@ export default function CoreIgnition({ onComplete, db }: Props) {
               console.warn('[RecoveryAuditor] Arc review requested — not yet implemented')
             }}
           />
-        </motion.div>
+        </div>
       )}
     </motion.main>
   )
