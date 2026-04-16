@@ -8,8 +8,9 @@ import {
   type PlannedExercise,
   type PlannedWorkout,
 } from '../planner/autoPlanner'
-import type { Exercise, IronProtocolDB } from '../db/schema'
+import type { Exercise, ExerciseTier, IronProtocolDB, ReadonlyExercise, V11AppSettingsSchema } from '../db/schema'
 import { APP_SETTINGS_ID } from '../db/schema'
+import SemanticSwapDrawer from './SemanticSwapDrawer'
 import { getFunctionalInfo } from '../data/functionalMapping'
 
 interface Props {
@@ -361,6 +362,9 @@ export default function SessionBlueprint({
   const [isSwapPending, setIsSwapPending] = useState(false)
   const [isSwapLoading, setIsSwapLoading] = useState(false)
   const [isPacingUpdating, setIsPacingUpdating] = useState(false)
+  const [semanticSwapTarget, setSemanticSwapTarget] = useState<{ name: string; tier: ExerciseTier; muscleGroup: string } | null>(null)
+  const [exerciseDB, setExerciseDB] = useState<ReadonlyExercise[]>([])
+  const [v11Contract, setV11Contract] = useState<V11AppSettingsSchema | null>(null)
 
   const pacingRequestIdRef = useRef(0)
 
@@ -411,6 +415,13 @@ export default function SessionBlueprint({
   useEffect(() => {
     setWorkoutLengthMinutes(clampWorkoutLengthMinutes(timeAvailable))
   }, [timeAvailable])
+
+  useEffect(() => {
+    db.exercises.toArray().then((exs) => setExerciseDB(exs)).catch(() => {})
+    db.settings.get(APP_SETTINGS_ID).then((s) => {
+      if (s?.v11PromptContract) setV11Contract(s.v11PromptContract)
+    }).catch(() => {})
+  }, [db])
 
   async function regeneratePlanForInputs(
     nextDurationMinutes: number,
@@ -768,19 +779,37 @@ export default function SessionBlueprint({
                   </div>
                 </div>
 
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    void openSwapDrawer(card)
-                  }}
-                  aria-label={`Swap ${card.exercise.exerciseName}`}
-                  className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-electric/30 bg-electric/10 px-2.5 py-2 text-[11px] font-black uppercase tracking-[0.08em] text-electric hover:bg-electric/15"
-                >
-                  <Shuffle size={14} />
-                  Swap
-                </motion.button>
+                <div className="flex flex-col gap-1.5">
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      void openSwapDrawer(card)
+                    }}
+                    aria-label={`Swap ${card.exercise.exerciseName}`}
+                    className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-electric/30 bg-electric/10 px-2.5 py-2 text-[11px] font-black uppercase tracking-[0.08em] text-electric hover:bg-electric/15"
+                  >
+                    <Shuffle size={14} />
+                    Swap
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setSemanticSwapTarget({
+                        name: card.exercise.exerciseName,
+                        tier: card.exercise.tier,
+                        muscleGroup: '',
+                      })
+                    }}
+                    aria-label={`AI swap ${card.exercise.exerciseName}`}
+                    className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#ec4899]/30 bg-[#ec4899]/10 px-2.5 py-2 text-[11px] font-black uppercase tracking-[0.08em] text-[#ec4899] hover:bg-[#ec4899]/15"
+                  >
+                    AI
+                  </motion.button>
+                </div>
               </motion.div>
             </Reorder.Item>
           ))}
@@ -812,6 +841,28 @@ export default function SessionBlueprint({
           {loading ? 'Syncing Session...' : primaryActionLabel}
         </motion.button>
       )}
+
+      <AnimatePresence>
+        {semanticSwapTarget && (
+          <SemanticSwapDrawer
+            exercise={semanticSwapTarget}
+            exerciseDB={exerciseDB}
+            v11Contract={v11Contract}
+            onSwapConfirmed={(newName) => {
+              if (plan) {
+                const updatedExercises = plan.exercises.map((ex) =>
+                  ex.exerciseName === semanticSwapTarget.name
+                    ? { ...ex, exerciseName: newName }
+                    : ex,
+                )
+                onUpdatePlan({ ...plan, exercises: updatedExercises })
+              }
+              setSemanticSwapTarget(null)
+            }}
+            onClose={() => setSemanticSwapTarget(null)}
+          />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isSwapDrawerOpen && swapTarget && (
