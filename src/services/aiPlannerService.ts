@@ -24,7 +24,7 @@ export interface AIPlannedWeek {
 }
 
 export interface AIMacrocycleBlueprint {
-  durationWeeks: 12
+  durationWeeks: typeof MACROCYCLE_WEEKS
   weeks: AIPlannedWeek[]
 }
 
@@ -369,7 +369,7 @@ export function generateLocalMacrocycle(
 
   return {
     blueprint: {
-      durationWeeks: 12,
+      durationWeeks: MACROCYCLE_WEEKS,
       weeks,
     },
     fallbackPool: {
