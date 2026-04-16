@@ -22,6 +22,24 @@ const MUSCLE_GROUPS: { key: MuscleGroup; label: string }[] = [
 const RATING_OPTIONS = [1, 2, 3, 4, 5] as const
 type Rating = (typeof RATING_OPTIONS)[number]
 
+function RatingTiles({ value, onChange }: { value: Rating; onChange: (r: Rating) => void }) {
+  return (
+    <div className="flex gap-1.5">
+      {RATING_OPTIONS.map((n) => (
+        <button
+          key={n}
+          type="button"
+          onClick={() => onChange(n as Rating)}
+          className={`flex h-8 w-8 items-center justify-center rounded-md text-xs font-bold transition-colors
+            ${n <= value ? 'bg-[#3B71FE] text-white' : 'bg-[#1e2a45] text-zinc-500'}`}
+        >
+          {n}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props) {
   const [sleepHours, setSleepHours] = useState(7)
   const [sleepQuality, setSleepQuality] = useState<Rating>(3)
@@ -57,26 +75,10 @@ export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props
       }
       await db.recoveryLogs.add(log)
     } catch {
+    } finally {
+      setSaving(false)
     }
     onDone()
-  }
-
-  function RatingTiles({ value, onChange }: { value: Rating; onChange: (r: Rating) => void }) {
-    return (
-      <div className="flex gap-1.5">
-        {RATING_OPTIONS.map((n) => (
-          <button
-            key={n}
-            type="button"
-            onClick={() => onChange(n as Rating)}
-            className={`flex h-8 w-8 items-center justify-center rounded-md text-xs font-bold transition-colors
-              ${n <= value ? 'bg-[#3B71FE] text-white' : 'bg-[#1e2a45] text-zinc-500'}`}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-    )
   }
 
   return (
