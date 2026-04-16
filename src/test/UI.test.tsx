@@ -2,7 +2,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
+import 'fake-indexeddb/auto'
 import BottomNav from '../components/BottomNav'
+import RecoveryLogForm from '../components/RecoveryLogForm'
 import HomePage from '../pages/HomePage'
 import { APP_SETTINGS_ID, IronProtocolDB, TEMP_SESSION_ID } from '../db/schema'
 import { generateWorkoutBlueprint } from '../services/aiPlannerService'
@@ -594,5 +596,25 @@ describe('HomePage', () => {
     expect(screen.queryByPlaceholderText(/your name/i)).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: /resume active workout/i })).toBeInTheDocument()
     expect(screen.queryByText(/^Session Blueprint$/i)).not.toBeInTheDocument()
+  })
+})
+
+describe('RecoveryLogForm', () => {
+  it('renders all 6 muscle group soreness chips', () => {
+    render(
+      <RecoveryLogForm workoutId="wk-1" db={{} as IronProtocolDB} onDone={vi.fn()} onSkip={vi.fn()} />,
+    )
+    for (const group of ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core']) {
+      expect(screen.getByText(group)).toBeInTheDocument()
+    }
+  })
+
+  it('calls onSkip when skip link is clicked', () => {
+    const onSkip = vi.fn()
+    render(
+      <RecoveryLogForm workoutId="wk-1" db={{} as IronProtocolDB} onDone={vi.fn()} onSkip={onSkip} />,
+    )
+    fireEvent.click(screen.getByText(/skip/i))
+    expect(onSkip).toHaveBeenCalledOnce()
   })
 })
