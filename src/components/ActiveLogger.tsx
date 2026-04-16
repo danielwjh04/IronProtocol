@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -33,7 +34,7 @@ interface Props {
 
 type CompletedSet = TempSessionCompletedSet
 
-type Phase = 'active' | 'resting' | 'done'
+type Phase = 'active' | 'resting'
 
 function isDatabaseClosedError(error: unknown): boolean {
   return typeof error === 'object'
@@ -152,7 +153,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     setShowWhy(false)
   }, [currentExIndex])
 
-  // ── Load exercise DB + V11 contract for swap drawer ───────────────────────
   useEffect(() => {
     db.exercises.toArray().then((exs) => setExerciseDB(exs)).catch(() => {})
     db.settings.get(APP_SETTINGS_ID).then((s) => {
@@ -320,28 +320,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     }
 
     onDone?.()
-  }
-
-  // ── Done screen ───────────────────────────────────────────────────────────
-  if (phase === 'done') {
-    return (
-      <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col items-center justify-center gap-6 bg-[#0A0E1A] px-4 pb-28 pt-6 text-zinc-100">
-        <div className="rounded-3xl bg-gradient-to-br from-[#ec4899]/15 to-[#3B71FE]/15 p-[1px] w-full">
-          <motion.div whileTap={{ scale: 0.95 }} className="w-full rounded-3xl bg-[#0D1626] p-6 text-center">
-            <p className="text-3xl font-black text-white">Workout Complete!</p>
-            <p className="mt-2 text-zinc-400">{completedSets.length} sets committed.</p>
-          </motion.div>
-        </div>
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          type="button"
-          onClick={onDone}
-          className="h-16 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-xl font-black text-white shadow-[0_8px_24px_-8px_rgba(59,113,254,0.6)] transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
-        >
-          Back To Dashboard
-        </motion.button>
-      </main>
-    )
   }
 
   // ── Active / Resting screen ────────────────────────────────────────────────
@@ -581,7 +559,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
 
       <AnimatePresence>
         {swapTarget && (
-          <>
+          <Fragment key={swapTarget.name}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -598,7 +576,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
               }}
               onClose={() => setSwapTarget(null)}
             />
-          </>
+          </Fragment>
         )}
       </AnimatePresence>
 
