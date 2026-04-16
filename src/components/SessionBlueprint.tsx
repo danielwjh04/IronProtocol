@@ -801,10 +801,10 @@ export default function SessionBlueprint({
                       setSemanticSwapTarget({
                         name: card.exercise.exerciseName,
                         tier: card.exercise.tier,
-                        muscleGroup: '',
+                        muscleGroup: exerciseDB.find(e => e.id === card.exercise.exerciseId)?.muscleGroup ?? '',
                       })
                     }}
-                    aria-label={`AI swap ${card.exercise.exerciseName}`}
+                    aria-label={`AI match ${card.exercise.exerciseName}`}
                     className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#ec4899]/30 bg-[#ec4899]/10 px-2.5 py-2 text-[11px] font-black uppercase tracking-[0.08em] text-[#ec4899] hover:bg-[#ec4899]/15"
                   >
                     AI
@@ -844,23 +844,37 @@ export default function SessionBlueprint({
 
       <AnimatePresence>
         {semanticSwapTarget && (
-          <SemanticSwapDrawer
-            exercise={semanticSwapTarget}
-            exerciseDB={exerciseDB}
-            v11Contract={v11Contract}
-            onSwapConfirmed={(newName) => {
-              if (plan) {
-                const updatedExercises = plan.exercises.map((ex) =>
-                  ex.exerciseName === semanticSwapTarget.name
-                    ? { ...ex, exerciseName: newName }
-                    : ex,
-                )
-                onUpdatePlan({ ...plan, exercises: updatedExercises })
-              }
-              setSemanticSwapTarget(null)
-            }}
-            onClose={() => setSemanticSwapTarget(null)}
-          />
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/60"
+              onClick={() => setSemanticSwapTarget(null)}
+            />
+            <SemanticSwapDrawer
+              exercise={semanticSwapTarget}
+              exerciseDB={exerciseDB}
+              v11Contract={v11Contract}
+              onSwapConfirmed={(newName) => {
+                if (plan && semanticSwapTarget) {
+                  const matchedExercise = exerciseDB.find(e => e.name === newName)
+                  const updatedExercises = plan.exercises.map((ex) =>
+                    ex.exerciseName === semanticSwapTarget.name
+                      ? {
+                          ...ex,
+                          exerciseName: newName,
+                          exerciseId: matchedExercise?.id ?? ex.exerciseId,
+                        }
+                      : ex,
+                  )
+                  onUpdatePlan({ ...plan, exercises: updatedExercises })
+                }
+                setSemanticSwapTarget(null)
+              }}
+              onClose={() => setSemanticSwapTarget(null)}
+            />
+          </>
         )}
       </AnimatePresence>
 
