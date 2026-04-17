@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, act } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
 import { UIModeProvider, useUIMode } from '../context/UIModeContext'
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
