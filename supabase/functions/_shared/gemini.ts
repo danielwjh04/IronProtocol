@@ -83,5 +83,9 @@ Return ONLY: {"split_type":"Full Body"|"PPL"|"Upper-Lower","slots":[{"movement_p
   const payload = await res.json()
   const raw = payload.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
   const cleaned = raw.replace(/```json?/g, '').replace(/```/g, '').trim()
-  return { ...JSON.parse(cleaned), id: 'gemini-generated', goal_tags: [intent.goal] }
+  try {
+    return { ...JSON.parse(cleaned), id: 'gemini-generated', goal_tags: [intent.goal] }
+  } catch {
+    throw new Error(`Template generation failed: ${raw}`)
+  }
 }

@@ -15,7 +15,7 @@ export async function requireAuth(
   if (!jwt) throw new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
   const { data: { user }, error } = await supabase.auth.getUser(jwt)
   if (error || !user) throw new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
-  return user
+  return { id: user.id }
 }
 
 export function json(data: unknown, status = 200): Response {

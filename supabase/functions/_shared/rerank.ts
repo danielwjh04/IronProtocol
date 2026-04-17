@@ -1,4 +1,4 @@
-interface TemplateRow {
+export interface TemplateRow {
   id: string
   split_type: string
   goal_tags: string[]

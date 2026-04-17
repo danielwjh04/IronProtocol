@@ -1,15 +1,15 @@
 import { REP_SCHEMES, type GoalKey, type Tier } from './repSchemes.ts'
 
 interface Slot { movement_pattern: string; tier: Tier; intensity_band: string }
+type RepScheme = typeof REP_SCHEMES[GoalKey][Tier]
+
 interface ExerciseRow {
-  id: string; name: string; movement_pattern: string; tier: number
+  id: string; name: string; movement_pattern: string; tier: Tier
   safety_flags: string[]; equipment: string[]; intensity_band: string; swap_group_id: string
 }
 export interface ResolvedExercise extends ExerciseRow {
   repScheme: RepScheme
 }
-
-type RepScheme = typeof REP_SCHEMES[GoalKey][Tier]
 
 export function composePlan(
   template: { id: string; split_type: string; slots: Slot[] },
@@ -37,7 +37,7 @@ export function composePlan(
     usedIds.add(candidate.id)
     return {
       ...candidate,
-      repScheme: REP_SCHEMES[goal][slot.tier as Tier],
+      repScheme: REP_SCHEMES[goal][slot.tier],
     }
   })
 }
