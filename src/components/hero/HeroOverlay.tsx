@@ -5,7 +5,9 @@ import { useCombatTrigger } from '../../hooks/useCombatTrigger'
 import { useTrackProgress } from '../../hooks/useTrackProgress'
 import { CombatCanvas } from './CombatCanvas'
 import { ImpactStars } from './ImpactStars'
+import { MasterworkModal } from './MasterworkModal'
 import { ObsidianStairs } from './ObsidianStairs'
+import { SummitModal } from './SummitModal'
 
 interface BurstState {
   key:       string
@@ -43,6 +45,8 @@ export function HeroOverlay() {
     <>
       {track.active === 'power' && <ObsidianStairs progress={track.power} />}
       <CombatCanvas />
+      <SummitModal />
+      <MasterworkModal />
       <AnimatePresence>
         {burst && (
           <ImpactStars
