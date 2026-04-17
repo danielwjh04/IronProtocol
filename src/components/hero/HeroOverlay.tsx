@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { useUIMode } from '../../context/UIModeContext'
 import { useCombatTrigger } from '../../hooks/useCombatTrigger'
+import { useTrackProgress } from '../../hooks/useTrackProgress'
 import { CombatCanvas } from './CombatCanvas'
 import { ImpactStars } from './ImpactStars'
+import { ObsidianStairs } from './ObsidianStairs'
 
 interface BurstState {
   key:       string
@@ -15,6 +17,7 @@ interface BurstState {
 export function HeroOverlay() {
   const { uiMode, pendingBash } = useUIMode()
   useCombatTrigger()
+  const track = useTrackProgress()
   const [burst, setBurst] = useState<BurstState | null>(null)
   const lastBurstId = useRef<string | null>(null)
 
@@ -38,6 +41,7 @@ export function HeroOverlay() {
 
   return (
     <>
+      {track.active === 'power' && <ObsidianStairs progress={track.power} />}
       <CombatCanvas />
       <AnimatePresence>
         {burst && (
