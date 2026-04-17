@@ -1,449 +1,740 @@
-# Graph Report - .  (2026-04-15)
+# Graph Report - .  (2026-04-17)
 
 ## Corpus Check
-- 83 files · ~68,241 words
+- 129 files · ~111,364 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 415 nodes · 538 edges · 61 communities detected
-- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 50 edges (avg confidence: 0.84)
+- 387 nodes · 433 edges · 106 communities detected
+- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 37 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Planner Core Algorithm|Planner Core Algorithm]]
-- [[_COMMUNITY_Active Session Logger|Active Session Logger]]
-- [[_COMMUNITY_Blueprint Builder Functions|Blueprint Builder Functions]]
-- [[_COMMUNITY_Architecture & Project Config|Architecture & Project Config]]
-- [[_COMMUNITY_QoS & Swap Engine|QoS & Swap Engine]]
-- [[_COMMUNITY_AI Service & Prompt Building|AI Service & Prompt Building]]
-- [[_COMMUNITY_Onboarding Wizard UI|Onboarding Wizard UI]]
-- [[_COMMUNITY_Metrics & Personal Bests|Metrics & Personal Bests]]
-- [[_COMMUNITY_Onboarding Step Automation|Onboarding Step Automation]]
-- [[_COMMUNITY_Home & Macrocycle Scheduling|Home & Macrocycle Scheduling]]
-- [[_COMMUNITY_Macrocycle Persistence|Macrocycle Persistence]]
-- [[_COMMUNITY_Smart Swap & Exercise Order|Smart Swap & Exercise Order]]
-- [[_COMMUNITY_Backup & Data Export|Backup & Data Export]]
-- [[_COMMUNITY_Blueprint Test Contracts|Blueprint Test Contracts]]
-- [[_COMMUNITY_Database Schema & Init|Database Schema & Init]]
-- [[_COMMUNITY_Progress Indicator|Progress Indicator]]
-- [[_COMMUNITY_V11 Design Sprint Plan|V11 Design Sprint Plan]]
-- [[_COMMUNITY_Social & Brand Icons|Social & Brand Icons]]
-- [[_COMMUNITY_UI Integration Tests|UI Integration Tests]]
-- [[_COMMUNITY_Import Validation|Import Validation]]
-- [[_COMMUNITY_Boot Ignition Screen|Boot Ignition Screen]]
-- [[_COMMUNITY_Workout Start Haptics|Workout Start Haptics]]
-- [[_COMMUNITY_History Page|History Page]]
-- [[_COMMUNITY_Macrocycle Test Fixtures|Macrocycle Test Fixtures]]
-- [[_COMMUNITY_Exercise Card UI|Exercise Card UI]]
-- [[_COMMUNITY_Exercise Card Internals|Exercise Card Internals]]
-- [[_COMMUNITY_AI Planner Service Tests|AI Planner Service Tests]]
-- [[_COMMUNITY_Auto Planner Tests|Auto Planner Tests]]
-- [[_COMMUNITY_Exercise Service Tests|Exercise Service Tests]]
-- [[_COMMUNITY_Temp Session Schema|Temp Session Schema]]
-- [[_COMMUNITY_App Shell & Nav|App Shell & Nav]]
-- [[_COMMUNITY_Baseline Calibration Card|Baseline Calibration Card]]
-- [[_COMMUNITY_Brand Visual Assets|Brand Visual Assets]]
-- [[_COMMUNITY_Vite Build Config|Vite Build Config]]
-- [[_COMMUNITY_Exercise Constants|Exercise Constants]]
-- [[_COMMUNITY_ESLint Config|ESLint Config]]
-- [[_COMMUNITY_Vite Config|Vite Config]]
-- [[_COMMUNITY_Vitest Config|Vitest Config]]
-- [[_COMMUNITY_Write Chunk JS Util|Write Chunk JS Util]]
-- [[_COMMUNITY_Write Chunk Py Util|Write Chunk Py Util]]
-- [[_COMMUNITY_App Entry Point|App Entry Point]]
-- [[_COMMUNITY_Vite Env Types|Vite Env Types]]
-- [[_COMMUNITY_Draft Blueprint Review Gantry|Draft Blueprint Review Gantry]]
-- [[_COMMUNITY_FeaturePulse Tooltip|FeaturePulse Tooltip]]
-- [[_COMMUNITY_FunctionalWhy Panel|FunctionalWhy Panel]]
-- [[_COMMUNITY_Dexie DB Module|Dexie DB Module]]
-- [[_COMMUNITY_Personal Bests Service|Personal Bests Service]]
-- [[_COMMUNITY_ActiveLogger Tests|ActiveLogger Tests]]
-- [[_COMMUNITY_DB Tests|DB Tests]]
-- [[_COMMUNITY_DraftBlueprintReview Tests|DraftBlueprintReview Tests]]
-- [[_COMMUNITY_SessionBlueprint Tests|SessionBlueprint Tests]]
-- [[_COMMUNITY_Test Setup|Test Setup]]
-- [[_COMMUNITY_ThinkingTerminal Tests|ThinkingTerminal Tests]]
-- [[_COMMUNITY_Onboarding Read-First Rule|Onboarding Read-First Rule]]
-- [[_COMMUNITY_TDD Mandate|TDD Mandate]]
-- [[_COMMUNITY_Quality Gates|Quality Gates]]
-- [[_COMMUNITY_SessionBlueprint Rationale|SessionBlueprint Rationale]]
-- [[_COMMUNITY_React Logo Asset|React Logo Asset]]
-- [[_COMMUNITY_ExerciseCard Model Interface|ExerciseCard Model Interface]]
-- [[_COMMUNITY_Onboarding Terminal Copy|Onboarding Terminal Copy]]
-- [[_COMMUNITY_Preflight Audit Interface|Preflight Audit Interface]]
+- [[_COMMUNITY_Community 0|Community 0]]
+- [[_COMMUNITY_Community 1|Community 1]]
+- [[_COMMUNITY_Community 2|Community 2]]
+- [[_COMMUNITY_Community 3|Community 3]]
+- [[_COMMUNITY_Community 4|Community 4]]
+- [[_COMMUNITY_Community 5|Community 5]]
+- [[_COMMUNITY_Community 6|Community 6]]
+- [[_COMMUNITY_Community 7|Community 7]]
+- [[_COMMUNITY_Community 8|Community 8]]
+- [[_COMMUNITY_Community 9|Community 9]]
+- [[_COMMUNITY_Community 10|Community 10]]
+- [[_COMMUNITY_Community 11|Community 11]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
+- [[_COMMUNITY_Community 15|Community 15]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
+- [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 24|Community 24]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 38|Community 38]]
+- [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 40|Community 40]]
+- [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
+- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 44|Community 44]]
+- [[_COMMUNITY_Community 45|Community 45]]
+- [[_COMMUNITY_Community 46|Community 46]]
+- [[_COMMUNITY_Community 47|Community 47]]
+- [[_COMMUNITY_Community 48|Community 48]]
+- [[_COMMUNITY_Community 49|Community 49]]
+- [[_COMMUNITY_Community 50|Community 50]]
+- [[_COMMUNITY_Community 51|Community 51]]
+- [[_COMMUNITY_Community 52|Community 52]]
+- [[_COMMUNITY_Community 53|Community 53]]
+- [[_COMMUNITY_Community 54|Community 54]]
+- [[_COMMUNITY_Community 55|Community 55]]
+- [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
+- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 59|Community 59]]
+- [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
+- [[_COMMUNITY_Community 62|Community 62]]
+- [[_COMMUNITY_Community 63|Community 63]]
+- [[_COMMUNITY_Community 64|Community 64]]
+- [[_COMMUNITY_Community 65|Community 65]]
+- [[_COMMUNITY_Community 66|Community 66]]
+- [[_COMMUNITY_Community 67|Community 67]]
+- [[_COMMUNITY_Community 68|Community 68]]
+- [[_COMMUNITY_Community 69|Community 69]]
+- [[_COMMUNITY_Community 70|Community 70]]
+- [[_COMMUNITY_Community 71|Community 71]]
+- [[_COMMUNITY_Community 72|Community 72]]
+- [[_COMMUNITY_Community 73|Community 73]]
+- [[_COMMUNITY_Community 74|Community 74]]
+- [[_COMMUNITY_Community 75|Community 75]]
+- [[_COMMUNITY_Community 76|Community 76]]
+- [[_COMMUNITY_Community 77|Community 77]]
+- [[_COMMUNITY_Community 78|Community 78]]
+- [[_COMMUNITY_Community 79|Community 79]]
+- [[_COMMUNITY_Community 80|Community 80]]
+- [[_COMMUNITY_Community 81|Community 81]]
+- [[_COMMUNITY_Community 82|Community 82]]
+- [[_COMMUNITY_Community 83|Community 83]]
+- [[_COMMUNITY_Community 84|Community 84]]
+- [[_COMMUNITY_Community 85|Community 85]]
+- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Community 87|Community 87]]
+- [[_COMMUNITY_Community 88|Community 88]]
+- [[_COMMUNITY_Community 89|Community 89]]
+- [[_COMMUNITY_Community 90|Community 90]]
+- [[_COMMUNITY_Community 91|Community 91]]
+- [[_COMMUNITY_Community 92|Community 92]]
+- [[_COMMUNITY_Community 93|Community 93]]
+- [[_COMMUNITY_Community 94|Community 94]]
+- [[_COMMUNITY_Community 95|Community 95]]
+- [[_COMMUNITY_Community 96|Community 96]]
+- [[_COMMUNITY_Community 97|Community 97]]
+- [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 99|Community 99]]
+- [[_COMMUNITY_Community 100|Community 100]]
+- [[_COMMUNITY_Community 101|Community 101]]
+- [[_COMMUNITY_Community 102|Community 102]]
+- [[_COMMUNITY_Community 103|Community 103]]
+- [[_COMMUNITY_Community 104|Community 104]]
+- [[_COMMUNITY_Community 105|Community 105]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `planRoutineWorkoutPure()` - 16 edges
-2. `IronProtocol Complete System Specification v5.1` - 14 edges
-3. `Database Schema and IndexedDB Constraints (V3)` - 12 edges
-4. `ActiveLogger Component` - 11 edges
-5. `generateWorkoutBlueprint()` - 9 edges
-6. `IronProtocol README` - 9 edges
-7. `Auto Planner Algorithm Logic (V3)` - 9 edges
-8. `PlannedExercise Interface` - 9 edges
-9. `generateLocalMacrocycle()` - 8 edges
-10. `IronProtocolDB (Dexie Schema)` - 8 edges
+2. `json()` - 9 edges
+3. `generateLocalMacrocycle()` - 8 edges
+4. `fetchGemini()` - 8 edges
+5. `generateWorkoutBlueprint()` - 7 edges
+6. `getSmartSwapAlternatives()` - 7 edges
+7. `handleSubmit()` - 6 edges
+8. `openSwapDrawer()` - 6 edges
+9. `useUIMode()` - 6 edges
+10. `getExerciseCategory()` - 6 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Macrocycle Gantry Handoff Test` --conceptually_related_to--> `Gantry (Offline Execution) Mode`  [INFERRED]
-  src/test/UI.test.tsx → raw/vision.md
-- `Dexie.js Schema Spec` --conceptually_related_to--> `Temp Draft Resumption and Discard Test`  [INFERRED]
-  raw/vision.md → src/test/UI.test.tsx
-- `AI Architect Pipeline Spec` --conceptually_related_to--> `ThinkingTerminal Pending State Test`  [INFERRED]
-  raw/vision.md → src/test/UI.test.tsx
-- `Identity Splash Onboarding Spec` --conceptually_related_to--> `IdentitySplash V11 Capture Gate Test`  [INFERRED]
-  raw/vision.md → src/test/UI.test.tsx
-- `Task 1: Export Time Estimation Utilities from autoPlanner` --references--> `estimateExerciseDurationSeconds()`  [EXTRACTED]
-  docs/superpowers/plans/2026-04-12-lab-vs-gantry-ux-pivot.md → src\planner\autoPlanner.ts
-
-## Hyperedges (group relationships)
-- **Exercise Data Triad: Schema plus Seed plus FunctionalMapping** — schema_exercise, db_seedexercises, data_functionalmapping [INFERRED 0.80]
-- **IronProtocol Service Layer (ActivityManager + PersonalBestsService + ExerciseService)** — activitymanager_activitymanager, personalbestsservice_personalbestsservice, exerciseservice_getsmartswap [INFERRED 0.85]
-- **IronProtocol Tech Stack** — claudemd_stack, readme_framer_motion, readme_zod, readme_offline_resilience [INFERRED 0.85]
-- **Auto Planner Core Algorithms** — auto_planner_tier_hierarchy, auto_planner_trimming_algo, auto_planner_double_progression, auto_planner_modulo, auto_planner_bodyweight_logic [EXTRACTED 1.00]
-- **Dexie.js Database Tables** — dexie_settings_table, dexie_tempsessions_table, dexie_baselines_table, dexie_exercises_table, dexie_workouts_table, dexie_sets_table [EXTRACTED 1.00]
-- **Electric Blue OOP Upgrade Tasks** — plan_120m_qos_ceiling, plan_readonly_types, plan_iworkoutaction, plan_schema_v10, plan_services_layer, plan_instant_draft_persistence [EXTRACTED 1.00]
-- **Onboarding Feature Triad (Plan + Spec + Tests)** — plan_onboarding_goal, spec_onboarding_context, test_identitysplash_suite [INFERRED 0.85]
-- **IronProtocol Branding Assets** — favicon_ironprotocol_logo, assets_hero_png, icons_svg_sprite [INFERRED 0.82]
-- **Social Platform Icon Set** — icons_bluesky_icon, icons_discord_icon, icons_github_icon, icons_x_icon [INFERRED 0.90]
-- **React and Vite Framework Branding Assets** — assets_react_svg, assets_vite_svg [INFERRED 0.92]
-- **Blueprint â†’ Review â†’ Ignition â†’ ActiveLogger App Flow** — identitysplash_component, sessionblueprint_component, coreignition_component, activelogger_component [INFERRED 0.90]
-- **Core Planner Data Structures** — autoplanner_plannedworkout, autoplanner_plannedexercise, autoplanner_goaltier, autoplanner_tier_rep_ranges, autoplanner_baselineweight [EXTRACTED 1.00]
-- **QoS Time-Budget Enforcement System** — autoplanner_qos, autoplanner_calcestimatedminutes, sessionblueprint_qos, identitysplash_v11contract [INFERRED 0.85]
-- **Onboarding Pipeline (Identity â†’ Blueprint â†’ Macrocycle)** — identitysplash_component, identitysplash_handlesubmit, service_aiplanner, service_macrocyclepersistence, thinkingterminal_component [EXTRACTED 1.00]
-- **T1 Baseline Calibration System** — calibratebaselines_component, calibratebaselines_t1compounds, calibratebaselines_handlesave, autoplanner_baselineweight, autoplanner_routineinputsnapshot [INFERRED 0.85]
-- **Educational Mode + Form Guard System** — functionalwhy_component, functionalwhy_formguard, functionalwhy_anatomyvideo, functionalwhy_anatomyplaceholder, data_functionalmapping [EXTRACTED 1.00]
-- **Session Draft Persistence System** — activelogger_persistdraft, activelogger_handlecompleteset, validation_tempsession, db_schema_tempsession, db_schema_ironprotocoldb [EXTRACTED 1.00]
-- **Swap Correctness Contract (preserve sets/reps, update pool, no ghost)** — sessionblueprinttest_QuickSwapDrawer, sessionblueprinttest_FallbackPoolBidirectional, sessionblueprinttest_QoSPreviewGhostPrevention, sessionblueprinttest_SlotFootprintPreservation [INFERRED 0.90]
-- **Onboarding Flow Test Coverage (V11 gate, steps, ThinkingTerminal)** — uitest_IdentitySplashV11Gate, uitest_V11PromptContract, uitest_ThinkingTerminalPending, uitest_MockCoreIgnition [INFERRED 0.88]
-- **Lab vs Gantry Architecture (vision, CLAUDE.md, macrocycle test)** — vision_LabOnlineAI, vision_GantryOffline, claudemd_LabGantryArchitecture, uitest_MacrocycleGantryHandoff [INFERRED 0.87]
+- `handleSubmit()` --calls--> `vibrate()`  [INFERRED]
+  src\components\IdentitySplash.tsx → src\components\WorkoutIgnition.tsx
+- `handleSubmit()` --calls--> `generateWorkoutBlueprint()`  [INFERRED]
+  src\components\IdentitySplash.tsx → src\services\aiPlannerService.ts
+- `buildUpdatedPlanFromCards()` --calls--> `calcEstimatedMinutes()`  [INFERRED]
+  src\components\SessionBlueprint.tsx → src\planner\autoPlanner.ts
+- `regeneratePlanForInputs()` --calls--> `generateWorkout()`  [INFERRED]
+  src\components\SessionBlueprint.tsx → src\planner\autoPlanner.ts
+- `CombatCanvas()` --calls--> `useUIMode()`  [INFERRED]
+  src\components\hero\CombatCanvas.tsx → src\context\UIModeContext.tsx
 
 ## Communities
 
-### Community 0 - "Planner Core Algorithm"
-Cohesion: 0.06
-Nodes (53): Baseline Anchor Calibration (startWeight from baselines table), Bodyweight Logic Smart Input Rule (isBodyweight tag, weight=0), Auto Planner Algorithm Logic (V3), Double Progression Mathematical Model, Planner Input Parameters (routineType, totalWorkouts, timeLimit, trainingGoal, baselines), Modulo Boundary Enforcement (sessionIndex = totalWorkouts % cycleLength), Tiered Exercise Hierarchy (T1 Anchor, T2 Volume, T3 Finisher), Iterative Trimming Algorithm (Phase Aâ†’Bâ†’C) (+45 more)
+### Community 0 - "Community 0"
+Cohesion: 0.11
+Nodes (31): applyGoalPrescription(), baselineRepGoal(), bodyRegion(), buildCategoryExpansionQueue(), buildCoreBlueprintByTier(), buildVolumeExpansionCandidates(), calcEstimatedMinutes(), classifyExpansionCandidate() (+23 more)
 
-### Community 1 - "Active Session Logger"
-Cohesion: 0.07
-Nodes (36): ActiveLogger Component, Fallback GPP Exercise (Bodyweight Circuit), handleCancelWorkout(), handleCompleteSet(), isDatabaseClosedError(), persistDraft(), ActiveLogger Phase State (active/resting/done), Rest Timer SVG (Circular Countdown) (+28 more)
-
-### Community 2 - "Blueprint Builder Functions"
-Cohesion: 0.1
-Nodes (35): applyGoalPrescription(), baselineRepGoal(), bodyRegion(), buildCategoryExpansionQueue(), buildCoreBlueprintByTier(), buildVolumeExpansionCandidates(), calcEstimatedMinutes(), classifyExpansionCandidate() (+27 more)
-
-### Community 3 - "Architecture & Project Config"
-Cohesion: 0.07
-Nodes (34): Blueprint Flow Contract, Lab vs Gantry Architecture Decision, CLAUDE.md Project Instructions, Ruflo Swarm Agent Configuration, V11 AppSettings Schema Constraint, GEMINI.md Project Instructions, Knowledge Graph Report (2026-04-14), BottomNav Navigation Links Test (+26 more)
-
-### Community 4 - "QoS & Swap Engine"
+### Community 1 - "Community 1"
 Cohesion: 0.12
 Nodes (29): applyQosToPlan(), buildUpdatedPlanFromCards(), clampWorkoutLengthMinutes(), cloneCard(), cloneCards(), cloneExercise(), clonePlan(), createInstanceId() (+21 more)
 
-### Community 5 - "AI Service & Prompt Building"
-Cohesion: 0.19
-Nodes (20): addUniqueSeed(), buildDayBuckets(), buildExpandedDaySeeds(), buildGlobalFallbackPool(), buildSystemPrompt(), canonicalizeExerciseName(), createExerciseSelectionResponseSchema(), extractCandidateText() (+12 more)
+### Community 2 - "Community 2"
+Cohesion: 0.09
+Nodes (9): handleSubmit(), mapPrimaryFocusToPurposeChip(), resolveSubmitErrorMessage(), createPlaceholderExercise(), isLikelyPrimaryCompound(), persistMacrocycle(), startOfTodayTimestamp(), ensureIronExerciseLibrary() (+1 more)
 
-### Community 6 - "Onboarding Wizard UI"
-Cohesion: 0.15
-Nodes (9): V11AppSettingsSchema Type, IdentitySplash Component (Onboarding Wizard), handleSubmit(), mapPrimaryFocusToPurposeChip(), resolveSubmitErrorMessage(), 6-Step Onboarding Flow (Identity/Baselines/Experience/Equipment/Goals/Injuries), V11AppSettingsSchema Prompt Contract, aiPlannerService (generateWorkoutBlueprint) (+1 more)
+### Community 3 - "Community 3"
+Cohesion: 0.11
+Nodes (12): json(), embedText(), GEMINI_KEY(), generateTemplateWithGemini(), parseIntentWithGemini(), embedText(), exerciseText(), run() (+4 more)
 
-### Community 7 - "Metrics & Personal Bests"
-Cohesion: 0.18
-Nodes (7): ActivityManager Class, IDashboardMetrics Interface, IProgressShape Interface, PersonalBestsService.checkAndUpdate(), PB Detection Algorithm (Weight-Primary, Reps-Secondary), PersonalBestsService Class, PersonalBestsService Test Suite
+### Community 4 - "Community 4"
+Cohesion: 0.12
+Nodes (13): CoreIgnition(), extractCandidateText(), extractJsonBlock(), fetchGemini(), isLabAvailable(), logGeminiFailure(), buildAuditPrompt(), generateRecoveryAudit() (+5 more)
 
-### Community 8 - "Onboarding Step Automation"
+### Community 5 - "Community 5"
+Cohesion: 0.12
+Nodes (9): CombatCanvas(), drawAttacker(), drawFrame(), drawMob(), HeroOverlay(), ModeToggleButton(), useUIMode(), useCombined() (+1 more)
+
+### Community 6 - "Community 6"
+Cohesion: 0.25
+Nodes (14): addUniqueSeed(), buildDayBuckets(), buildExpandedDaySeeds(), buildGlobalFallbackPool(), buildSystemPrompt(), canonicalizeExerciseName(), createExerciseSelectionResponseSchema(), formatValue() (+6 more)
+
+### Community 7 - "Community 7"
+Cohesion: 0.24
+Nodes (13): applySmartSwapGuards(), dedupeExercises(), getAlternatives(), getExercisesInSameCategory(), getSmartSwapAlternatives(), getSwapRepTarget(), isCompoundExercise(), normalizeExerciseName() (+5 more)
+
+### Community 8 - "Community 8"
 Cohesion: 0.33
 Nodes (9): advanceToBaselinesStep(), advanceToEquipmentStep(), advanceToExperienceStep(), advanceToGoalsStep(), advanceToInjuriesStepWithStrengthGoal(), fillBaselinesStep(), fillEquipmentStep(), fillExperienceAndLogisticsStep() (+1 more)
 
-### Community 9 - "Home & Macrocycle Scheduling"
+### Community 9 - "Community 9"
 Cohesion: 0.31
 Nodes (5): cloneExercises(), clonePlan(), isMacrocycleScheduledWorkout(), loadNextScheduledWorkoutPlan(), resolveScheduledDayLabel()
 
-### Community 10 - "Macrocycle Persistence"
-Cohesion: 0.28
-Nodes (4): createPlaceholderExercise(), isLikelyPrimaryCompound(), persistMacrocycle(), startOfTodayTimestamp()
-
-### Community 11 - "Smart Swap & Exercise Order"
-Cohesion: 0.25
-Nodes (6): PlannedExercise Interface, getAlternatives(), getExercisesInSameCategory(), getSmartSwapAlternatives(), SmartSwapGuards Interface, reconcileExerciseCards (Reorder-safe Identity Match)
-
-### Community 12 - "Backup & Data Export"
-Cohesion: 0.36
-Nodes (4): buildBackupPayload(), downloadBackupJson(), exportBackup(), serializeBackup()
-
-### Community 13 - "Blueprint Test Contracts"
-Cohesion: 0.32
-Nodes (8): Fallback Pool Bidirectional Update, QoS 75 Min Budget Trim, QoS Preview Ghost Prevention, Quick Swap Drawer Behavior, SessionBlueprint Test Suite, Slot Set-Rep Footprint Preservation on Swap, Blueprint Shortening on Time Reduction, Training Goal Toggle Immediate Remap
-
-### Community 14 - "Database Schema & Init"
+### Community 10 - "Community 10"
 Cohesion: 0.33
 Nodes (3): createDefaultV11PromptContract(), IronProtocolDB, normalizeV11PromptContract()
 
-### Community 15 - "Progress Indicator"
-Cohesion: 0.29
+### Community 11 - "Community 11"
+Cohesion: 0.33
+Nodes (1): ActivityManager
+
+### Community 12 - "Community 12"
+Cohesion: 0.33
+Nodes (1): PersonalBestsService
+
+### Community 13 - "Community 13"
+Cohesion: 0.33
 Nodes (1): ProgressIndicator
 
-### Community 16 - "V11 Design Sprint Plan"
-Cohesion: 0.29
-Nodes (7): Foundation Onboarding Plan Goal (v11 schema + Electric Navy + IdentitySplash rebuild), Task 1: Inject Electric Navy @theme Tokens, Task 2: Extend AppSettings Schema to v11, Task 3: Rebuild IdentitySplash with Full Onboarding Form, Onboarding Design Spec Context (Dexie v10 partial IdentitySplash extension), Electric Navy @theme Token Spec Table, V11 Migration Rationale (No data migration, optional fields, new version block)
-
-### Community 17 - "Social & Brand Icons"
-Cohesion: 0.33
-Nodes (7): Bluesky Social Icon, Discord Social Icon, Documentation Icon (Purple Code File), GitHub Icon, Social Profile Icon (User with Star Badge), SVG Icon Sprite Sheet, X (Twitter) Social Icon
-
-### Community 18 - "UI Integration Tests"
+### Community 14 - "Community 14"
 Cohesion: 0.4
 Nodes (2): buildCompleteSettings(), buildCompleteV11PromptContract()
 
-### Community 19 - "Import Validation"
-Cohesion: 0.4
-Nodes (0): 
+### Community 15 - "Community 15"
+Cohesion: 0.6
+Nodes (3): handleNavigate(), handlePopState(), resolveRoute()
 
-### Community 20 - "Boot Ignition Screen"
-Cohesion: 0.4
-Nodes (3): Boot Sequence Log Lines, CoreIgnition Component, PulsingBarbell()
+### Community 16 - "Community 16"
+Cohesion: 0.7
+Nodes (4): buildBackupPayload(), downloadBackupJson(), exportBackup(), serializeBackup()
 
-### Community 21 - "Workout Start Haptics"
+### Community 17 - "Community 17"
 Cohesion: 0.5
 Nodes (0): 
 
-### Community 22 - "History Page"
+### Community 18 - "Community 18"
 Cohesion: 0.5
 Nodes (0): 
 
-### Community 23 - "Macrocycle Test Fixtures"
+### Community 19 - "Community 19"
+Cohesion: 0.83
+Nodes (3): progressedWeight(), seedSessionHistory(), sessionTimestamp()
+
+### Community 20 - "Community 20"
 Cohesion: 0.5
 Nodes (0): 
 
-### Community 24 - "Exercise Card UI"
-Cohesion: 0.5
-Nodes (4): ExerciseCard Component, ExerciseData Interface, History Drawer (AnimatePresence Expand), LoggedSet Interface
-
-### Community 25 - "Exercise Card Internals"
+### Community 21 - "Community 21"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 26 - "AI Planner Service Tests"
+### Community 22 - "Community 22"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 27 - "Auto Planner Tests"
+### Community 23 - "Community 23"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 28 - "Exercise Service Tests"
+### Community 24 - "Community 24"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 29 - "Temp Session Schema"
+### Community 25 - "Community 25"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 30 - "App Shell & Nav"
-Cohesion: 1.0
-Nodes (2): App Root Component, BottomNav Component
+### Community 26 - "Community 26"
+Cohesion: 0.67
+Nodes (0): 
 
-### Community 31 - "Baseline Calibration Card"
+### Community 27 - "Community 27"
+Cohesion: 0.67
+Nodes (0): 
+
+### Community 28 - "Community 28"
+Cohesion: 0.67
+Nodes (0): 
+
+### Community 29 - "Community 29"
+Cohesion: 0.67
+Nodes (0): 
+
+### Community 30 - "Community 30"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 32 - "Brand Visual Assets"
-Cohesion: 1.0
-Nodes (2): Hero Image (Isometric Layered Slab, Purple/Violet Gradient Theme), IronProtocol Favicon (Lightning Bolt Logo)
-
-### Community 33 - "Vite Build Config"
-Cohesion: 1.0
-Nodes (2): Vite Build Tool, Vite Logo SVG
-
-### Community 34 - "Exercise Constants"
-Cohesion: 1.0
-Nodes (2): GPP_EXERCISES (Empty Pool Fallback), TIER_REP_RANGES (T1/T2/T3 Min-Max Reps)
-
-### Community 35 - "ESLint Config"
+### Community 31 - "Community 31"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 36 - "Vite Config"
+### Community 32 - "Community 32"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 37 - "Vitest Config"
-Cohesion: 1.0
-Nodes (1): Vitest Config
-
-### Community 38 - "Write Chunk JS Util"
+### Community 33 - "Community 33"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 39 - "Write Chunk Py Util"
+### Community 34 - "Community 34"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 40 - "App Entry Point"
+### Community 35 - "Community 35"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 41 - "Vite Env Types"
+### Community 36 - "Community 36"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 42 - "Draft Blueprint Review Gantry"
-Cohesion: 1.0
-Nodes (1): DraftBlueprintReview Gantry
-
-### Community 43 - "FeaturePulse Tooltip"
-Cohesion: 1.0
-Nodes (1): FeaturePulse Tooltip Component
-
-### Community 44 - "FunctionalWhy Panel"
+### Community 37 - "Community 37"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 45 - "Dexie DB Module"
+### Community 38 - "Community 38"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 46 - "Personal Bests Service"
-Cohesion: 1.0
-Nodes (1): PersonalBestsService
-
-### Community 47 - "ActiveLogger Tests"
+### Community 39 - "Community 39"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 48 - "DB Tests"
+### Community 40 - "Community 40"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 49 - "DraftBlueprintReview Tests"
+### Community 41 - "Community 41"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 50 - "SessionBlueprint Tests"
+### Community 42 - "Community 42"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 51 - "Test Setup"
+### Community 43 - "Community 43"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 52 - "ThinkingTerminal Tests"
+### Community 44 - "Community 44"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 53 - "Onboarding Read-First Rule"
+### Community 45 - "Community 45"
 Cohesion: 1.0
-Nodes (1): Step 1: Orientation â€” Read CLAUDE.md and Docs First
+Nodes (0): 
 
-### Community 54 - "TDD Mandate"
+### Community 46 - "Community 46"
 Cohesion: 1.0
-Nodes (1): TDD Mandate (Failing Tests Before Implementation)
+Nodes (0): 
 
-### Community 55 - "Quality Gates"
+### Community 47 - "Community 47"
 Cohesion: 1.0
-Nodes (1): Quality Gates (typecheck + lint, zero errors)
+Nodes (0): 
 
-### Community 56 - "SessionBlueprint Rationale"
+### Community 48 - "Community 48"
 Cohesion: 1.0
-Nodes (1): Rationale: SessionBlueprint absorbs all interactive editing; ReviewBlueprint is purely presentational
+Nodes (0): 
 
-### Community 57 - "React Logo Asset"
+### Community 49 - "Community 49"
 Cohesion: 1.0
-Nodes (1): React Framework Logo (Cyan Atom Iconify SVG)
+Nodes (0): 
 
-### Community 58 - "ExerciseCard Model Interface"
+### Community 50 - "Community 50"
 Cohesion: 1.0
-Nodes (1): ExerciseCardModel Interface
+Nodes (0): 
 
-### Community 59 - "Onboarding Terminal Copy"
+### Community 51 - "Community 51"
 Cohesion: 1.0
-Nodes (1): Onboarding Terminal Lines (Architect Engine)
+Nodes (0): 
 
-### Community 60 - "Preflight Audit Interface"
+### Community 52 - "Community 52"
 Cohesion: 1.0
-Nodes (1): PreflightAuditReport Interface
+Nodes (0): 
+
+### Community 53 - "Community 53"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 54 - "Community 54"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 55 - "Community 55"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 56 - "Community 56"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 57 - "Community 57"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 58 - "Community 58"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 59 - "Community 59"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 60 - "Community 60"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 61 - "Community 61"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 62 - "Community 62"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 63 - "Community 63"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 64 - "Community 64"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 65 - "Community 65"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 66 - "Community 66"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 67 - "Community 67"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 68 - "Community 68"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 69 - "Community 69"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 70 - "Community 70"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 71 - "Community 71"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 72 - "Community 72"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 73 - "Community 73"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 74 - "Community 74"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 75 - "Community 75"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 76 - "Community 76"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 77 - "Community 77"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 78 - "Community 78"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 79 - "Community 79"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 80 - "Community 80"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 81 - "Community 81"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 82 - "Community 82"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 83 - "Community 83"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 84 - "Community 84"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 85 - "Community 85"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 86 - "Community 86"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 87 - "Community 87"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 88 - "Community 88"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 89 - "Community 89"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 90 - "Community 90"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 91 - "Community 91"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 92 - "Community 92"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 93 - "Community 93"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 94 - "Community 94"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 95 - "Community 95"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 96 - "Community 96"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 97 - "Community 97"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 98 - "Community 98"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 99 - "Community 99"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 100 - "Community 100"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 101 - "Community 101"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 102 - "Community 102"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 103 - "Community 103"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 104 - "Community 104"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 105 - "Community 105"
+Cohesion: 1.0
+Nodes (0): 
 
 ## Knowledge Gaps
-- **66 isolated node(s):** `Vitest Config`, `App Root Component`, `BottomNav Component`, `DraftBlueprintReview Gantry`, `FeaturePulse Tooltip Component` (+61 more)
-  These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `App Shell & Nav`** (2 nodes): `App Root Component`, `BottomNav Component`
+- **Thin community `Community 30`** (2 nodes): `BottomNav()`, `BottomNav.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Baseline Calibration Card`** (2 nodes): `CalibrateBaselinesCard()`, `CalibrateBaselinesCard.tsx`
+- **Thin community `Community 31`** (2 nodes): `CalibrateBaselinesCard()`, `CalibrateBaselinesCard.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Brand Visual Assets`** (2 nodes): `Hero Image (Isometric Layered Slab, Purple/Violet Gradient Theme)`, `IronProtocol Favicon (Lightning Bolt Logo)`
+- **Thin community `Community 32`** (2 nodes): `DataOwnershipCard()`, `DataOwnershipCard.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite Build Config`** (2 nodes): `Vite Build Tool`, `Vite Logo SVG`
+- **Thin community `Community 33`** (2 nodes): `FeaturePulse()`, `FeaturePulse.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Exercise Constants`** (2 nodes): `GPP_EXERCISES (Empty Pool Fallback)`, `TIER_REP_RANGES (T1/T2/T3 Min-Max Reps)`
+- **Thin community `Community 34`** (2 nodes): `buildStars()`, `ImpactStars.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ESLint Config`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 35`** (2 nodes): `Wrapper()`, `ActiveLogger.test.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite Config`** (1 nodes): `vite.config.ts`
+- **Thin community `Community 36`** (2 nodes): `baseHookState()`, `SemanticSwapDrawer.test.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vitest Config`** (1 nodes): `Vitest Config`
+- **Thin community `Community 37`** (2 nodes): `makeV11Contract()`, `semanticSwapService.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Write Chunk JS Util`** (1 nodes): `write_chunk.js`
+- **Thin community `Community 38`** (2 nodes): `flush()`, `setCommitEvents.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Write Chunk Py Util`** (1 nodes): `write_chunk.py`
+- **Thin community `Community 39`** (2 nodes): `UIModeContext.test.tsx`, `wrapper()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `App Entry Point`** (1 nodes): `main.tsx`
+- **Thin community `Community 40`** (2 nodes): `validateImportPayload.test.ts`, `encode()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite Env Types`** (1 nodes): `vite-env.d.ts`
+- **Thin community `Community 41`** (2 nodes): `validateImportPayload()`, `importSchema.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Draft Blueprint Review Gantry`** (1 nodes): `DraftBlueprintReview Gantry`
+- **Thin community `Community 42`** (2 nodes): `tempSessionSchema.ts`, `parseTempSessionDraft()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `FeaturePulse Tooltip`** (1 nodes): `FeaturePulse Tooltip Component`
+- **Thin community `Community 43`** (2 nodes): `rerank()`, `rerank.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `FunctionalWhy Panel`** (1 nodes): `FunctionalWhy.tsx`
+- **Thin community `Community 44`** (2 nodes): `seedExercises()`, `seed_exercises.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Dexie DB Module`** (1 nodes): `db.ts`
+- **Thin community `Community 45`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Personal Bests Service`** (1 nodes): `PersonalBestsService`
+- **Thin community `Community 46`** (1 nodes): `vite.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ActiveLogger Tests`** (1 nodes): `ActiveLogger.test.tsx`
+- **Thin community `Community 47`** (1 nodes): `vitest.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `DB Tests`** (1 nodes): `db.test.ts`
+- **Thin community `Community 48`** (1 nodes): `vite-env.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `DraftBlueprintReview Tests`** (1 nodes): `DraftBlueprintReview.test.tsx`
+- **Thin community `Community 49`** (1 nodes): `DraftBlueprintReview.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `SessionBlueprint Tests`** (1 nodes): `SessionBlueprint.test.tsx`
+- **Thin community `Community 50`** (1 nodes): `FunctionalWhy.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Test Setup`** (1 nodes): `setup.ts`
+- **Thin community `Community 51`** (1 nodes): `RecoveryAuditorCard.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ThinkingTerminal Tests`** (1 nodes): `ThinkingTerminal.test.tsx`
+- **Thin community `Community 52`** (1 nodes): `db.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Onboarding Read-First Rule`** (1 nodes): `Step 1: Orientation â€” Read CLAUDE.md and Docs First`
+- **Thin community `Community 53`** (1 nodes): `activityManager.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `TDD Mandate`** (1 nodes): `TDD Mandate (Failing Tests Before Implementation)`
+- **Thin community `Community 54`** (1 nodes): `backup.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Quality Gates`** (1 nodes): `Quality Gates (typecheck + lint, zero errors)`
+- **Thin community `Community 55`** (1 nodes): `CombatCanvas.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `SessionBlueprint Rationale`** (1 nodes): `Rationale: SessionBlueprint absorbs all interactive editing; ReviewBlueprint is purely presentational`
+- **Thin community `Community 56`** (1 nodes): `db.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `React Logo Asset`** (1 nodes): `React Framework Logo (Cyan Atom Iconify SVG)`
+- **Thin community `Community 57`** (1 nodes): `DraftBlueprintReview.test.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ExerciseCard Model Interface`** (1 nodes): `ExerciseCardModel Interface`
+- **Thin community `Community 58`** (1 nodes): `geminiClient.test.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Onboarding Terminal Copy`** (1 nodes): `Onboarding Terminal Lines (Architect Engine)`
+- **Thin community `Community 59`** (1 nodes): `ImpactStars.test.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Preflight Audit Interface`** (1 nodes): `PreflightAuditReport Interface`
+- **Thin community `Community 60`** (1 nodes): `importSchema.test.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 61`** (1 nodes): `Integration.test.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 62`** (1 nodes): `personalBestsService.test.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 63`** (1 nodes): `RecoveryAuditorCard.test.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 64`** (1 nodes): `SessionBlueprint.test.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 65`** (1 nodes): `setup.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 66`** (1 nodes): `tempSessionSchema.test.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 67`** (1 nodes): `ThinkingTerminal.test.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 68`** (1 nodes): `useRecoveryAudit.test.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 69`** (1 nodes): `useSemanticSwap.test.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 70`** (1 nodes): `WorkoutIgnition.test.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 71`** (1 nodes): `index.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 72`** (1 nodes): `index.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 73`** (1 nodes): `index.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 74`** (1 nodes): `safety.test.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 75`** (1 nodes): `CLAUDE.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 76`** (1 nodes): `GEMINI.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 77`** (1 nodes): `init.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 78`** (1 nodes): `README.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 79`** (1 nodes): `TODO.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 80`** (1 nodes): `auto_planner_logic.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 81`** (1 nodes): `dexie_schema_rules.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 82`** (1 nodes): `import_validation.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 83`** (1 nodes): `routine_config.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 84`** (1 nodes): `ui_guidelines.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 85`** (1 nodes): `2026-04-11-electric-blue-oop-upgrade.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 86`** (1 nodes): `2026-04-11-foundation-onboarding.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 87`** (1 nodes): `2026-04-12-lab-vs-gantry-ux-pivot.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 88`** (1 nodes): `2026-04-16-gemini-semantic-layer.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 89`** (1 nodes): `2026-04-17-hero-mode-heavy-bash.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 90`** (1 nodes): `2026-04-17-hero-mode.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 91`** (1 nodes): `2026-04-17-nlp-backend.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 92`** (1 nodes): `2026-04-17-nlp-frontend.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 93`** (1 nodes): `2026-04-11-foundation-onboarding-design.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 94`** (1 nodes): `2026-04-16-gemini-semantic-layer-design.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 95`** (1 nodes): `2026-04-17-hero-mode-design.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 96`** (1 nodes): `2026-04-17-natural-language-planning-design.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 97`** (1 nodes): `vision.md`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 98`** (1 nodes): `favicon.svg`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 99`** (1 nodes): `icons.svg`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 100`** (1 nodes): `hero.png`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 101`** (1 nodes): `react.svg`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 102`** (1 nodes): `vite.svg`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 103`** (1 nodes): `back-squat-correct.webm`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 104`** (1 nodes): `back-squat-mistake.webm`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 105`** (1 nodes): `deadlift-mistake.webm`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SessionBlueprint Component` connect `Active Session Logger` to `Blueprint Builder Functions`, `Smart Swap & Exercise Order`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
-- **Why does `calcEstimatedMinutes()` connect `Blueprint Builder Functions` to `Active Session Logger`, `Smart Swap & Exercise Order`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
-- **Why does `IronProtocolDB (Dexie Schema)` connect `Active Session Logger` to `Onboarding Wizard UI`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **What connects `Vitest Config`, `App Root Component`, `BottomNav Component` to the rest of the system?**
-  _66 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Planner Core Algorithm` be split into smaller, more focused modules?**
-  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
-- **Should `Active Session Logger` be split into smaller, more focused modules?**
-  _Cohesion score 0.07 - nodes in this community are weakly interconnected._
-- **Should `Blueprint Builder Functions` be split into smaller, more focused modules?**
-  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
+- **Why does `generateWorkout()` connect `Community 0` to `Community 1`, `Community 2`?**
+  _High betweenness centrality (0.120) - this node is a cross-community bridge._
+- **Why does `handleSubmit()` connect `Community 2` to `Community 6`?**
+  _High betweenness centrality (0.117) - this node is a cross-community bridge._
+- **Are the 8 inferred relationships involving `json()` (e.g. with `fetchGemini()` and `embedText()`) actually correct?**
+  _`json()` has 8 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 4 inferred relationships involving `fetchGemini()` (e.g. with `generateWorkoutBlueprint()` and `json()`) actually correct?**
+  _`fetchGemini()` has 4 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 2 inferred relationships involving `generateWorkoutBlueprint()` (e.g. with `handleSubmit()` and `fetchGemini()`) actually correct?**
+  _`generateWorkoutBlueprint()` has 2 INFERRED edges - model-reasoned connections that need verification._
+- **Should `Community 0` be split into smaller, more focused modules?**
+  _Cohesion score 0.11 - nodes in this community are weakly interconnected._
+- **Should `Community 1` be split into smaller, more focused modules?**
+  _Cohesion score 0.12 - nodes in this community are weakly interconnected._

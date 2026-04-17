@@ -1,10 +1,13 @@
 import type {
+  Exercise,
+  ExerciseTier,
   V11AppSettingsSchema,
   V11SpecificLiftTarget,
 } from '../db/schema'
 import { GOAL_TIER_PRESCRIPTIONS } from '../planner/autoPlanner'
-import { z } from 'zod'
-import { fetchGemini } from './geminiClient'
+import { db as ironDB } from '../db/db'
+import { getEmbedding } from './localAIService'
+import { cosineSimilarity } from '../utils/vectorMath'
 
 export interface AIPlannedExercise {
   plannedExerciseId: string
@@ -68,18 +71,6 @@ const AI_EXERCISE_SELECTION_INTERFACE = [
   '',
   'type AIExerciseSelectionResponse = AIExerciseSelection[]',
 ].join('\n')
-
-const aiExerciseSelectionSchema = z.object({
-  workoutTitle: z.string().min(1),
-  primaryExercise: z.string().min(1),
-  muscleGroup: z.string().min(1),
-  tier: z.enum(['T1', 'T2', 'T3']),
-  fallbacks: z.array(z.string().min(1)).length(EXACT_FALLBACKS_PER_PRIMARY),
-})
-
-function createExerciseSelectionResponseSchema(expectedPrimaryCount: number) {
-  return z.array(aiExerciseSelectionSchema).length(expectedPrimaryCount)
-}
 
 
 const EXERCISE_NAME_ALIASES: Record<string, string> = {
@@ -472,17 +463,75 @@ export function buildSystemPrompt(settings: V11AppSettingsSchema): string {
   ].join('\n')
 }
 
-export async function generateWorkoutBlueprint(settings: V11AppSettingsSchema): Promise<AIGeneratedMacrocycle> {
-  const daysPerWeek = resolveTargetDaysPerWeek(settings)
-  const expectedPrimaryCount = daysPerWeek * AI_PRIMARY_EXERCISES_PER_DAY
-  const systemPrompt = buildSystemPrompt(settings)
+const NUMERIC_TIER_TO_AI: Record<ExerciseTier, AIExerciseTier> = {
+  1: 'T1',
+  2: 'T2',
+  3: 'T3',
+}
 
-  const selections = await fetchGemini(
-    systemPrompt,
-    createExerciseSelectionResponseSchema(expectedPrimaryCount),
-    { temperature: 0.2 },
+const GOAL_QUERY_TEXT: Record<string, string> = {
+  hypertrophy: 'muscle hypertrophy size bodybuilding volume',
+  strength: 'strength power compound heavy barbell',
+  endurance: 'endurance muscular stamina high rep cardio',
+  'specific-lift-target': 'powerlifting strength peak specific lift',
+}
+
+async function findExercisesForGoal(settings: V11AppSettingsSchema): Promise<AIExerciseSelection[]> {
+  const focus = settings.primaryGoals.primaryFocus
+  const goalText = GOAL_QUERY_TEXT[focus] ?? focus
+  const goalEmbedding = await getEmbedding(goalText)
+
+  const exercises = await ironDB.exercises.toArray()
+  const withEmbeddings = exercises.filter((e): e is Exercise & { embedding: number[] } =>
+    Array.isArray(e.embedding) && e.embedding.length > 0,
   )
 
+  if (withEmbeddings.length === 0) {
+    throw new Error('No exercises with embeddings found. Run seedEmbeddings() before onboarding.')
+  }
+
+  const scored = withEmbeddings
+    .map((exercise) => ({ exercise, score: cosineSimilarity(goalEmbedding, exercise.embedding) }))
+    .sort((a, b) => b.score - a.score)
+
+  const byMuscleGroup: Record<string, Exercise[]> = {}
+  for (const { exercise } of scored) {
+    const group = exercise.muscleGroup
+    if (!byMuscleGroup[group]) {
+      byMuscleGroup[group] = []
+    }
+    byMuscleGroup[group].push(exercise)
+  }
+
+  const daysPerWeek = resolveTargetDaysPerWeek(settings)
+  const needed = daysPerWeek * AI_PRIMARY_EXERCISES_PER_DAY
+  const topExercises = scored.slice(0, needed)
+  const usedIds = new Set<string>()
+  const selections: AIExerciseSelection[] = []
+
+  for (const { exercise } of topExercises) {
+    usedIds.add(exercise.id)
+    const fallbacks = (byMuscleGroup[exercise.muscleGroup] ?? [])
+      .filter((e) => !usedIds.has(e.id))
+      .slice(0, EXACT_FALLBACKS_PER_PRIMARY)
+      .map((e) => e.name)
+    while (fallbacks.length < EXACT_FALLBACKS_PER_PRIMARY) {
+      fallbacks.push(exercise.name)
+    }
+    selections.push({
+      workoutTitle: `${exercise.muscleGroup} Focus`,
+      primaryExercise: exercise.name,
+      muscleGroup: exercise.muscleGroup,
+      tier: NUMERIC_TIER_TO_AI[exercise.tier as ExerciseTier] ?? 'T2',
+      fallbacks,
+    })
+  }
+
+  return selections
+}
+
+export async function generateWorkoutBlueprint(settings: V11AppSettingsSchema): Promise<AIGeneratedMacrocycle> {
+  const selections = await findExercisesForGoal(settings)
   const canonicalized = selections.map((selection) => ({
     workoutTitle: selection.workoutTitle.trim(),
     primaryExercise: canonicalizeExerciseName(selection.primaryExercise),
@@ -490,6 +539,5 @@ export async function generateWorkoutBlueprint(settings: V11AppSettingsSchema): 
     tier: selection.tier,
     fallbacks: selection.fallbacks.map((f) => canonicalizeExerciseName(f.trim())),
   }))
-
   return generateLocalMacrocycle(canonicalized, settings)
 }

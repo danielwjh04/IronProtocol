@@ -4,9 +4,9 @@ import { fetchGemini } from './geminiClient'
 import { canonicalizeExerciseName } from './aiPlannerService'
 
 export const swapResultSchema = z.object({
-  exerciseName: z.string().min(1),
+  name: z.string().min(1),
   muscleGroup: z.string().min(1),
-  tier: z.enum(['T1', 'T2', 'T3']),
+  tier: z.enum(['T1', 'T2', 'T3']).transform((t): ExerciseTier => parseInt(t[1], 10) as ExerciseTier),
   reason: z.string().min(1),
   confidence: z.enum(['high', 'medium', 'low']),
 })
@@ -38,7 +38,7 @@ export function buildSwapPrompt(
     '',
     '[OUTPUT CONTRACT]',
     'Return strict JSON only — one object matching exactly:',
-    '{ "exerciseName": string, "muscleGroup": string, "tier": "T1"|"T2"|"T3", "reason": string, "confidence": "high"|"medium"|"low" }',
+    '{ "name": string, "muscleGroup": string, "tier": "T1"|"T2"|"T3", "reason": string, "confidence": "high"|"medium"|"low" }',
     'reason: one sentence explaining the biomechanical justification.',
     'confidence: "high" if the swap clearly satisfies the constraint, "medium" if reasonable, "low" if uncertain.',
     '',
@@ -76,6 +76,6 @@ export async function generateSemanticSwap(
   const result = await fetchGemini(prompt, swapResultSchema, { temperature: 0.3, maxOutputTokens: 512 })
   return {
     ...result,
-    exerciseName: canonicalizeExerciseName(result.exerciseName),
+    name: canonicalizeExerciseName(result.name),
   }
 }

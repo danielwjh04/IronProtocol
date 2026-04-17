@@ -65,9 +65,9 @@ describe('SemanticSwapDrawer', () => {
       baseHookState({
         status: 'result',
         swapResult: {
-          exerciseName: 'Leg Press',
+          name: 'Leg Press',
           muscleGroup: 'legs',
-          tier: 'T1' as const,
+          tier: 1 as const,
           reason: 'Good swap.',
           confidence: 'high' as const,
         },
@@ -91,9 +91,9 @@ describe('SemanticSwapDrawer', () => {
       baseHookState({
         status: 'result',
         swapResult: {
-          exerciseName: 'Leg Press',
+          name: 'Leg Press',
           muscleGroup: 'legs',
-          tier: 'T1' as const,
+          tier: 1 as const,
           reason: 'Good.',
           confidence: 'high' as const,
         },

@@ -66,7 +66,7 @@ describe('buildSwapPrompt', () => {
 describe('swapResultSchema', () => {
   it('accepts a valid SwapResult', () => {
     const result = swapResultSchema.safeParse({
-      exerciseName: 'Leg Press',
+      name: 'Leg Press',
       muscleGroup: 'legs',
       tier: 'T1',
       reason: 'Isolates quads without spinal load.',
@@ -75,9 +75,15 @@ describe('swapResultSchema', () => {
     expect(result.success).toBe(true)
   })
 
+  it('transforms tier string to numeric ExerciseTier', () => {
+    expect(swapResultSchema.safeParse({ name: 'A', muscleGroup: 'legs', tier: 'T1', reason: 'r', confidence: 'high' }).data?.tier).toBe(1)
+    expect(swapResultSchema.safeParse({ name: 'A', muscleGroup: 'legs', tier: 'T2', reason: 'r', confidence: 'high' }).data?.tier).toBe(2)
+    expect(swapResultSchema.safeParse({ name: 'A', muscleGroup: 'legs', tier: 'T3', reason: 'r', confidence: 'high' }).data?.tier).toBe(3)
+  })
+
   it('rejects missing reason field', () => {
     const result = swapResultSchema.safeParse({
-      exerciseName: 'Leg Press',
+      name: 'Leg Press',
       muscleGroup: 'legs',
       tier: 'T1',
       confidence: 'high',
@@ -87,7 +93,7 @@ describe('swapResultSchema', () => {
 
   it('rejects invalid confidence value', () => {
     const result = swapResultSchema.safeParse({
-      exerciseName: 'Leg Press',
+      name: 'Leg Press',
       muscleGroup: 'legs',
       tier: 'T1',
       reason: 'Good.',

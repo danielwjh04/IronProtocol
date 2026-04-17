@@ -12,6 +12,7 @@ Flow: Blueprint -> Review -> Ignition -> ActiveLogger
 - Imports: Named only. No wildcards. Remove unused.
 - Content: Use V11 AppSettings Schema constraints.
 - Code Style: Zero inline comments. Clean naming > docs.
+- Git: Never include any `Co-authored-by:` trailer for Claude in commit messages. If a commit message contains `Co-authored-by: Claude`, rewrite the message before push.
 - Context: Only analyze files explicitly tagged with @.
 - Ref: graphify-out/GRAPH_REPORT.md (Read only on request).
 - Sessions: If >3 turns, suggest /compact.

@@ -10,6 +10,14 @@ export interface Exercise {
   mediaRef: string
   tags: string[]
   tier: ExerciseTier // 1=T1, 2=T2, 3=T3
+  embedding?: number[]
+}
+
+export interface Plan {
+  id: string
+  name: string
+  description: string
+  embedding?: number[]
 }
 
 // ReadonlyExercise is used at consumption boundaries (planner, services) where

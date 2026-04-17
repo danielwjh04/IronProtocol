@@ -20,9 +20,9 @@ const mockIsLabAvailable = vi.mocked(isLabAvailable)
 const mockGenerateSemanticSwap = vi.mocked(generateSemanticSwap)
 
 const MOCK_RESULT: SwapResult = {
-  exerciseName: 'Leg Press',
+  name: 'Leg Press',
   muscleGroup: 'legs',
-  tier: 'T1',
+  tier: 1,
   reason: 'Isolates quads without spinal load.',
   confidence: 'high',
 }

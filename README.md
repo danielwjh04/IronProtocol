@@ -25,6 +25,18 @@ Moving beyond static digital logbooks, IronProtocol acts as a dynamic session or
 2. Install dependencies: `npm install`
 3. Start the development server: `npm run dev`
 
+## 🔐 Git Push Guard
+
+IronProtocol blocks any push that includes a commit message trailer containing `Co-authored-by: Claude`.
+
+Run this once per clone to activate the tracked hook:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+If a push is blocked, rewrite the commit message to remove the trailer and push again.
+
 ## 🔒 Data Ownership
 
 Your data belongs to you. IronProtocol features an export utility that generates a portable JSON backup of your entire workout history, baseline calibrations, and personal records.

@@ -30,7 +30,7 @@ export default function SemanticSwapDrawer({ exercise, exerciseDB, v11Contract, 
 
   function handleConfirm() {
     if (swapResult) {
-      onSwapConfirmed(swapResult.exerciseName)
+      onSwapConfirmed(swapResult.name)
     }
   }
 
@@ -118,14 +118,14 @@ export default function SemanticSwapDrawer({ exercise, exerciseDB, v11Contract, 
                 className="rounded-2xl border border-[#22c55e]/20 bg-[#0D1626] p-4"
               >
                 <div className="mb-2 flex items-start justify-between gap-2">
-                  <span className="text-base font-black text-white">{swapResult.exerciseName}</span>
+                  <span className="text-base font-black text-white">{swapResult.name}</span>
                   <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-bold ${CONFIDENCE_STYLES[swapResult.confidence]}`}>
                     {swapResult.confidence} confidence
                   </span>
                 </div>
                 <div className="mb-3 flex gap-2">
                   <span className="rounded-full border border-[#3B71FE]/40 px-2 py-0.5 text-[10px] font-bold text-[#3B71FE]">
-                    {swapResult.tier}
+                    {TIER_LABELS[swapResult.tier]}
                   </span>
                   <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] text-zinc-400">
                     {swapResult.muscleGroup}
