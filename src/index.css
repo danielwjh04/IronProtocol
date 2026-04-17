@@ -107,3 +107,31 @@ input[type="range"]::-moz-range-thumb {
 input[type="range"]:active::-moz-range-thumb {
   transform: scale(1.2);
 }
+
+
+@keyframes pixel-dissolve {
+  0% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+  25% {
+    clip-path: inset(0 50% 0 0);
+    opacity: 0.7;
+  }
+  50% {
+    clip-path: inset(0 50% 50% 0);
+    opacity: 0.4;
+  }
+  75% {
+    clip-path: inset(50% 50% 0 0);
+    opacity: 0.2;
+  }
+  100% {
+    clip-path: inset(50% 50% 50% 50%);
+    opacity: 0;
+  }
+}
+
+.pixel-fade {
+  animation: pixel-dissolve 0.5s steps(8) forwards;
+}

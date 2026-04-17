@@ -15,6 +15,7 @@ import {
 } from '../db/schema'
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 import { PersonalBestsService } from '../services/personalBestsService'
+import { useCombatTrigger } from '../hooks/useCombatTrigger'
 import FeaturePulse from './FeaturePulse'
 import FunctionalWhy from './FunctionalWhy'
 import SemanticSwapDrawer from './SemanticSwapDrawer'
@@ -67,6 +68,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       }]
 
   const pbService = useMemo(() => new PersonalBestsService(db), [db])
+  const { triggerBash } = useCombatTrigger()
 
   const resumableDraft = (() => {
     if (!initialDraft) {
@@ -198,6 +200,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   }
 
   async function handleCompleteSet() {
+    triggerBash(weight, reps)
     try {
       const newSet: CompletedSet = {
         exerciseId: currentEx.exerciseId,

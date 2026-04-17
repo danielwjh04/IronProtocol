@@ -4,7 +4,12 @@ import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/re
 import '@testing-library/jest-dom/vitest'
 import { IronProtocolDB, TEMP_SESSION_ID } from '../db/schema'
 import ActiveLogger from '../components/ActiveLogger'
+import { UIModeProvider } from '../context/UIModeContext'
 import type { PlannedWorkout } from '../planner/autoPlanner'
+
+function Wrapper({ children }: { children: React.ReactNode }) {
+  return <UIModeProvider>{children}</UIModeProvider>
+}
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 //   The logger receives a fully-resolved PlannedWorkout from the auto-planner.
@@ -82,7 +87,7 @@ describe('ActiveLogger', () => {
   // sees exactly what weight and reps to lift — zero decision fatigue.
 
   it('displays the first exercise name with pre-filled weight and reps from the plan', () => {
-    render(<ActiveLogger plan={BENCH_PLAN} db={db} />)
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} />, { wrapper: Wrapper })
 
     expect(screen.getByRole('heading', { name: 'Bench Press' })).toBeInTheDocument()
 
@@ -96,7 +101,7 @@ describe('ActiveLogger', () => {
   // resting state and show the upcoming set number so they know what's next.
 
   it('shows a resting indicator and advances to Set 2 after completing Set 1', async () => {
-    render(<ActiveLogger plan={BENCH_PLAN} db={db} />)
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} />, { wrapper: Wrapper })
 
     fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
 
@@ -116,7 +121,7 @@ describe('ActiveLogger', () => {
   })
 
   it('shows per-exercise logs in the exercise card with next-set guidance beside the goal', async () => {
-    render(<ActiveLogger plan={BENCH_PLAN} db={db} />)
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} />, { wrapper: Wrapper })
 
     expect(screen.getByText(/next:\s*set\s*1\s*of\s*3\s*\(3 left\)/i)).toBeInTheDocument()
 
@@ -133,7 +138,7 @@ describe('ActiveLogger', () => {
   })
 
   it('writes a temp session draft after each completed set', async () => {
-    render(<ActiveLogger plan={BENCH_PLAN} db={db} />)
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} />, { wrapper: Wrapper })
 
     fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
 
@@ -168,7 +173,7 @@ describe('ActiveLogger', () => {
     const onDone = vi.fn()
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true)
 
-    render(<ActiveLogger plan={BENCH_PLAN} db={db} onDone={onDone} />)
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} onDone={onDone} />, { wrapper: Wrapper })
 
     fireEvent.click(screen.getByRole('button', { name: /cancel workout/i }))
 
@@ -190,7 +195,7 @@ describe('ActiveLogger', () => {
   // touched if the user fails the set").
 
   it('accepts manual weight and reps adjustments before completing a set', () => {
-    render(<ActiveLogger plan={BENCH_PLAN} db={db} />)
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} />, { wrapper: Wrapper })
 
     const weightInput = screen.getByDisplayValue('80')
     const repsInput   = screen.getByDisplayValue('10')
@@ -224,7 +229,7 @@ describe('ActiveLogger', () => {
       updatedAt: Date.now(),
     })
 
-    render(<ActiveLogger plan={SINGLE_SET_PLAN} db={db} />)
+    render(<ActiveLogger plan={SINGLE_SET_PLAN} db={db} />, { wrapper: Wrapper })
 
     fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
 
@@ -269,6 +274,7 @@ describe('ActiveLogger', () => {
           updatedAt: Date.now(),
         }}
       />,
+      { wrapper: Wrapper },
     )
 
     expect(screen.getByText(/set\s*2\s*of\s*3/i, { selector: 'header p' })).toBeInTheDocument()
@@ -282,14 +288,14 @@ describe('ActiveLogger', () => {
   // can type their real starting weight without manually tapping the field.
 
   it('auto-focuses the weight input when the first exercise has no history (Baseline goal)', () => {
-    render(<ActiveLogger plan={BASELINE_PLAN} db={db} />)
+    render(<ActiveLogger plan={BASELINE_PLAN} db={db} />, { wrapper: Wrapper })
 
     const weightInput = screen.getByDisplayValue('20')
     expect(weightInput).toHaveFocus()
   })
 
   it('weight input is editable (not readOnly) so users can type their real weight', () => {
-    render(<ActiveLogger plan={BASELINE_PLAN} db={db} />)
+    render(<ActiveLogger plan={BASELINE_PLAN} db={db} />, { wrapper: Wrapper })
 
     const weightInput = screen.getByDisplayValue('20')
     expect(weightInput).not.toHaveAttribute('readOnly')

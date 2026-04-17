@@ -4,6 +4,9 @@ import BottomNav from './components/BottomNav'
 import CalibrateBaselinesCard from './components/CalibrateBaselinesCard'
 import CoreIgnition from './components/CoreIgnition'
 import DataOwnershipCard from './components/DataOwnershipCard'
+import { HeroOverlay } from './components/hero/HeroOverlay'
+import { ModeToggleButton } from './components/hero/ModeToggleButton'
+import { UIModeProvider } from './context/UIModeContext'
 import { db } from './db/db'
 import HistoryPage from './pages/HistoryPage'
 import HomePage from './pages/HomePage'
@@ -73,21 +76,26 @@ export default function App() {
   }, [route])
 
   return (
-    <div className="relative min-h-svh bg-navy">
-      {/* ── Core Ignition boot overlay ─────────────────────────────────── */}
-      <AnimatePresence>
-        {isIgniting && (
-          <CoreIgnition onComplete={() => setIsIgniting(false)} db={db} />
-        )}
-      </AnimatePresence>
+    <UIModeProvider>
+      <div className="relative min-h-svh bg-navy">
+        <AnimatePresence>
+          {isIgniting && (
+            <CoreIgnition onComplete={() => setIsIgniting(false)} db={db} />
+          )}
+        </AnimatePresence>
 
-      {/* ── App shell (renders behind ignition; revealed on exit) ────────── */}
-      {!isIgniting && (
-        <>
-          {currentPage}
-          <BottomNav currentPath={route} onNavigate={handleNavigate} />
-        </>
-      )}
-    </div>
+        {!isIgniting && (
+          <>
+            {currentPage}
+            <BottomNav currentPath={route} onNavigate={handleNavigate} />
+            <div className="fixed right-4 top-4 z-50">
+              <ModeToggleButton />
+            </div>
+          </>
+        )}
+
+        <HeroOverlay />
+      </div>
+    </UIModeProvider>
   )
 }
