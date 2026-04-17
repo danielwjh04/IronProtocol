@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import type { PlannedWorkout } from '../planner/autoPlanner'
+import type { PlannedWorkout, PlannedExercise } from '../planner/autoPlanner'
 import {
   TEMP_SESSION_ID,
   APP_SETTINGS_ID,
@@ -55,7 +55,7 @@ function tierIntensityClass(tier: ExerciseTier): string {
 }
 
 export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel, onboardingTour }: Props) {
-  const exercises = plan.exercises.length > 0
+  const initialExercises: readonly PlannedExercise[] = plan.exercises.length > 0
     ? plan.exercises
     : [{
         exerciseId: 'fallback-gpp',
@@ -79,25 +79,26 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       const matchingPlan =
         parsed.routineType === plan.routineType
         && parsed.sessionIndex === plan.sessionIndex
-        && parsed.exercises.length === exercises.length
-        && parsed.exercises.every((exercise, index) => exercise.exerciseId === exercises[index]?.exerciseId)
+        && parsed.exercises.length === initialExercises.length
+        && parsed.exercises.every((exercise, index) => exercise.exerciseId === initialExercises[index]?.exerciseId)
       return matchingPlan ? parsed : null
     } catch {
       return null
     }
   })()
 
-  const totalAllSets = exercises.reduce((sum, ex) => sum + ex.sets, 0)
+  const totalAllSets = initialExercises.reduce((sum, ex) => sum + ex.sets, 0)
   const restSeconds  = Math.max(30, Math.round((plan.estimatedMinutes * 60) / totalAllSets))
 
   const initialExIndex = resumableDraft
-    ? Math.min(resumableDraft.currentExIndex, Math.max(0, exercises.length - 1))
+    ? Math.min(resumableDraft.currentExIndex, Math.max(0, initialExercises.length - 1))
     : 0
-  const initialExercise = exercises[initialExIndex]
+  const initialExercise = initialExercises[initialExIndex]
   const initialSetInEx = resumableDraft
     ? Math.min(resumableDraft.currentSetInEx, Math.max(0, initialExercise.sets - 1))
     : 0
 
+  const [exercises, setExercises] = useState<readonly PlannedExercise[]>(initialExercises)
   const [currentExIndex, setCurrentExIndex] = useState(initialExIndex)
   const [currentSetInEx, setCurrentSetInEx] = useState(initialSetInEx) // 0-based within exercise
   const [weight,         setWeight]         = useState(resumableDraft?.weight ?? initialExercise.weight)
@@ -116,6 +117,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   const [v11Contract,         setV11Contract]         = useState<V11AppSettingsSchema | null>(null)
   const [showRecoveryForm,    setShowRecoveryForm]    = useState(false)
   const [completedWorkoutId,  setCompletedWorkoutId]  = useState<string | null>(null)
+  const [commitError,         setCommitError]         = useState<string | null>(null)
 
   const weightInputRef = useRef<HTMLInputElement>(null)
 
@@ -515,7 +517,15 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       <motion.button
         whileTap={{ scale: 0.95 }}
         type="button"
-        onClick={handleCompleteSet}
+        onClick={async () => {
+          setCommitError(null)
+          try {
+            await handleCompleteSet()
+          } catch (error) {
+            console.error('Failed to commit set:', error)
+            setCommitError('Failed to save set. Please try again.')
+          }
+        }}
         disabled={phase === 'resting'}
         className={`h-16 w-full cursor-pointer rounded-3xl px-6 text-xl font-black text-white transition-colors ${
           phase === 'resting'
@@ -525,6 +535,18 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       >
         Complete Set
       </motion.button>
+      <AnimatePresence>
+        {commitError && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-center text-sm font-semibold text-red-400"
+          >
+            {commitError}
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       <motion.button
         whileTap={{ scale: 0.95 }}
@@ -551,7 +573,20 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
               exercise={swapTarget}
               exerciseDB={exerciseDB}
               v11Contract={v11Contract}
-              onSwapConfirmed={(_newName) => {
+              onSwapConfirmed={(newName) => {
+                const match = exerciseDB.find(e => e.name.toLowerCase() === newName.toLowerCase())
+                setExercises(prev =>
+                  prev.map((ex, i) =>
+                    i !== currentExIndex
+                      ? ex
+                      : {
+                          ...ex,
+                          exerciseName: newName,
+                          exerciseId: match?.id ?? ex.exerciseId,
+                          tier: (match?.tier ?? ex.tier) as ExerciseTier,
+                        }
+                  )
+                )
                 setSwapTarget(null)
               }}
               onClose={() => setSwapTarget(null)}
