@@ -15,10 +15,10 @@ describe('IronProtocolDB — Happy Path', () => {
     await db.delete()
   })
 
-  it('opens at schema version 14', async () => {
+  it('opens at schema version 15', async () => {
     db = new IronProtocolDB()
     await db.open()
-    expect(db.verno).toBe(14)
+    expect(db.verno).toBe(15)
   })
 
   it('exposes exercises, workouts, sets, settings, tempSessions, baselines, dailyTargets, personalBests, and recoveryLogs tables', async () => {
@@ -81,6 +81,35 @@ describe('v10 schema — DailyTargets and PersonalBests', () => {
     await db.personalBests.put(pb)
     const retrieved = await db.personalBests.get('ex-bench-001')
     expect(retrieved).toEqual(pb)
+  })
+})
+
+describe('v15 schema — prestige fields', () => {
+  let db: IronProtocolDB
+
+  beforeEach(() => { db = new IronProtocolDB() })
+  afterEach(async () => { if (db.isOpen()) await db.close(); await db.delete() })
+
+  it('populates lifetimeHeroLevel and completedAscensions as 0 on a fresh DB', async () => {
+    await db.open()
+    const settings = await db.settings.get(APP_SETTINGS_ID)
+    expect(settings?.lifetimeHeroLevel).toBe(0)
+    expect(settings?.completedAscensions).toBe(0)
+  })
+
+  it('persists prestige fields when written', async () => {
+    await db.open()
+    await db.settings.put({
+      id: APP_SETTINGS_ID,
+      hasCompletedOnboarding: true,
+      preferredRoutineType: 'PPL',
+      daysPerWeek: 4,
+      lifetimeHeroLevel: 42,
+      completedAscensions: 3,
+    })
+    const settings = await db.settings.get(APP_SETTINGS_ID)
+    expect(settings?.lifetimeHeroLevel).toBe(42)
+    expect(settings?.completedAscensions).toBe(3)
   })
 })
 

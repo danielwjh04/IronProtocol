@@ -9,7 +9,7 @@ export interface Exercise {
   mediaType: string
   mediaRef: string
   tags: string[]
-  tier: ExerciseTier // 1=T1, 2=T2, 3=T3
+  tier: ExerciseTier
   embedding?: number[]
 }
 
@@ -20,14 +20,11 @@ export interface Plan {
   embedding?: number[]
 }
 
-// ReadonlyExercise is used at consumption boundaries (planner, services) where
-// exercise data must not be mutated. The mutable Exercise type is preserved for
-// Dexie upgrade callbacks which use .modify() with partial mutation.
 export type ReadonlyExercise = Readonly<Exercise>
 
 export interface Workout {
   id: string
-  date: number // Unix timestamp (integer)
+  date: number
   routineType: string
   sessionIndex: number
   notes: string
@@ -35,8 +32,8 @@ export interface Workout {
 
 export interface WorkoutSet {
   id: string
-  workoutId: string  // FK → Workout.id
-  exerciseId: string // FK → Exercise.id
+  workoutId: string
+  exerciseId: string
   weight: number
   reps: number
   orderIndex: number
@@ -46,32 +43,25 @@ export interface WorkoutSet {
 export const APP_SETTINGS_ID = 'app'
 export const TEMP_SESSION_ID = 'temp_session'
 
-// Stores user-set starting weights for T1 compound lifts.
-// exerciseName is the PK (lowercased) — e.g. 'bench press', 'back squat'.
 export interface ExerciseBaseline {
-  exerciseName: string // PK — lowercased canonical compound name
-  weight: number       // kg — user's starting working weight
+  exerciseName: string
+  weight: number
 }
 
-// DailyTarget stores the user's activity goals for a calendar day.
-// date is the PK formatted as "YYYY-MM-DD" (ISO local date, no timezone).
 export interface DailyTarget {
-  date: string         // PK — e.g. "2026-04-11"
-  targetKcal: number   // user's daily calorie target
-  targetSteps: number  // user's daily step target
-  actualKcal: number   // updated in real-time throughout the day
-  actualSteps: number  // updated in real-time throughout the day
+  date: string
+  targetKcal: number
+  targetSteps: number
+  actualKcal: number
+  actualSteps: number
 }
 
-// PersonalBest tracks the all-time best weight×reps for each exercise.
-// exerciseId is the PK — one record per exercise.
-// flagged = true triggers an achievement badge in the UI until cleared.
 export interface PersonalBest {
-  exerciseId: string   // PK — FK → Exercise.id
+  exerciseId: string
   bestWeight: number
   bestReps: number
-  achievedAt: number   // Unix timestamp (ms)
-  flagged: boolean     // true = newly achieved, unread by the user
+  achievedAt: number
+  flagged: boolean
 }
 
 export type MuscleGroup =
@@ -95,6 +85,8 @@ export interface RecoveryLog {
 
 export type PurposeChip = 'strength' | 'hypertrophy' | 'fat-loss' | 'endurance' | 'health'
 
+export type HeroTrack = 'power' | 'hypertrophy'
+
 export type V11Gender = 'female' | 'male' | 'non-binary' | 'prefer-not-to-say'
 
 export interface V11PhysiologicalBaselines {
@@ -107,7 +99,7 @@ export type V11TrainingExperienceLevel = 'beginner' | 'novice' | 'intermediate' 
 
 export interface V11LogisticalConstraints {
   targetDaysPerWeek: 3 | 4 | 5 | null
-  hardSessionLimitMinutes: number | null // expected range: 15-120
+  hardSessionLimitMinutes: number | null
 }
 
 export type V11EquipmentAvailability =
@@ -135,7 +127,7 @@ export interface V11PrimaryGoals {
 }
 
 export interface V11InjuryConstraint {
-  structuralAversion: string // e.g. "No spinal loading"
+  structuralAversion: string
 }
 
 export interface V11InjuryConstraints {
@@ -163,13 +155,17 @@ export interface AppSettings {
   id: string
   hasCompletedOnboarding: boolean
   preferredRoutineType: string
-  daysPerWeek: number // 3, 4, or 5 — drives routine recommendations in onboarding
-  userName?: string   // set during IdentitySplash; gates first-run flow
-  northStar?: string       // free-text goal from onboarding
-  purposeChip?: PurposeChip // training intent from onboarding
-  qosMinutes?: number      // session time budget from onboarding (15–120)
+  daysPerWeek: number
+  userName?: string
+  northStar?: string
+  purposeChip?: PurposeChip
+  qosMinutes?: number
   v11PromptContract?: V11AppSettingsSchema
   activeFallbackPool?: ActiveFallbackPool
+  lifetimeHeroLevel?: number
+  completedAscensions?: number
+  activeTrack?: HeroTrack
+  macrocycleClosedAt?: number
 }
 
 export type TempSessionPhase = 'active' | 'resting'
@@ -182,19 +178,13 @@ export interface TempSessionExercise {
   sets: number
   tier: ExerciseTier
   progressionGoal: string
-  // Defined when this exercise is part of a superset group.
-  // Exercises sharing the same supersetGroupId are performed back-to-back
-  // with no rest between them.
   supersetGroupId?: string
 }
 
-// IWorkoutAction is the unit of work for the active logger.
-// A 'single' action contains one exercise; a 'superset' contains 2+ exercises
-// sharing a supersetGroupId and executed back-to-back.
 export interface IWorkoutAction {
   readonly type: 'single' | 'superset'
   readonly exercises: readonly TempSessionExercise[]
-  readonly supersetGroupId?: string  // defined when type === 'superset'
+  readonly supersetGroupId?: string
 }
 
 export interface TempSessionCompletedSet {
@@ -303,27 +293,18 @@ export class IronProtocolDB extends Dexie {
   constructor() {
     super('IronProtocolDB')
 
-    // Version 1 — initial schema.
-    // Rules (dexie_schema_rules.md):
-    //   • Primary keys are UUID strings — never auto-incremented integers.
-    //   • To migrate, add a NEW version(x) block. Never edit old blocks.
     this.version(1).stores({
       exercises: 'id, name, muscleGroup',
       workouts:  'id, date',
       sets:      'id, workoutId, exerciseId, orderIndex',
     })
 
-    // Version 2 — adds tier (scalar index) and tags (multi-value index) to
-    // exercises to support routine-aware tiered planning (docs/routine_config.md).
-    // workouts and sets are listed unchanged — Dexie requires all tables.
     this.version(2).stores({
       exercises: 'id, name, muscleGroup, tier, *tags',
       workouts:  'id, date',
       sets:      'id, workoutId, exerciseId, orderIndex',
     })
 
-    // Version 3 — workouts are now routine-aware and exercises require
-    // explicit tier/tags metadata for routing and QoS trimming.
     this.version(3)
       .stores({
         exercises: 'id, name, muscleGroup, tier, *tags',
@@ -356,8 +337,6 @@ export class IronProtocolDB extends Dexie {
           })
       })
 
-    // Version 4 — audit hardening pass to ensure compound lifts are never
-    // misclassified as Tier 3 after backfill.
     this.version(4)
       .stores({
         exercises: 'id, name, muscleGroup, tier, *tags',
@@ -402,7 +381,6 @@ export class IronProtocolDB extends Dexie {
           })
       })
 
-    // Version 5 — adds app-level settings with onboarding completion state.
     this.version(5)
       .stores({
         exercises: 'id, name, muscleGroup, tier, *tags',
@@ -421,19 +399,14 @@ export class IronProtocolDB extends Dexie {
           } satisfies AppSettings)
       })
 
-    // Version 6 — adds temp session draft storage for crash-safe workout
-    // recovery when users background/refresh mid-session.
-    this.version(6)
-      .stores({
-        exercises: 'id, name, muscleGroup, tier, *tags',
-        workouts:  'id, date, routineType, sessionIndex',
-        sets:      'id, workoutId, exerciseId, orderIndex',
-        settings:  'id, preferredRoutineType',
-        tempSessions: 'id, updatedAt',
-      })
+    this.version(6).stores({
+      exercises: 'id, name, muscleGroup, tier, *tags',
+      workouts:  'id, date, routineType, sessionIndex',
+      sets:      'id, workoutId, exerciseId, orderIndex',
+      settings:  'id, preferredRoutineType',
+      tempSessions: 'id, updatedAt',
+    })
 
-    // Version 7 — persists onboarding-selected routine in settings so
-    // initialize flow and planner refresh use the chosen routine deterministically.
     this.version(7)
       .stores({
         exercises: 'id, name, muscleGroup, tier, *tags',
@@ -453,8 +426,6 @@ export class IronProtocolDB extends Dexie {
           })
       })
 
-    // Version 8 — adds baselines table for user-calibrated T1 compound starting weights.
-    // No upgrade needed — table starts empty and is populated via CalibrateBaselinesCard.
     this.version(8).stores({
       exercises:    'id, name, muscleGroup, tier, *tags',
       workouts:     'id, date, routineType, sessionIndex',
@@ -464,8 +435,6 @@ export class IronProtocolDB extends Dexie {
       baselines:    'exerciseName',
     })
 
-    // Version 9 — adds daysPerWeek to settings to drive routine frequency recommendations.
-    // Also corrects Romanian Deadlift tier from T1 to T2 in the exercise library.
     this.version(9)
       .stores({
         exercises:    'id, name, muscleGroup, tier, *tags',
@@ -476,7 +445,6 @@ export class IronProtocolDB extends Dexie {
         baselines:    'exerciseName',
       })
       .upgrade(async (tx) => {
-        // Backfill daysPerWeek = 3 for all existing settings rows.
         await tx
           .table('settings')
           .toCollection()
@@ -486,7 +454,6 @@ export class IronProtocolDB extends Dexie {
             }
           })
 
-        // Correct Romanian Deadlift — it is a secondary compound (T2), not T1.
         await tx
           .table('exercises')
           .toCollection()
@@ -497,11 +464,6 @@ export class IronProtocolDB extends Dexie {
           })
       })
 
-    // Version 10 — adds DailyTargets for real-time Kcal/Steps tracking and
-    // PersonalBests for immediate achievement flags upon set completion.
-    // No data upgrade needed — both tables start empty and are populated at runtime.
-    // personalBests indexes exerciseId only; flagged is not indexed because the
-    // expected table size (≤ one row per exercise) makes a full scan negligible.
     this.version(10).stores({
       exercises:     'id, name, muscleGroup, tier, *tags',
       workouts:      'id, date, routineType, sessionIndex',
@@ -513,10 +475,6 @@ export class IronProtocolDB extends Dexie {
       personalBests: 'exerciseId',
     })
 
-    // Version 11 — adds onboarding identity fields to settings:
-    // northStar (free-text goal), purposeChip (training intent),
-    // qosMinutes (session time budget). All optional; no data migration
-    // needed because absent rows get undefined for new fields.
     this.version(11).stores({
       exercises:     'id, name, muscleGroup, tier, *tags',
       workouts:      'id, date, routineType, sessionIndex',
@@ -528,8 +486,6 @@ export class IronProtocolDB extends Dexie {
       personalBests: 'exerciseId',
     })
 
-    // Version 12 — introduces strict V11 planner prompt contract structure
-    // inside settings while preserving legacy onboarding fields for compatibility.
     this.version(12)
       .stores({
         exercises:     'id, name, muscleGroup, tier, *tags',
@@ -583,7 +539,6 @@ export class IronProtocolDB extends Dexie {
           })
       })
 
-    // Version 13 — stores active fallback alternatives for offline Gantry swaps.
     this.version(13)
       .stores({
         exercises:     'id, name, muscleGroup, tier, *tags',
@@ -606,8 +561,6 @@ export class IronProtocolDB extends Dexie {
           })
       })
 
-    // Version 14 — adds recoveryLogs for post-session telemetry feeding the
-    // Recovery Auditor (Lab feature). Table starts empty; no data upgrade needed.
     this.version(14).stores({
       exercises:     'id, name, muscleGroup, tier, *tags',
       workouts:      'id, date, routineType, sessionIndex',
@@ -620,8 +573,35 @@ export class IronProtocolDB extends Dexie {
       recoveryLogs:  'id, workoutId, loggedAt',
     })
 
-    // New databases (created directly at latest version) skip migration
-    // upgrade callbacks, so populate seeds the onboarding settings row.
+    this.version(15)
+      .stores({
+        exercises:     'id, name, muscleGroup, tier, *tags',
+        workouts:      'id, date, routineType, sessionIndex',
+        sets:          'id, workoutId, exerciseId, orderIndex',
+        settings:      'id, preferredRoutineType',
+        tempSessions:  'id, updatedAt',
+        baselines:     'exerciseName',
+        dailyTargets:  'date',
+        personalBests: 'exerciseId',
+        recoveryLogs:  'id, workoutId, loggedAt',
+      })
+      .upgrade(async (tx) => {
+        await tx
+          .table('settings')
+          .toCollection()
+          .modify((settings: Partial<AppSettings>) => {
+            if (typeof settings.lifetimeHeroLevel !== 'number') {
+              settings.lifetimeHeroLevel = 0
+            }
+            if (typeof settings.completedAscensions !== 'number') {
+              settings.completedAscensions = 0
+            }
+            if (settings.activeTrack !== 'power' && settings.activeTrack !== 'hypertrophy') {
+              settings.activeTrack = 'power'
+            }
+          })
+      })
+
     this.on('populate', (tx) => {
       void tx.table('settings').add({
         id: APP_SETTINGS_ID,
@@ -630,6 +610,9 @@ export class IronProtocolDB extends Dexie {
         daysPerWeek: 3,
         v11PromptContract: createDefaultV11PromptContract(),
         activeFallbackPool: {},
+        lifetimeHeroLevel: 0,
+        completedAscensions: 0,
+        activeTrack: 'power',
       } satisfies AppSettings)
     })
   }
