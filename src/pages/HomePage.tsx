@@ -599,6 +599,8 @@ export default function HomePage({ db = defaultDb }: Props) {
         setActivePlan(clonePlan(finalizedPlan))
         setSessionPhase('review')
       }}
+      userName={onboardingRecord?.userName}
+      completedAscensions={onboardingRecord?.completedAscensions ?? 0}
     />
   )
 }

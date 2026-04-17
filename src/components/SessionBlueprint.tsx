@@ -1,4 +1,5 @@
 import { AnimatePresence, motion, Reorder } from 'framer-motion'
+import { PrestigeBadge } from './PrestigeBadge'
 import { useCallback, useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { CheckCircle2, GripVertical, Shuffle } from 'lucide-react'
 import {
@@ -33,6 +34,8 @@ interface Props {
   onChooseDefaultRoutine?: () => void
   onUpdatePlan: (plan: PlannedWorkout) => void
   onLockBlueprint?: () => void
+  userName?: string
+  completedAscensions?: number
 }
 
 interface ExerciseCardModel {
@@ -369,6 +372,8 @@ export default function SessionBlueprint({
   onChooseDefaultRoutine,
   onUpdatePlan,
   onLockBlueprint,
+  userName,
+  completedAscensions = 0,
 }: Props) {
   const [qosSourcePlan, setQosSourcePlan] = useState<PlannedWorkout | null>(() => {
     if (fullPlan) {
@@ -747,6 +752,12 @@ export default function SessionBlueprint({
               Day {sessionIndex + 1} of {Math.max(cycleLength, 1)}
             </span>
           </div>
+          {userName && (
+            <p className="mt-2 flex items-center text-xs font-semibold text-zinc-400">
+              {userName}
+              <PrestigeBadge ascensions={completedAscensions} />
+            </p>
+          )}
 
           <h1 className="mt-3 text-4xl font-black tracking-tight text-zinc-50">{sessionLabel}</h1>
           <p className="mt-2 text-sm font-semibold text-zinc-300">
