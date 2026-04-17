@@ -1,21 +1,27 @@
+# CRITICAL: [CODE BLOCK] then [MAX 3 SENTENCE SUMMARY]. ZERO filler/intros/sign-offs.
+
 Project: IronProtocol
-Stack: React 18, Vite, Tailwind CSS, Dexie.js
-Architecture: Hybrid Offline-First. 
-- The Lab (Online): Use AI APIs to plan `SessionBlueprints` and seed fallback exercise pools. 
-- The Gantry (Offline): Local priority execution. Always rely on Dexie.js for `WorkoutIgnition` and `ActiveLogger`. No API calls permitted on the gym floor.
-Status: Lab-vs-Gantry pivot is complete. The canonical session flow is SessionBlueprint (editable drafting lab) -> DraftBlueprintReview (read-only launch gantry) -> WorkoutIgnition -> ActiveLogger.
+Stack: React 18, Vite, Tailwind, Dexie.js, Framer Motion
+Architecture: Lab (Online/AI) vs Gantry (Offline/Dexie)
+Flow: Blueprint -> Review -> Ignition -> ActiveLogger
 
-Rule 1: Use functional components and custom hooks for database logic.
-Rule 2: Whenever you update the UI, launch the Vite dev server on localhost and use your integrated browser to visually verify the Tailwind layout.
-Rule 3: Never deviate from the architecture described in raw/vision.md and GRAPH_REPORT.md.
-Rule 4: Keep HomePage as a thin phase router (idle -> review -> ignition -> logging); do not merge drafting and review concerns into one screen.
-Rule 5: AI prompts for generation must utilize the exact user constraints defined in the V11 AppSettings Schema (Baselines, Experience, Logistics, Equipment, Goals, Injuries).
+## Rules
+- Components: Functional. DB logic: hooks.
+- UI: Physics: Spring. AnimatePresence for mounting. Micro-interactions (hover/layout).
+- UI Ecosystem: shadcn/ui or awesome-shadcnui.
+- Imports: Named only. No wildcards. Remove unused.
+- Content: Use V11 AppSettings Schema constraints.
+- Code Style: Zero inline comments. Clean naming > docs.
+- Context: Only analyze files explicitly tagged with @.
+- Ref: graphify-out/GRAPH_REPORT.md (Read only on request).
+- Sessions: If >3 turns, suggest /compact.
 
-## graphify
+## Content Navigation
+1. Query the knowledge graph first for repo questions.
+2. Read raw files only when I explicitly say "read raw files".
+3. Do not auto-run /graphify unless I explicitly request it.
 
-This project has a graphify knowledge graph at graphify-out/.
-
-Rules:
-- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
-- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
-- After modifying code files in this session, run `python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"` to keep the graph current
+## Swarm (Ruflo)
+- Activation: Trigger `ruflo` for architectural pivots between Lab and Gantry.
+- Security: Summon agents to audit Dexie.js persistence against Information Security storage standards.
+- Intelligence: Delegate PWA sync research and Vite optimization tasks to specialized agents.

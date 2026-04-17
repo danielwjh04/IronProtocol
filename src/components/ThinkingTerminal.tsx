@@ -112,9 +112,13 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete }
   }, [onComplete])
 
   useEffect(() => {
-    setVisibleCount(0)
-
     const timers: ReturnType<typeof setTimeout>[] = []
+
+    timers.push(
+      setTimeout(() => {
+        setVisibleCount(0)
+      }, 0),
+    )
 
     lines.forEach((line, index) => {
       timers.push(
@@ -142,13 +146,16 @@ export default function ThinkingTerminal({ mode = 'planning', plan, onComplete }
       return
     }
 
-    setQuoteIndex(0)
+    const quoteResetTimer = setTimeout(() => {
+      setQuoteIndex(0)
+    }, 0)
 
     const quoteTimer = setInterval(() => {
       setQuoteIndex((current) => ((current + 1) % ONBOARDING_QUOTES.length))
     }, ONBOARDING_QUOTE_ROTATE_MS)
 
     return () => {
+      clearTimeout(quoteResetTimer)
       clearInterval(quoteTimer)
     }
   }, [isOnboarding])

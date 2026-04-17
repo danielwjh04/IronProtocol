@@ -224,7 +224,6 @@ export default function IdentitySplash({ db }: Props) {
   }, [
     ageYears,
     bodyWeightKg,
-    constraintInputs,
     equipmentAvailability,
     gender,
     hardSessionLimitMinutes,

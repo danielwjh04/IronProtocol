@@ -22,9 +22,9 @@ export interface PlannedWorkout {
 export interface GenerateWorkoutParams {
   db: IronProtocolDB
   trainingGoal: 'Hypertrophy' | 'Power'
-  timeAvailable: number // minutes
-  routineType: string   // e.g. 'PPL' | 'UpperLower' | 'FullBody' | 'GZCL' | ...
-  sessionIndex?: number // optional override used for deterministic previews
+  timeAvailable: number
+  routineType: string
+  sessionIndex?: number
 }
 
 type TrainingGoal = GenerateWorkoutParams['trainingGoal']
@@ -42,16 +42,16 @@ const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[
 
 export const BASELINE_WEIGHT = { upper: 20, lower: 40 } as const
 
-const GOAL_TIER_PRESCRIPTIONS: Record<TrainingGoal, Record<ExerciseTier, { sets: number; reps: number }>> = {
+export const GOAL_TIER_PRESCRIPTIONS: Record<TrainingGoal, Record<ExerciseTier, { sets: number; reps: number }>> = {
   Hypertrophy: {
-    1: { sets: 3, reps: 8 },
-    2: { sets: 3, reps: 12 },
+    1: { sets: 4, reps: 8 },
+    2: { sets: 4, reps: 12 },
     3: { sets: 3, reps: 15 },
   },
   Power: {
-    1: { sets: 5, reps: 3 },
-    2: { sets: 4, reps: 6 },
-    3: { sets: 3, reps: 8 },
+    1: { sets: 5, reps: 5 },
+    2: { sets: 4, reps: 8 },
+    3: { sets: 3, reps: 12 },
   },
 } as const
 
@@ -95,7 +95,6 @@ export function baselineRepGoal(tier: ExerciseTier): string {
 
 export const SMALLEST_INCREMENT_KG = 2.5
 
-// Muscle groups classified as lower body; everything else is upper.
 const LOWER_BODY_GROUPS = new Set(['Legs', 'Quads', 'Hamstrings', 'Glutes', 'Calves'])
 const LOWER_TAGS = new Set(['legs', 'lower'])
 
@@ -230,9 +229,6 @@ export function getRoutineSessionLabel(routineType: string, sessionIndex: number
   return session.label
 }
 
-// ── Frequency recommendations ──────────────────────────────────────────────────
-
-// Maps training days per week to the best-fit routines for that frequency.
 export const ROUTINE_RECOMMENDATIONS_BY_DAYS: Record<number, CanonicalRoutineType[]> = {
   3: ['PPL', 'FullBody'],
   4: ['GZCL', 'UpperLower'],
@@ -242,8 +238,6 @@ export const ROUTINE_RECOMMENDATIONS_BY_DAYS: Record<number, CanonicalRoutineTyp
 export function getRecommendedRoutinesForDays(daysPerWeek: number): CanonicalRoutineType[] {
   return ROUTINE_RECOMMENDATIONS_BY_DAYS[daysPerWeek] ?? ['PPL']
 }
-
-// ── GZCL helpers ───────────────────────────────────────────────────────────────
 
 // Per-session anchor matcher — index mirrors GZCL sessions: 0=Squat, 1=Bench, 2=Deadlift, 3=OHP.
 const GZCL_SESSION_FOCUS_MATCHERS = [
@@ -315,8 +309,6 @@ const GPP_EXERCISES: PlannedExercise[] = [
     progressionGoal: baselineRepGoal(3),
   },
 ]
-
-// ── Pure helpers ───────────────────────────────────────────────────────────────
 
 function bodyRegion(muscleGroup: string): 'upper' | 'lower' {
   return LOWER_BODY_GROUPS.has(muscleGroup) ? 'lower' : 'upper'
@@ -1037,8 +1029,6 @@ export async function runPlannerPreflightAudit(db: IronProtocolDB): Promise<Pref
     compoundTierViolations,
   }
 }
-
-// ── Main export ────────────────────────────────────────────────────────────────
 
 export async function generateWorkout({
   db,

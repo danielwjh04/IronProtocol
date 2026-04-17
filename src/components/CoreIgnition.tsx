@@ -33,16 +33,12 @@ function PulsingBarbell() {
       animate={{ scale: [1, 1.05, 1], opacity: [0.7, 1, 0.7] }}
       transition={{ duration: 1.6, ease: 'easeInOut', repeat: Infinity }}
     >
-      {/* Left plate */}
       <rect x="8"   y="8"  width="18" height="40" rx="5" fill="#3B71FE" opacity="0.9" />
       <rect x="24"  y="16" width="10" height="24" rx="3" fill="#3B71FE" />
-      {/* Bar */}
       <rect x="34"  y="25" width="132" height="6"  rx="3" fill="#3B71FE" />
-      {/* Right plate */}
       <rect x="166" y="16" width="10" height="24" rx="3" fill="#3B71FE" />
       <rect x="174" y="8"  width="18" height="40" rx="5" fill="#3B71FE" opacity="0.9" />
 
-      {/* Inner glow collar rings */}
       <rect x="52"  y="22" width="6"  height="12" rx="2" fill="white" opacity="0.18" />
       <rect x="142" y="22" width="6"  height="12" rx="2" fill="white" opacity="0.18" />
     </motion.svg>
@@ -72,13 +68,11 @@ export default function CoreIgnition({ onComplete, db }: Props) {
     v11Contract ?? undefined,
   )
 
-  // Capture the latest onComplete in a ref so the effect never re-runs due to
-  // an unstable callback reference (callers often pass an inline arrow function).
   const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
+  useEffect(() => {
+    onCompleteRef.current = onComplete
+  }, [onComplete])
 
-  // Fire each log line on its delay, then call onComplete after total duration.
-  // Empty deps: runs once on mount — the ref keeps onCompleteRef.current fresh.
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = []
 
@@ -96,7 +90,7 @@ export default function CoreIgnition({ onComplete, db }: Props) {
     timers.push(setTimeout(() => onCompleteRef.current(), TOTAL_DURATION_MS))
 
     return () => timers.forEach(clearTimeout)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <motion.main
@@ -107,7 +101,6 @@ export default function CoreIgnition({ onComplete, db }: Props) {
       className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-10 bg-navy"
       aria-label="Core Ignition — booting IronProtocol"
     >
-      {/* ── Ambient glow backdrop ─────────────────────────────────────────── */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -115,7 +108,6 @@ export default function CoreIgnition({ onComplete, db }: Props) {
         <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric opacity-10 blur-[80px]" />
       </div>
 
-      {/* ── Wordmark ─────────────────────────────────────────────────────── */}
       <motion.p
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -125,7 +117,6 @@ export default function CoreIgnition({ onComplete, db }: Props) {
         IRONPROTOCOL
       </motion.p>
 
-      {/* ── Barbell ──────────────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -134,7 +125,6 @@ export default function CoreIgnition({ onComplete, db }: Props) {
         <PulsingBarbell />
       </motion.div>
 
-      {/* ── Terminal log lines ────────────────────────────────────────────── */}
       <div className="flex min-h-[80px] w-full max-w-[320px] flex-col gap-2">
         <AnimatePresence initial={false}>
           {BOOT_LINES.map(({ id, text }) =>

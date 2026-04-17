@@ -72,7 +72,6 @@ export default function CalibrateBaselinesCard({ db }: Props) {
       whileTap={{ scale: 0.98 }}
       className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-6 shadow-[0_18px_38px_-24px_rgba(59,113,254,0.35)]"
     >
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#3B71FE]">
@@ -91,7 +90,6 @@ export default function CalibrateBaselinesCard({ db }: Props) {
         Enter your current working weights. The planner ignores the 20 kg default and starts you at your real numbers.
       </p>
 
-      {/* ── 2×2 Input Grid ─────────────────────────────────────────────────── */}
       <div className="mt-5 grid grid-cols-2 gap-3">
         {T1_COMPOUNDS.map(({ key, label, hint }) => (
           <label key={key} className="flex flex-col gap-1.5">
@@ -117,7 +115,6 @@ export default function CalibrateBaselinesCard({ db }: Props) {
         ))}
       </div>
 
-      {/* ── Save Button ────────────────────────────────────────────────────── */}
       <motion.button
         whileTap={{ scale: 0.96 }}
         type="button"
@@ -128,7 +125,6 @@ export default function CalibrateBaselinesCard({ db }: Props) {
         {saving ? 'Locking In…' : 'Lock In Baselines'}
       </motion.button>
 
-      {/* ── Confirmation flash ─────────────────────────────────────────────── */}
       <AnimatePresence>
         {saved && (
           <motion.p

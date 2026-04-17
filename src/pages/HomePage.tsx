@@ -63,10 +63,14 @@ function buildPlanFromDraft(draft: TempSession): PlannedWorkout {
   }
 }
 
+function cloneExercises(exercises: readonly PlannedExercise[]): PlannedExercise[] {
+  return exercises.map((exercise) => ({ ...exercise }))
+}
+
 function clonePlan(sourcePlan: PlannedWorkout): PlannedWorkout {
   return {
     ...sourcePlan,
-    exercises: [...sourcePlan.exercises],
+    exercises: cloneExercises(sourcePlan.exercises),
   }
 }
 
@@ -560,6 +564,30 @@ export default function HomePage({ db = defaultDb }: Props) {
         const nextPlan = clonePlan(updatedPlan)
         latestLabPlanRef.current = nextPlan
         setPlan(nextPlan)
+
+        setFullPlan((currentFullPlan) => {
+          if (!currentFullPlan) {
+            return nextPlan
+          }
+
+          if (
+            currentFullPlan.routineType !== nextPlan.routineType
+            || currentFullPlan.sessionIndex !== nextPlan.sessionIndex
+          ) {
+            return nextPlan
+          }
+
+          const mergedExercises = [
+            ...cloneExercises(nextPlan.exercises),
+            ...cloneExercises(currentFullPlan.exercises.slice(nextPlan.exercises.length)),
+          ]
+
+          return {
+            ...currentFullPlan,
+            exercises: mergedExercises,
+            estimatedMinutes: calcEstimatedMinutes(mergedExercises, trainingGoal),
+          }
+        })
       }}
       onLockBlueprint={() => {
         const finalizedPlan = latestLabPlanRef.current ?? plan

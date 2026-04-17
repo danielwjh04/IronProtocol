@@ -49,7 +49,7 @@ describe('autoPlanner — generateWorkout', () => {
       })
     })
 
-    it('uses hypertrophy Tier-1 defaults (3 sets x 8 reps) for users with no history before long-gap stretch kicks in', async () => {
+    it('uses hypertrophy Tier-1 defaults (4 sets x 8 reps) for users with no history before long-gap stretch kicks in', async () => {
       await db.open()
       await db.exercises.add({
         id: uuidv4(),
@@ -69,7 +69,7 @@ describe('autoPlanner — generateWorkout', () => {
       })
 
       expect(result.exercises).toHaveLength(1)
-      expect(result.exercises[0].sets).toBe(3)
+      expect(result.exercises[0].sets).toBe(4)
       expect(result.exercises[0].reps).toBe(8)
       expect(result.exercises[0].progressionGoal).toBe('Goal: 3 Reps (Baseline)')
     })
@@ -167,7 +167,7 @@ describe('autoPlanner — generateWorkout', () => {
       expect(squat?.tier).toBe(1)
     })
 
-    it('uses power rest periods with 1.5x multiplier in estimatedMinutes (5 sets x 4.5 min = 21 min) before stretch adjustments', async () => {
+    it('uses power rest periods with 1.5x multiplier in estimatedMinutes (5 sets x 4.5 min + tempo = 22 min) before stretch adjustments', async () => {
       await db.open()
       await db.exercises.add({
         id: uuidv4(),
@@ -186,7 +186,7 @@ describe('autoPlanner — generateWorkout', () => {
         timeAvailable: 35,
       })
 
-      expect(result.estimatedMinutes).toBe(21)
+      expect(result.estimatedMinutes).toBe(22)
     })
   })
 
@@ -1113,16 +1113,16 @@ describe('autoPlanner — reactive blueprint expansion and timing', () => {
     expect(hyT1.reps).toBe(8)
     expect(hyT2.reps).toBe(12)
     expect(hyT3.reps).toBe(15)
-    expect(hyT1.sets).toBeGreaterThanOrEqual(3)
-    expect(hyT2.sets).toBeGreaterThanOrEqual(3)
+    expect(hyT1.sets).toBeGreaterThanOrEqual(4)
+    expect(hyT2.sets).toBeGreaterThanOrEqual(4)
     expect(hyT3.sets).toBeGreaterThanOrEqual(3)
     expect(hyT1.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[1])
     expect(hyT2.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[2])
     expect(hyT3.sets).toBeLessThanOrEqual(MAX_STRETCH_SETS_BY_TIER[3])
 
-    expect(pwT1.reps).toBe(3)
-    expect(pwT2.reps).toBe(6)
-    expect(pwT3.reps).toBe(8)
+    expect(pwT1.reps).toBe(5)
+    expect(pwT2.reps).toBe(8)
+    expect(pwT3.reps).toBe(12)
     expect(pwT1.sets).toBeGreaterThanOrEqual(5)
     expect(pwT2.sets).toBeGreaterThanOrEqual(4)
     expect(pwT3.sets).toBeGreaterThanOrEqual(3)
@@ -1155,17 +1155,17 @@ describe('autoPlanner — reactive blueprint expansion and timing', () => {
     })
 
     // Hypertrophy:
-    // T1 = (3*8*4) + (2*90) + 120 = 396s
-    // T2 = (3*12*4) + (2*60) + 120 = 384s
-    // Total = 780s => 13 min
-    expect(hypertrophy.estimatedMinutes).toBe(13)
+    // T1 = (4*8*4) + (3*90) + 120 = 518s
+    // T2 = (4*12*4) + (3*60) + 120 = 492s
+    // Total = 1010s => 17 min
+    expect(hypertrophy.estimatedMinutes).toBe(17)
 
     // Power:
     // Rest now uses 1.5x multiplier:
-    // T1 = (5*3*4) + (4*270) + 120 = 1260s
-    // T2 = (4*6*4) + (3*135) + 120 = 621s
-    // Total = 1881s => 32 min (ceil)
-    expect(power.estimatedMinutes).toBe(32)
+    // T1 = (5*5*4) + (4*270) + 120 = 1300s
+    // T2 = (4*8*4) + (3*135) + 120 = 653s
+    // Total = 1953s => 33 min (ceil)
+    expect(power.estimatedMinutes).toBe(33)
   })
 
   it('caps long-budget expansion at the dynamic limit (8 at 120 minutes) and preserves uniqueness', () => {

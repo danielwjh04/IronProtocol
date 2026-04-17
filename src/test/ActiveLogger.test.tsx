@@ -105,10 +105,27 @@ describe('ActiveLogger', () => {
 
     // The counter must have advanced. UI must show "Set 2" somewhere
     // (e.g. "Set 2 of 3") so the user knows what's coming.
-    expect(screen.getByText(/set\s*2\s*of\s*3/i)).toBeInTheDocument()
+    expect(screen.getByText(/set\s*2\s*of\s*3/i, { selector: 'header p' })).toBeInTheDocument()
 
     // Drain the async DB write triggered by the click so afterEach does not
     // close the database while the write is still in flight.
+    await waitFor(async () => {
+      const draft = await db.tempSessions.get(TEMP_SESSION_ID)
+      expect(draft).toBeDefined()
+    })
+  })
+
+  it('shows per-exercise logs in the exercise card with next-set guidance beside the goal', async () => {
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} />)
+
+    expect(screen.getByText(/next:\s*set\s*1\s*of\s*3\s*\(3 left\)/i)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
+
+    expect(screen.getByText(/next:\s*set\s*2\s*of\s*3\s*\(2 left\)/i)).toBeInTheDocument()
+    expect(screen.getByText(/s1:\s*80kg\s*[×x]\s*10/i)).toBeInTheDocument()
+    expect(screen.queryByText(/bench press\s*—\s*log/i)).not.toBeInTheDocument()
+
     await waitFor(async () => {
       const draft = await db.tempSessions.get(TEMP_SESSION_ID)
       expect(draft).toBeDefined()
@@ -254,7 +271,7 @@ describe('ActiveLogger', () => {
       />,
     )
 
-    expect(screen.getByText(/set\s*2\s*of\s*3/i)).toBeInTheDocument()
+    expect(screen.getByText(/set\s*2\s*of\s*3/i, { selector: 'header p' })).toBeInTheDocument()
     expect(screen.getByDisplayValue('77.5')).toBeInTheDocument()
     expect(screen.getByDisplayValue('8')).toBeInTheDocument()
   })

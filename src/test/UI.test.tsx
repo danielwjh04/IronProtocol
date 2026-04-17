@@ -46,7 +46,7 @@ vi.mock('../components/CoreIgnition', async () => {
   const { useEffect } = await import('react')
   return {
     default: function MockCoreIgnition({ onComplete }: { onComplete: () => void }) {
-      useEffect(() => { onComplete() }, [])
+      useEffect(() => { onComplete() }, [onComplete])
       return null
     },
   }
@@ -281,6 +281,85 @@ describe('HomePage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Bench Press')).toBeInTheDocument()
+    })
+  })
+
+  it('persists Drafting Lab swap selection instead of reverting to the previous exercise', async () => {
+    await db.open()
+    await db.settings.put(buildCompleteSettings({
+      activeFallbackPool: {
+        global: [
+          { exerciseName: 'Incline Dumbbell Press', reason: 'Fallback chest press.' },
+          { exerciseName: 'Push Up', reason: 'Fallback chest accessory.' },
+        ],
+      },
+    }))
+
+    await db.exercises.bulkPut([
+      {
+        id: 'ex-bench',
+        name: 'Bench Press',
+        muscleGroup: 'Chest',
+        mediaType: 'video',
+        mediaRef: '',
+        tags: ['push', 'upper', 'compound'],
+        tier: 1,
+      },
+      {
+        id: 'ex-incline-db',
+        name: 'Incline Dumbbell Press',
+        muscleGroup: 'Chest',
+        mediaType: 'video',
+        mediaRef: '',
+        tags: ['push', 'upper'],
+        tier: 1,
+      },
+      {
+        id: 'ex-pushup',
+        name: 'Push Up',
+        muscleGroup: 'Chest',
+        mediaType: 'video',
+        mediaRef: '',
+        tags: ['push', 'upper'],
+        tier: 1,
+      },
+    ])
+
+    const benchPlan: PlannedWorkout = {
+      routineType: 'PPL',
+      sessionIndex: 0,
+      estimatedMinutes: 18,
+      exercises: [
+        {
+          exerciseId: 'ex-bench',
+          exerciseName: 'Bench Press',
+          weight: 80,
+          reps: 8,
+          sets: 5,
+          tier: 1,
+          progressionGoal: 'Linear Progression: Add 2.5kg next session',
+        },
+      ],
+    }
+
+    vi.mocked(generateWorkout).mockImplementation(async () => benchPlan)
+
+    render(<HomePage db={db} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /swap bench press/i })).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /swap bench press/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /incline dumbbell press/i })).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /incline dumbbell press/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /swap incline dumbbell press/i })).toBeInTheDocument()
     })
   })
 

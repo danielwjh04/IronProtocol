@@ -86,7 +86,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     }
   })()
 
-  // Derive rest period from the plan: estimatedMinutes = totalSets × restMinutes
   const totalAllSets = exercises.reduce((sum, ex) => sum + ex.sets, 0)
   const restSeconds  = Math.max(30, Math.round((plan.estimatedMinutes * 60) / totalAllSets))
 
@@ -117,10 +116,8 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   const [showRecoveryForm,    setShowRecoveryForm]    = useState(false)
   const [completedWorkoutId,  setCompletedWorkoutId]  = useState<string | null>(null)
 
-  // ── Weight input ref — used for auto-focus on baseline (no-history) exercises
   const weightInputRef = useRef<HTMLInputElement>(null)
 
-  // ── Rest countdown timer ───────────────────────────────────────────────────
   useEffect(() => {
     if (phase !== 'resting') return
 
@@ -138,7 +135,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     return () => clearInterval(timerId)
   }, [phase])
 
-  // ── Auto-focus weight input when exercise has no history ───────────────────
   useEffect(() => {
     const ex = exercises[currentExIndex]
     if (ex?.progressionGoal.includes('(Baseline)') && phase === 'active') {
@@ -148,7 +144,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExIndex])
 
-  // ── Collapse the Why panel whenever the active exercise changes ────────────
   useEffect(() => {
     setShowWhy(false)
   }, [currentExIndex])
@@ -160,20 +155,13 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     }).catch(() => {})
   }, [db])
 
-  // ── Derived display values ─────────────────────────────────────────────────
   const currentEx      = exercises[currentExIndex]
-  const displaySetNum  = currentSetInEx + 1 // 1-based set number for the NEXT (or current) set
+  const displaySetNum  = currentSetInEx + 1
   const timerRadius = 44
   const timerCircumference = 2 * Math.PI * timerRadius
   const timerProgress = restSecondsLeft / restSeconds
   const timerOffset = timerCircumference * (1 - timerProgress)
   const showProgressionPulse = onboardingTour?.showProgressionPulse ?? false
-
-  // ── Completed sets for the currently active exercise ──────────────────────
-  const currentExCompletedSets = useMemo(
-    () => completedSets.filter(s => s.exerciseId === currentEx.exerciseId),
-    [completedSets, currentEx.exerciseId],
-  )
 
   async function persistDraft(nextState: {
     currentExIndex: number
@@ -209,7 +197,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     }
   }
 
-  // ── Complete Set handler ───────────────────────────────────────────────────
   async function handleCompleteSet() {
     try {
       const newSet: CompletedSet = {
@@ -322,10 +309,8 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     onDone?.()
   }
 
-  // ── Active / Resting screen ────────────────────────────────────────────────
   return (
     <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-6 text-zinc-100">
-      {/* ── Header ──────────────────────────────────────────────────────────── */}
       <motion.header layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -363,7 +348,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
           </button>
         </div>
 
-        {/* ── Functional Why panel ───────────────────────────────────────────── */}
         <AnimatePresence initial={false}>
           {showWhy && (
             <motion.div
@@ -381,11 +365,18 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
         </AnimatePresence>
       </motion.header>
 
-      {/* ── Exercise list ───────────────────────────────────────────────────── */}
       <motion.section layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
         <ul className="flex flex-col gap-3">
           {exercises.map((exercise, index) => {
             const isCurrent = index === currentExIndex
+            const exerciseCompletedSets = completedSets.filter((set) => set.exerciseId === exercise.exerciseId)
+            const completedSetCount = exerciseCompletedSets.length
+            const remainingSetCount = Math.max(exercise.sets - completedSetCount, 0)
+            const nextSetNumber = Math.min(completedSetCount + 1, exercise.sets)
+            const nextSetGuidance = remainingSetCount > 0
+              ? `Next: Set ${nextSetNumber} of ${exercise.sets} (${remainingSetCount} left)`
+              : `Goal sets complete (${exercise.sets}/${exercise.sets})`
+
             return (
               <li
                 key={exercise.exerciseId}
@@ -399,7 +390,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                   <div>
                     <p className={`${tierIntensityClass(exercise.tier)} font-black text-zinc-100`}>{exercise.exerciseName}</p>
                     <p className="relative mt-1 text-xs font-bold text-zinc-300">
-                      {exercise.progressionGoal}
+                      {exercise.progressionGoal} · {nextSetGuidance}
                       {isCurrent && showProgressionPulse && onboardingTour && (
                         <FeaturePulse
                           title="The Math"
@@ -412,6 +403,19 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                         />
                       )}
                     </p>
+
+                    {exerciseCompletedSets.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {exerciseCompletedSets.map((set, completedIndex) => (
+                          <span
+                            key={set.orderIndex}
+                            className="rounded-full border border-[#3B71FE]/30 bg-[#3B71FE]/10 px-3 py-1 text-[11px] font-black text-white"
+                          >
+                            S{completedIndex + 1}: {set.weight}kg × {set.reps}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <span className="rounded-full border border-[#3B71FE]/30 px-2 py-1 text-xs font-bold text-zinc-200">
                     T{exercise.tier}
@@ -423,7 +427,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
         </ul>
       </motion.section>
 
-      {/* ── Rest Timer ──────────────────────────────────────────────────────── */}
       {phase === 'resting' && (
         <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
           <div className="flex items-center justify-center">
@@ -463,7 +466,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
           <p className="mt-3 text-center text-sm font-semibold text-zinc-300">
             Recover now. Set {displaySetNum} begins at zero.
           </p>
-          {/* ── Zero Friction: Skip Rest ─────────────────────────────────── */}
           <motion.button
             whileTap={{ scale: 0.95 }}
             type="button"
@@ -475,30 +477,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
         </motion.section>
       )}
 
-      {/* ── Active Set Progression Log ──────────────────────────────────────── */}
-      {currentExCompletedSets.length > 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] px-4 py-3"
-        >
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-400/60">
-            {currentEx.exerciseName} — Log
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {currentExCompletedSets.map((s, i) => (
-              <span
-                key={s.orderIndex}
-                className="rounded-full border border-[#3B71FE]/30 bg-[#3B71FE]/10 px-3 py-1 text-xs font-black text-white"
-              >
-                S{i + 1}: {s.weight}kg × {s.reps}
-              </span>
-            ))}
-          </div>
-        </motion.section>
-      )}
-
-      {/* ── Weight / Reps inputs ─────────────────────────────────────────────── */}
       <motion.section layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-2">
@@ -531,7 +509,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
         </div>
       </motion.section>
 
-      {/* ── Complete Set ─────────────────────────────────────────────────────── */}
       <motion.button
         whileTap={{ scale: 0.95 }}
         type="button"

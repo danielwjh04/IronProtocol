@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 
-// ── Data Interfaces ─────────────────────────────────────────────────────────────
-
 export interface LoggedSet {
   id: string
   setNumber: number
@@ -21,14 +19,10 @@ export interface ExerciseData {
   loggedSets: LoggedSet[]
 }
 
-// ── Props ───────────────────────────────────────────────────────────────────────
-
 interface ExerciseCardProps {
   exercise: ExerciseData
   onSelect: (exercise: ExerciseData) => void
 }
-
-// ── Tier badge color mapping ────────────────────────────────────────────────────
 
 function tierBadgeClasses(tier: ExerciseData['tier']): string {
   switch (tier) {
@@ -40,8 +34,6 @@ function tierBadgeClasses(tier: ExerciseData['tier']): string {
       return 'border-[#3B71FE]/20 text-[#3B71FE]/60'
   }
 }
-
-// ── Component ───────────────────────────────────────────────────────────────────
 
 export default function ExerciseCard({ exercise, onSelect }: ExerciseCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -66,9 +58,7 @@ export default function ExerciseCard({ exercise, onSelect }: ExerciseCardProps) 
       `}
       whileTap={{ scale: 0.97 }}
     >
-      {/* ── Main Card Content ─────────────────────────────────────────────── */}
       <motion.div layout="position" className="flex items-center justify-between gap-3 p-4">
-        {/* Left: Exercise info */}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2.5">
             <h3 className="truncate text-base font-black text-white">
@@ -85,7 +75,6 @@ export default function ExerciseCard({ exercise, onSelect }: ExerciseCardProps) 
           </p>
         </div>
 
-        {/* Right: Chevron toggle (only visible when there is history) */}
         {hasHistory && (
           <motion.button
             type="button"
@@ -105,7 +94,6 @@ export default function ExerciseCard({ exercise, onSelect }: ExerciseCardProps) 
         )}
       </motion.div>
 
-      {/* ── History Drawer ─────────────────────────────────────────────────── */}
       <AnimatePresence initial={false}>
         {isExpanded && hasHistory && (
           <motion.div

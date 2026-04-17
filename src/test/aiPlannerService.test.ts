@@ -6,7 +6,10 @@ import {
   type AIExerciseSelection,
 } from '../services/aiPlannerService'
 
-function buildSettings(daysPerWeek: 3 | 4 | 5): V11AppSettingsSchema {
+function buildSettings(
+  daysPerWeek: 3 | 4 | 5,
+  primaryFocus: V11AppSettingsSchema['primaryGoals']['primaryFocus'] = 'strength',
+): V11AppSettingsSchema {
   return {
     physiologicalBaselines: {
       ageYears: 30,
@@ -20,7 +23,7 @@ function buildSettings(daysPerWeek: 3 | 4 | 5): V11AppSettingsSchema {
     },
     equipmentAvailability: 'commercial-gym',
     primaryGoals: {
-      primaryFocus: 'strength',
+      primaryFocus,
       specificLiftTargets: [],
     },
     injuryConstraints: {
@@ -83,5 +86,30 @@ describe('aiPlannerService local builder refinement', () => {
     const normalizedNames = (globalFallbacks ?? []).map((entry) => entry.exerciseName.trim().toLowerCase())
     expect(new Set(normalizedNames).size).toBe(normalizedNames.length)
     expect(normalizedNames.filter((name) => name === 'shared fallback')).toHaveLength(1)
+  })
+
+  it('generateLocalMacrocycle applies goal-specific tier prescriptions from settings.primaryGoals.primaryFocus', () => {
+    const selections = Array.from({ length: 15 }, (_, index) => makeSelection(index))
+    const strengthMacrocycle = generateLocalMacrocycle(selections, buildSettings(3, 'strength'))
+    const hypertrophyMacrocycle = generateLocalMacrocycle(selections, buildSettings(3, 'hypertrophy'))
+
+    const strengthDay = strengthMacrocycle.blueprint.weeks[0]?.days[0]
+    const hypertrophyDay = hypertrophyMacrocycle.blueprint.weeks[0]?.days[0]
+
+    const strengthT1 = strengthDay?.plannedExercises.find((exercise) => exercise.exerciseName === 'Exercise 1')
+    const strengthT2 = strengthDay?.plannedExercises.find((exercise) => exercise.exerciseName === 'Exercise 2')
+    const strengthT3 = strengthDay?.plannedExercises.find((exercise) => exercise.exerciseName === 'Exercise 3')
+
+    const hypertrophyT1 = hypertrophyDay?.plannedExercises.find((exercise) => exercise.exerciseName === 'Exercise 1')
+    const hypertrophyT2 = hypertrophyDay?.plannedExercises.find((exercise) => exercise.exerciseName === 'Exercise 2')
+    const hypertrophyT3 = hypertrophyDay?.plannedExercises.find((exercise) => exercise.exerciseName === 'Exercise 3')
+
+    expect([strengthT1?.targetSets, strengthT1?.targetReps]).toEqual([5, 5])
+    expect([strengthT2?.targetSets, strengthT2?.targetReps]).toEqual([4, 8])
+    expect([strengthT3?.targetSets, strengthT3?.targetReps]).toEqual([3, 12])
+
+    expect([hypertrophyT1?.targetSets, hypertrophyT1?.targetReps]).toEqual([4, 8])
+    expect([hypertrophyT2?.targetSets, hypertrophyT2?.targetReps]).toEqual([4, 12])
+    expect([hypertrophyT3?.targetSets, hypertrophyT3?.targetReps]).toEqual([3, 15])
   })
 })

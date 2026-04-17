@@ -1,8 +1,9 @@
 import { AnimatePresence, motion, Reorder } from 'framer-motion'
-import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { CheckCircle2, GripVertical, Shuffle } from 'lucide-react'
 import {
   calcEstimatedMinutes,
+  GOAL_TIER_PRESCRIPTIONS,
   generateWorkout,
   type CanonicalRoutineType,
   type PlannedExercise,
@@ -70,6 +71,20 @@ function cloneCard(card: ExerciseCardModel): ExerciseCardModel {
 
 function cloneCards(cards: readonly ExerciseCardModel[]): ExerciseCardModel[] {
   return cards.map((card) => cloneCard(card))
+}
+
+function planSyncSignature(plan: PlannedWorkout | null): string {
+  if (!plan) {
+    return '__none__'
+  }
+
+  const exerciseSignature = plan.exercises
+    .map((exercise) => (
+      `${exercise.exerciseId}:${normalizeExerciseName(exercise.exerciseName)}:${exercise.tier}:${exercise.sets}:${exercise.reps}:${exercise.weight}`
+    ))
+    .join('|')
+
+  return `${plan.routineType}:${plan.sessionIndex}:${plan.estimatedMinutes}:${exerciseSignature}`
 }
 
 function exerciseIdentityKey(exercise: PlannedExercise): string {
@@ -234,6 +249,27 @@ function applyQosToPlan(
   }
 }
 
+function resolveGoalTierPrescription(
+  tier: PlannedExercise['tier'],
+  trainingGoal: 'Hypertrophy' | 'Power',
+): { sets: number; reps: number } {
+  return GOAL_TIER_PRESCRIPTIONS[trainingGoal][tier]
+}
+
+function remapExercisesForGoal(
+  exercises: readonly PlannedExercise[],
+  trainingGoal: 'Hypertrophy' | 'Power',
+): PlannedExercise[] {
+  return exercises.map((exercise) => {
+    const prescription = resolveGoalTierPrescription(exercise.tier, trainingGoal)
+    return {
+      ...cloneExercise(exercise),
+      sets: prescription.sets,
+      reps: prescription.reps,
+    }
+  })
+}
+
 function buildUpdatedPlanFromCards(
   sourcePlan: PlannedWorkout,
   nextCards: readonly ExerciseCardModel[],
@@ -367,13 +403,14 @@ export default function SessionBlueprint({
   const [v11Contract, setV11Contract] = useState<V11AppSettingsSchema | null>(null)
 
   const pacingRequestIdRef = useRef(0)
+  const sourcePlanSyncKeyRef = useRef<string | null>(null)
 
-  function commitQosSourcePlan(
+  const commitQosSourcePlan = useCallback((
     nextSourcePlan: PlannedWorkout,
     nextGoal: 'Hypertrophy' | 'Power',
     nextDurationMinutes: number,
     notifyParent: boolean,
-  ): PlannedWorkout {
+  ): PlannedWorkout => {
     const clonedSourcePlan = clonePlan(nextSourcePlan)
     const { activePlan, trimmedExercises: nextTrimmedExercises } = applyQosToPlan(
       clonedSourcePlan,
@@ -392,10 +429,17 @@ export default function SessionBlueprint({
     }
 
     return clonedActivePlan
-  }
+  }, [onUpdatePlan])
 
   useEffect(() => {
     const incomingSourcePlan = fullPlan ? clonePlan(fullPlan) : plan ? clonePlan(plan) : null
+    const nextSyncKey = planSyncSignature(incomingSourcePlan)
+
+    if (sourcePlanSyncKeyRef.current === nextSyncKey) {
+      return
+    }
+
+    sourcePlanSyncKeyRef.current = nextSyncKey
 
     if (!incomingSourcePlan) {
       setQosSourcePlan(null)
@@ -406,7 +450,7 @@ export default function SessionBlueprint({
     }
 
     commitQosSourcePlan(incomingSourcePlan, localTrainingGoal, workoutLengthMinutes, false)
-  }, [fullPlan, plan])
+  }, [commitQosSourcePlan, fullPlan, localTrainingGoal, plan, workoutLengthMinutes])
 
   useEffect(() => {
     setLocalTrainingGoal(trainingGoal)
@@ -463,7 +507,11 @@ export default function SessionBlueprint({
     onTrainingGoalChange?.(nextGoal)
 
     if (qosSourcePlan) {
-      commitQosSourcePlan(qosSourcePlan, nextGoal, workoutLengthMinutes, true)
+      const remappedSourcePlan: PlannedWorkout = {
+        ...qosSourcePlan,
+        exercises: remapExercisesForGoal(qosSourcePlan.exercises, nextGoal),
+      }
+      commitQosSourcePlan(remappedSourcePlan, nextGoal, workoutLengthMinutes, true)
     }
 
     void regeneratePlanForInputs(workoutLengthMinutes, nextGoal)
@@ -500,22 +548,41 @@ export default function SessionBlueprint({
         fallbackPoolEntries.map((entry) => normalizeExerciseName(entry.exerciseName)),
       )
 
-      const sourceTier = sourceOriginal?.tier ?? card.exercise.tier
-      const sourceMuscleGroup = sourceOriginal
-        ? normalizeMuscleGroup(sourceOriginal.muscleGroup)
+      const sourceFromLibrary = sourceOriginal
+        ?? allExercises.find((exercise) => (
+          normalizeExerciseName(exercise.name) === normalizeExerciseName(card.exercise.exerciseName)
+        ))
+
+      const sourceTier = sourceFromLibrary?.tier ?? card.exercise.tier
+      const sourceMuscleGroup = sourceFromLibrary
+        ? normalizeMuscleGroup(sourceFromLibrary.muscleGroup)
         : null
 
-      const resolvedAlternatives = sourceMuscleGroup
-        ? dedupeExercisesByNameOrId(
-            allExercises.filter((exercise) => (
-              exercise.id !== card.exercise.exerciseId
-              && !blockedExerciseIds.has(exercise.id)
-              && exercise.tier === sourceTier
-              && normalizeMuscleGroup(exercise.muscleGroup) === sourceMuscleGroup
-              && fallbackNames.has(normalizeExerciseName(exercise.name))
+      const eligibleAlternatives = dedupeExercisesByNameOrId(
+        allExercises.filter((exercise) => (
+          exercise.id !== card.exercise.exerciseId
+          && normalizeExerciseName(exercise.name) !== normalizeExerciseName(card.exercise.exerciseName)
+          && !blockedExerciseIds.has(exercise.id)
+          && exercise.tier === sourceTier
+          && (
+            sourceMuscleGroup === null
+            || normalizeMuscleGroup(exercise.muscleGroup) === sourceMuscleGroup
+          )
+        )),
+      )
+
+      const prioritizedAlternatives = fallbackNames.size > 0
+        ? [
+            ...eligibleAlternatives.filter((exercise) => (
+              fallbackNames.has(normalizeExerciseName(exercise.name))
             )),
-          ).slice(0, 6)
-        : []
+            ...eligibleAlternatives.filter((exercise) => (
+              !fallbackNames.has(normalizeExerciseName(exercise.name))
+            )),
+          ]
+        : [...eligibleAlternatives]
+
+      const resolvedAlternatives = prioritizedAlternatives.slice(0, 6)
 
       setAlternatives((current) => ({
         ...current,
@@ -556,24 +623,32 @@ export default function SessionBlueprint({
         return
       }
 
-      const nextSourceExercises = qosSourcePlan.exercises.map((exercise, index) => (
-        index === swapIndex
-          ? {
-              ...exercise,
-              exerciseId: nextExercise.id,
-              exerciseName: nextExercise.name,
-            }
-          : cloneExercise(exercise)
-      ))
+      const sourceSlotExercise = qosSourcePlan.exercises[swapIndex]
+      if (!sourceSlotExercise) {
+        return
+      }
+
+      const sourceSlotPrescription = resolveGoalTierPrescription(sourceSlotExercise.tier, localTrainingGoal)
+      const nextSets = sourceExercise.sets > 0 ? sourceExercise.sets : sourceSlotPrescription.sets
+      const nextReps = sourceExercise.reps > 0 ? sourceExercise.reps : sourceSlotPrescription.reps
+
+      const nextSourceExercises = qosSourcePlan.exercises.map((exercise) => cloneExercise(exercise))
+      nextSourceExercises[swapIndex] = {
+        ...cloneExercise(sourceSlotExercise),
+        exerciseId: nextExercise.id,
+        exerciseName: nextExercise.name,
+        sets: nextSets,
+        reps: nextReps,
+      }
 
       const nextSourcePlan: PlannedWorkout = {
         ...qosSourcePlan,
-        exercises: nextSourceExercises,
+        exercises: [...nextSourceExercises],
       }
 
       commitQosSourcePlan(nextSourcePlan, localTrainingGoal, workoutLengthMinutes, true)
 
-      const currentFallbackEntries = Object.values(settings?.activeFallbackPool ?? {}).flat()
+      const currentFallbackEntries = [...Object.values(settings?.activeFallbackPool ?? {}).flat()]
       const dedupedFallbackEntries: Array<{ exerciseName: string; reason: string }> = []
       const seenFallbackNames = new Set<string>()
 
@@ -584,15 +659,15 @@ export default function SessionBlueprint({
         }
 
         seenFallbackNames.add(normalizedName)
-        dedupedFallbackEntries.push(entry)
+        dedupedFallbackEntries.push({ ...entry })
       }
 
       const removedFallbackName = normalizeExerciseName(nextExercise.name)
       const addedFallbackName = normalizeExerciseName(sourceExercise.exerciseName)
 
-      const nextGlobalPool = dedupedFallbackEntries.filter(
-        (entry) => normalizeExerciseName(entry.exerciseName) !== removedFallbackName,
-      )
+      const nextGlobalPool = dedupedFallbackEntries
+        .filter((entry) => normalizeExerciseName(entry.exerciseName) !== removedFallbackName)
+        .map((entry) => ({ ...entry }))
 
       if (!nextGlobalPool.some((entry) => normalizeExerciseName(entry.exerciseName) === addedFallbackName)) {
         nextGlobalPool.push({
@@ -604,7 +679,7 @@ export default function SessionBlueprint({
       await db.settings.update(APP_SETTINGS_ID, {
         activeFallbackPool: {
           ...(settings?.activeFallbackPool ?? {}),
-          global: nextGlobalPool,
+          global: [...nextGlobalPool],
         },
       })
 

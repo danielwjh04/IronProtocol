@@ -173,6 +173,34 @@ describe('SessionBlueprint drafting behavior', () => {
     expect(screen.queryByRole('button', { name: /^incline press$/i })).not.toBeInTheDocument()
   })
 
+  it('falls back to same-tier local alternatives when fallback pool is empty', async () => {
+    await db.settings.update(APP_SETTINGS_ID, {
+      activeFallbackPool: {
+        global: [],
+      },
+    })
+
+    render(
+      <SessionBlueprint
+        db={db}
+        plan={basePlan}
+        routineType="PPL"
+        trainingGoal="Hypertrophy"
+        timeAvailable={45}
+        onUpdatePlan={() => undefined}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /swap bench press/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /incline dumbbell press/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /push up/i })).toBeInTheDocument()
+    })
+
+    expect(screen.queryByText(/no alternatives available/i)).not.toBeInTheDocument()
+  })
+
   it('swaps in one tap, preserving sets and reps while emitting updated plan', async () => {
     const onUpdatePlan = vi.fn()
 
@@ -197,6 +225,10 @@ describe('SessionBlueprint drafting behavior', () => {
 
     await waitFor(() => {
       expect(onUpdatePlan).toHaveBeenCalled()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /swap incline dumbbell press/i })).toBeInTheDocument()
     })
 
     const updatedPlan = onUpdatePlan.mock.calls.at(-1)?.[0] as PlannedWorkout
@@ -513,7 +545,7 @@ describe('SessionBlueprint drafting behavior', () => {
     expect(latestPlan.exercises.length).toBe(planAt15.exercises.length)
   })
 
-  it('rebuilds blueprint when training goal toggles to Power', async () => {
+  it('remaps visible blueprint immediately when training goal toggles to Power', async () => {
     const onUpdatePlan = vi.fn()
 
     const hypertrophyPlan = makePlan([
@@ -522,7 +554,7 @@ describe('SessionBlueprint drafting behavior', () => {
         exerciseName: 'Bench Press',
         weight: 80,
         reps: 8,
-        sets: 3,
+        sets: 4,
         tier: 1,
         progressionGoal: 'Linear Progression: Add 2.5kg next session',
       },
@@ -531,7 +563,7 @@ describe('SessionBlueprint drafting behavior', () => {
         exerciseName: 'Incline Press',
         weight: 70,
         reps: 12,
-        sets: 3,
+        sets: 4,
         tier: 2,
         progressionGoal: 'Linear Progression: Add reps next session',
       },
@@ -542,7 +574,7 @@ describe('SessionBlueprint drafting behavior', () => {
         exerciseId: 'ex-bench',
         exerciseName: 'Bench Press',
         weight: 82.5,
-        reps: 3,
+        reps: 5,
         sets: 5,
         tier: 1,
         progressionGoal: 'Linear Progression: Add 2.5kg next session',
@@ -551,16 +583,21 @@ describe('SessionBlueprint drafting behavior', () => {
         exerciseId: 'ex-incline',
         exerciseName: 'Incline Press',
         weight: 72.5,
-        reps: 6,
+        reps: 8,
         sets: 4,
         tier: 2,
         progressionGoal: 'Linear Progression: Add 2.5kg next session',
       },
     ], 47)
 
+    let resolvePowerPlan: ((value: PlannedWorkout | PromiseLike<PlannedWorkout>) => void) | undefined
+    const pendingPowerPlan = new Promise<PlannedWorkout>((resolve) => {
+      resolvePowerPlan = resolve
+    })
+
     vi.mocked(generateWorkout).mockImplementation(async ({ trainingGoal }) => {
       if (trainingGoal === 'Power') {
-        return powerPlan
+        return pendingPowerPlan
       }
       return hypertrophyPlan
     })
@@ -582,12 +619,26 @@ describe('SessionBlueprint drafting behavior', () => {
       expect(onUpdatePlan).toHaveBeenCalled()
     })
 
-    const updatedPlan = onUpdatePlan.mock.calls.at(-1)?.[0] as PlannedWorkout
-    const tier1 = updatedPlan.exercises.find((exercise) => exercise.tier === 1)
-    const tier2 = updatedPlan.exercises.find((exercise) => exercise.tier === 2)
+    expect(screen.getByText(/5 sets x 5 reps/i)).toBeInTheDocument()
+    expect(screen.getByText(/4 sets x 8 reps/i)).toBeInTheDocument()
 
-    expect([tier1?.sets, tier1?.reps]).toEqual([5, 3])
-    expect([tier2?.sets, tier2?.reps]).toEqual([4, 6])
+    const immediatePlan = onUpdatePlan.mock.calls.at(-1)?.[0] as PlannedWorkout
+    const tier1 = immediatePlan.exercises.find((exercise) => exercise.tier === 1)
+    const tier2 = immediatePlan.exercises.find((exercise) => exercise.tier === 2)
+
+    expect([tier1?.sets, tier1?.reps]).toEqual([5, 5])
+    expect([tier2?.sets, tier2?.reps]).toEqual([4, 8])
+
+    if (!resolvePowerPlan) {
+      throw new Error('Power plan resolver was not initialized.')
+    }
+
+    resolvePowerPlan(powerPlan)
+
+    await waitFor(() => {
+      expect(onUpdatePlan).toHaveBeenCalledTimes(2)
+    })
+
     expect(
       vi.mocked(generateWorkout).mock.calls.some((call) => call[0].trainingGoal === 'Power'),
     ).toBe(true)

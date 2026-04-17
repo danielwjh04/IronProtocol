@@ -2,6 +2,7 @@ import type {
   V11AppSettingsSchema,
   V11SpecificLiftTarget,
 } from '../db/schema'
+import { GOAL_TIER_PRESCRIPTIONS } from '../planner/autoPlanner'
 import { z } from 'zod'
 import { fetchGemini } from './geminiClient'
 
@@ -113,10 +114,35 @@ const EXERCISE_NAME_ALIASES: Record<string, string> = {
   'goblet squat': 'Front Squat',
 }
 
-const TIER_DEFAULT_TARGETS: Record<AIExerciseTier, { targetSets: number; targetReps: number }> = {
-  T1: { targetSets: 5, targetReps: 5 },
-  T2: { targetSets: 4, targetReps: 8 },
-  T3: { targetSets: 3, targetReps: 12 },
+const AI_TIER_TO_NUMERIC_TIER: Record<AIExerciseTier, 1 | 2 | 3> = {
+  T1: 1,
+  T2: 2,
+  T3: 3,
+}
+
+type LocalMacrocycleTrainingGoal = 'Hypertrophy' | 'Power'
+
+function resolveLocalMacrocycleGoal(settings: V11AppSettingsSchema): LocalMacrocycleTrainingGoal {
+  const primaryFocus = settings.primaryGoals.primaryFocus
+
+  if (primaryFocus === 'strength' || primaryFocus === 'specific-lift-target') {
+    return 'Power'
+  }
+
+  return 'Hypertrophy'
+}
+
+function resolveLocalTargetPrescription(
+  tier: AIExerciseTier,
+  trainingGoal: LocalMacrocycleTrainingGoal,
+): { targetSets: number; targetReps: number } {
+  const normalizedTier = AI_TIER_TO_NUMERIC_TIER[tier]
+  const target = GOAL_TIER_PRESCRIPTIONS[trainingGoal][normalizedTier]
+
+  return {
+    targetSets: target.sets,
+    targetReps: target.reps,
+  }
 }
 
 function normalizeExerciseName(name: string): string {
@@ -320,6 +346,7 @@ export function generateLocalMacrocycle(
   const normalizedSelections = normalizeSelectionCount(selections, requiredSelectionCount)
   const globalFallbackPool = buildGlobalFallbackPool(normalizedSelections)
   const dayBuckets = buildDayBuckets(normalizedSelections, daysPerWeek)
+  const localTrainingGoal = resolveLocalMacrocycleGoal(settings)
   const weeks: AIPlannedWeek[] = []
 
   for (let weekNumber = 1; weekNumber <= MACROCYCLE_WEEKS; weekNumber += 1) {
@@ -343,7 +370,7 @@ export function generateLocalMacrocycle(
       const dayLabel = workoutTitle || (focusLabel.length > 0 ? `Day ${dayNumber} (${focusLabel})` : `Day ${dayNumber}`)
 
       const plannedExercises = dayExerciseSeeds.map((seed, exerciseIndex) => {
-        const targetPrescription = TIER_DEFAULT_TARGETS[seed.tier]
+        const targetPrescription = resolveLocalTargetPrescription(seed.tier, localTrainingGoal)
         const plannedExerciseId = `w${weekNumber}d${dayNumber}e${exerciseIndex + 1}`
 
         return {

@@ -1,15 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getFunctionalInfo } from '../data/functionalMapping'
 
 interface Props {
   exerciseName: string
 }
 
-// ── Anatomy placeholder ─────────────────────────────────────────────────────
-// Replaced by a real 3D SVG viewer in a future phase.
-// formGuard=false → correct execution (torso highlight = Electric Blue)
-// formGuard=true  → common-mistake view (error joints pulse Soft Pink)
 function AnatomyPlaceholder({
   anatomyKey,
   formGuard,
@@ -25,7 +21,6 @@ function AnatomyPlaceholder({
       aria-label={`${formGuard ? 'Form Guard — common mistake' : '3D anatomy diagram'} for ${anatomyKey}`}
       className="relative flex h-32 w-32 flex-col items-center justify-center rounded-full border-2 border-[#0A0E1A]/15 bg-[#0A0E1A]/6"
     >
-      {/* Simplified human silhouette */}
       <svg
         viewBox="0 0 64 80"
         width="56"
@@ -34,9 +29,7 @@ function AnatomyPlaceholder({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Head */}
         <circle cx="32" cy="9" r="8" fill="#0A0E1A" opacity="0.25" />
-        {/* Torso — highlighted with accent color */}
         <motion.rect
           x="22" y="20" width="20" height="22" rx="4"
           fill={accentColor}
@@ -44,13 +37,9 @@ function AnatomyPlaceholder({
           animate={formGuard ? { opacity: [0.4, 0.85, 0.4] } : { opacity: 0.5 }}
           transition={formGuard ? { duration: 1.1, repeat: Infinity, ease: 'easeInOut' } : {}}
         />
-        {/* Left arm */}
         <rect x="10" y="20" width="10" height="18" rx="4" fill="#0A0E1A" opacity="0.2" />
-        {/* Right arm */}
         <rect x="44" y="20" width="10" height="18" rx="4" fill="#0A0E1A" opacity="0.2" />
-        {/* Left leg */}
         <rect x="20" y="44" width="10" height="24" rx="4" fill="#0A0E1A" opacity="0.2" />
-        {/* Right leg */}
         <rect x="34" y="44" width="10" height="24" rx="4" fill="#0A0E1A" opacity="0.2" />
 
         {/* Form Guard: error joint indicators pulse Pink on knees/shoulders */}
@@ -70,7 +59,6 @@ function AnatomyPlaceholder({
         )}
       </svg>
 
-      {/* Label */}
       <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[#0A0E1A]/40">
         {formGuard ? 'Mistake' : '3D · Soon'}
       </p>
@@ -88,15 +76,11 @@ function AnatomyVideo({
   anatomyKey: string
   formGuard: boolean
 }) {
-  const [videoError, setVideoError] = useState(false)
-  
-  // Construct the exact file path based on our naming convention
+  const [failedSource, setFailedSource] = useState<string | null>(null)
+
   const videoSrc = `/assets/exercises/${anatomyKey}-${formGuard ? 'mistake' : 'correct'}.webm`
 
-  // Reset the error state if the user swaps exercises or toggles the guard
-  useEffect(() => {
-    setVideoError(false)
-  }, [videoSrc])
+  const videoError = failedSource === videoSrc
 
   if (videoError) {
     return <AnatomyPlaceholder anatomyKey={anatomyKey} formGuard={formGuard} />
@@ -111,7 +95,7 @@ function AnatomyVideo({
         loop
         muted
         playsInline // Crucial for iOS so it doesn't open full-screen
-        onError={() => setVideoError(true)}
+        onError={() => setFailedSource(videoSrc)}
         className="h-full w-full object-cover"
         aria-label={`${formGuard ? 'Mistake' : 'Correct'} execution for ${anatomyKey}`}
       />
@@ -148,7 +132,6 @@ export default function FunctionalWhy({ exerciseName }: Props) {
           formGuard ? 'bg-[#1a0a10]' : 'bg-zinc-50'
         }`}
       >
-        {/* ── Header row ─────────────────────────────────────────────────── */}
         <div className="mb-4 flex items-center justify-between gap-2">
           <span
             className={`rounded-full px-3 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-colors duration-500 ${
@@ -158,7 +141,6 @@ export default function FunctionalWhy({ exerciseName }: Props) {
             {formGuard ? 'Form Guard' : 'Educational Mode'}
           </span>
 
-          {/* ── Form Guard toggle ─────────────────────────────────────────── */}
           <button
             type="button"
             role="switch"
@@ -182,7 +164,6 @@ export default function FunctionalWhy({ exerciseName }: Props) {
           </button>
         </div>
 
-        {/* ── Anatomy model + cue ───────────────────────────────────────── */}
         <div className="flex flex-col items-center gap-4">
           <AnatomyVideo
             anatomyKey={info?.anatomyKey ?? exerciseName.toLowerCase().replace(/\s+/g, '-')}
@@ -220,7 +201,6 @@ export default function FunctionalWhy({ exerciseName }: Props) {
           </AnimatePresence>
         </div>
 
-        {/* ── Footer badge ──────────────────────────────────────────────── */}
         {info && (
           <p
             className={`mt-4 text-center text-[10px] font-semibold uppercase tracking-[0.18em] transition-colors duration-500 ${
