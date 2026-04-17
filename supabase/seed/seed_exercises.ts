@@ -664,4 +664,4 @@ async function seedExercises() {
   console.log(`Seeded ${exercises.length} exercises`)
 }
 
-seedExercises()
+seedExercises().catch((err) => { console.error(err); process.exit(1) })
