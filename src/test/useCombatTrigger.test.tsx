@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { UIModeProvider, useUIMode } from '../context/UIModeContext'
 import { useCombatTrigger } from '../hooks/useCombatTrigger'
+import { publish } from '../events/setCommitEvents'
+import type { SetCommitEvent } from '../events/setCommitEvents'
 
 const vibrateMock = vi.fn()
 
@@ -10,10 +12,21 @@ function wrapper({ children }: { children: React.ReactNode }) {
   return <UIModeProvider>{children}</UIModeProvider>
 }
 
+const BASE: SetCommitEvent = {
+  exerciseId: 'ex-1',
+  weight: 100,
+  reps: 10,
+  volume: 1000,
+  timestamp: Date.now(),
+  source: 'mid-session',
+}
+
+const flush = () => new Promise<void>(resolve => setTimeout(resolve, 0))
+
 function useCombined() {
   const { setUIMode, pendingBash } = useUIMode()
-  const { triggerBash } = useCombatTrigger()
-  return { setUIMode, triggerBash, pendingBash }
+  useCombatTrigger()
+  return { setUIMode, pendingBash }
 }
 
 describe('useCombatTrigger', () => {
@@ -23,57 +36,73 @@ describe('useCombatTrigger', () => {
     ;(navigator as unknown as Record<string, unknown>).vibrate = vibrateMock
   })
 
-  it('no-op in focus mode — pendingBash stays null', () => {
+  it('no-op in focus mode – pendingBash stays null after event', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
-    act(() => result.current.triggerBash(100, 10))
+    act(() => publish(BASE))
+    await act(flush)
     expect(result.current.pendingBash).toBeNull()
   })
 
-  it('dispatches pendingBash in hero mode', () => {
+  it('dispatches pendingBash in hero mode after event', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
-    act(() => result.current.triggerBash(100, 10))
+    act(() => publish(BASE))
+    await act(flush)
     expect(result.current.pendingBash).not.toBeNull()
   })
 
-  it('intensity equals weight×reps÷2000', () => {
+  it('intensity equals volume / 2000', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
-    act(() => result.current.triggerBash(100, 10))
+    act(() => publish({ ...BASE, volume: 1000 }))
+    await act(flush)
     expect(result.current.pendingBash?.intensity).toBe(0.5)
   })
 
-  it('intensity capped at 1 for heavy loads', () => {
+  it('intensity clamped at 1 for heavy loads', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
-    act(() => result.current.triggerBash(300, 20))
+    act(() => publish({ ...BASE, volume: 6000 }))
+    await act(flush)
     expect(result.current.pendingBash?.intensity).toBe(1)
   })
 
-  it('intensity is 0 for bodyweight (weight=0)', () => {
+  it('intensity is 0 for bodyweight (volume 0)', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
-    act(() => result.current.triggerBash(0, 10))
+    act(() => publish({ ...BASE, volume: 0 }))
+    await act(flush)
     expect(result.current.pendingBash?.intensity).toBe(0)
   })
 
-  it('heavy haptic pattern [120,30,40] when intensity > 0.7', () => {
+  it('heavy haptic pattern [120,30,40] when intensity > 0.7', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
-    act(() => result.current.triggerBash(200, 10))
+    act(() => publish({ ...BASE, volume: 2000 }))
+    await act(flush)
     expect(vibrateMock).toHaveBeenCalledWith([120, 30, 40])
   })
 
-  it('light haptic pattern [60,30,40] when intensity <= 0.7', () => {
+  it('light haptic pattern [60,30,40] when intensity <= 0.7', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
-    act(() => result.current.triggerBash(100, 10))
+    act(() => publish({ ...BASE, volume: 1000 }))
+    await act(flush)
     expect(vibrateMock).toHaveBeenCalledWith([60, 30, 40])
   })
 
-  it('no vibrate call in focus mode', () => {
-    const { result } = renderHook(() => useCombined(), { wrapper })
-    act(() => result.current.triggerBash(200, 20))
+  it('no vibrate call in focus mode', async () => {
+    renderHook(() => useCombined(), { wrapper })
+    act(() => publish({ ...BASE, volume: 4000 }))
+    await act(flush)
     expect(vibrateMock).not.toHaveBeenCalled()
+  })
+
+  it('unsubscribes on unmount – no crash after cleanup', async () => {
+    const { result, unmount } = renderHook(() => useCombined(), { wrapper })
+    act(() => result.current.setUIMode('hero'))
+    unmount()
+    act(() => publish(BASE))
+    await act(flush)
   })
 })

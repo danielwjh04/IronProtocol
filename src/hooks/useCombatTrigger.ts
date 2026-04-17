@@ -1,14 +1,16 @@
+import { useEffect } from 'react'
+import { subscribe } from '../events/setCommitEvents'
 import { useUIMode } from '../context/UIModeContext'
 
-export function useCombatTrigger() {
+export function useCombatTrigger(): void {
   const { uiMode, dispatchCombat } = useUIMode()
 
-  function triggerBash(weight: number, reps: number): void {
-    if (uiMode !== 'hero') return
-    const intensity = Math.min((weight * reps) / 2000, 1)
-    navigator.vibrate?.([intensity > 0.7 ? 120 : 60, 30, 40])
-    dispatchCombat(intensity)
-  }
-
-  return { triggerBash }
+  useEffect(() => {
+    return subscribe((event) => {
+      if (uiMode !== 'hero') return
+      const intensity = Math.min(event.volume / 2000, 1)
+      navigator.vibrate?.([intensity > 0.7 ? 120 : 60, 30, 40])
+      dispatchCombat(intensity)
+    })
+  }, [uiMode, dispatchCombat])
 }
