@@ -1,15 +1,23 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { useLightningOnPR } from '../../hooks/useLightningOnPR'
+import { useSensoryFeedback } from '../../hooks/useSensoryFeedback'
 
 interface ObsidianStairsProps {
   progress: number
-  onLightning?: boolean
 }
 
-export function ObsidianStairs({ progress, onLightning = false }: ObsidianStairsProps) {
+export function ObsidianStairs({ progress }: ObsidianStairsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
+
+  const { striking } = useLightningOnPR()
+  const { heavyDouble } = useSensoryFeedback()
+
+  useEffect(() => {
+    if (striking) heavyDouble()
+  }, [striking, heavyDouble])
 
   const canPointer = typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: fine)').matches
 
@@ -38,8 +46,8 @@ export function ObsidianStairs({ progress, onLightning = false }: ObsidianStairs
         className="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950 to-black"
         style={{
           x: voidX, y: voidY,
-          filter: onLightning ? 'brightness(2.5)' : 'brightness(1)',
-          transition: onLightning ? 'filter 0.1s' : undefined,
+          filter: striking ? 'brightness(2.5)' : 'brightness(1)',
+          transition: striking ? 'filter 0.1s' : undefined,
         }}
       />
       <motion.div
@@ -54,6 +62,9 @@ export function ObsidianStairs({ progress, onLightning = false }: ObsidianStairs
         className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"
         style={{ x: fogX, y: fogY }}
       />
+      {striking && (
+        <div className="absolute inset-0 bg-white/70 animate-ping" style={{ animationDuration: '0.5s', animationIterationCount: '1' }} />
+      )}
     </div>
   )
 }
