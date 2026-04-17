@@ -1,0 +1,724 @@
+[
+  {
+    "id": "lc-001",
+    "name": "Barbell Back Squat",
+    "technical_cues": [
+      "Brace the core before unracking — 360-degree tension",
+      "Drive knees out in line with toes throughout the descent",
+      "Break at hips and knees simultaneously, not hips first",
+      "Keep the chest tall and thoracic spine extended",
+      "Drive the floor away on ascent, hips and bar rise together",
+      "Maintain heel contact with the floor at all times"
+    ],
+    "biomechanical_why": "The barbell back squat is a compound closed-kinetic-chain movement primarily driven by the quadriceps femoris group — rectus femoris, vastus lateralis, vastus medialis, and vastus intermedius — which originate on the ilium and femur and insert via the patellar tendon onto the tibial tuberosity to extend the knee. The gluteus maximus, originating on the posterior ilium and sacrum and inserting on the gluteal tuberosity of the femur, drives powerful hip extension from the bottom position, where the joint angle maximizes its moment arm. A high-bar placement keeps the torso more upright, shifting mechanical advantage toward the quads, whereas a low-bar position increases forward lean and gluteal/hamstring contribution by lengthening the hip extensor moment arm relative to the knee extensor moment arm."
+  },
+  {
+    "id": "lc-002",
+    "name": "Front Squat",
+    "technical_cues": [
+      "Rack the bar across the front deltoids, not the clavicle",
+      "Keep elbows high and parallel to the floor throughout",
+      "Descend vertically, minimising forward lean of the torso",
+      "Drive knees forward over toes during the descent",
+      "Initiate the press by driving the elbows up first"
+    ],
+    "biomechanical_why": "The front squat places the barbell anteriorly, shifting the centre of mass forward and demanding a markedly more upright torso than the back squat; this geometric change dramatically increases the knee extensor moment arm relative to the hip extensor moment arm, making the quadriceps femoris the dominant prime mover. The rectus femoris, unique among the quadriceps heads as a biarticular muscle that crosses both the hip and knee, is placed under greater eccentric demand because the upright torso does not allow the hip to flex forward to slacken it. Core musculature — particularly the transversus abdominis and thoracic erectors — must work at high levels to prevent the characteristic forward collapse that occurs when abdominal pressure drops, making frontal loading an effective tool for diagnosing and training anterior core rigidity."
+  },
+  {
+    "id": "lc-003",
+    "name": "Goblet Squat",
+    "technical_cues": [
+      "Hold the dumbbell or kettlebell vertically against the sternum",
+      "Use the elbows to push the knees out at the bottom",
+      "Sit into the heels and keep the chest up throughout",
+      "Pause briefly at depth to reinforce the position",
+      "Exhale on the drive back to standing"
+    ],
+    "biomechanical_why": "Holding a counterbalance anteriorly at the chest allows the lifter to achieve greater hip flexion depth while maintaining an upright torso, because the load counteracts the tendency to fall backward; this makes the goblet squat an effective teaching tool for quad-dominant squat mechanics. The quadriceps — particularly the vastus medialis oblique — are heavily recruited to control knee tracking and produce terminal knee extension, while the adductors longus and magnus contribute to medial stabilisation throughout the range. The elbow-to-knee cue at the bottom actively lengthens the hip abductors and external rotators, particularly the gluteus medius and piriformis, improving dynamic hip mobility and reinforcing the valgus-resistant alignment needed for heavier loaded squatting."
+  },
+  {
+    "id": "lc-004",
+    "name": "Leg Press",
+    "technical_cues": [
+      "Place feet at shoulder width with toes turned out 15–30 degrees",
+      "Lower the sled until hips begin to posteriorly tilt — stop there",
+      "Do not lock out the knees at the top; maintain tension",
+      "Press through the full foot, not just the balls",
+      "Control the eccentric for at least two seconds"
+    ],
+    "biomechanical_why": "The leg press isolates lower-body musculature in a closed-kinetic-chain pattern while removing axial spinal loading, making it useful for hypertrophy work after the central nervous system is fatigued from barbell squats. Foot placement height on the platform shifts the ratio of quad-to-glute recruitment: a lower foot position increases knee flexion angle at the bottom, lengthening the quads and maximising their mechanical stretch, while a higher foot position allows greater hip flexion and preferentially loads the gluteus maximus and hamstrings. The machine's guided path of motion removes the stability demand of free-weight squatting, allowing the athlete to train closer to absolute muscular failure without the technical breakdown that accompanies free-weight fatigue."
+  },
+  {
+    "id": "lc-005",
+    "name": "Hack Squat",
+    "technical_cues": [
+      "Position shoulders flush against the pads with no gaps",
+      "Place feet low on the platform for maximal quad emphasis",
+      "Allow knees to travel well forward over the toes",
+      "Keep the lower back in contact with the pad at depth",
+      "Drive through the heels to return to the start position"
+    ],
+    "biomechanical_why": "The hack squat machine places the body at a fixed backward lean angle, which — unlike the vertical torso of a front squat — combines a fixed hip extension moment with a high knee flexion moment, creating exceptional mechanical demand on the quadriceps, especially the vastus lateralis and vastus medialis. Because the torso is supported and the path of motion is predetermined, the lifter can safely push feet low on the plate and allow the knees to travel significantly forward, increasing the moment arm of the patellar tendon force about the tibial plateau and maximising rectus femoris and vasti recruitment through a long range of motion. The fixed back angle also reduces erector spinae involvement, channelling nearly all neurological drive into the knee extensors and making the hack squat one of the most effective isolation-adjacent tools for quad hypertrophy."
+  },
+  {
+    "id": "lc-006",
+    "name": "Bulgarian Split Squat",
+    "technical_cues": [
+      "Elevate the rear foot on a bench set 30–45 cm behind",
+      "Keep 90% of weight on the front foot throughout",
+      "Descend vertically — front shin stays near vertical",
+      "Drive the rear knee toward the floor, not backward",
+      "Keep the torso upright and core braced throughout"
+    ],
+    "biomechanical_why": "The Bulgarian split squat is a unilateral exercise that places the front leg's quadriceps and glutes under high mechanical demand while simultaneously imposing a deep hip flexor stretch on the rear leg, making it a dual-purpose strength and mobility tool. The front quadriceps — particularly the rectus femoris and vastus lateralis — must produce force from a deep knee-flexed position where they are at a mechanical disadvantage, creating high metabolic and hypertrophic stimulus. The gluteus maximus of the front leg contributes substantially to hip extension during the concentric phase, and the adductor magnus — originating on the ischial tuberosity and inserting along the medial femur and adductor tubercle — acts as a hip extensor synergist, making the split squat one of the most complete single-leg posterior and anterior chain exercises available."
+  },
+  {
+    "id": "lc-007",
+    "name": "Walking Lunge",
+    "technical_cues": [
+      "Step forward far enough so the front shin remains vertical at depth",
+      "Lower the rear knee to 2–3 cm above the floor",
+      "Keep the torso upright and eyes forward throughout",
+      "Drive through the front heel to step through to the next rep",
+      "Control the descent — do not let the knee crash down"
+    ],
+    "biomechanical_why": "The walking lunge requires continuous alternating unilateral loading while adding a dynamic locomotor component that challenges frontal and transverse plane hip stability simultaneously, engaging the gluteus medius and TFL as stabilisers in addition to the prime movers. The quadriceps femoris of the lead leg concentrically extends the knee from maximum flexion while the gluteus maximus extends the hip, and the eccentric phase of each step loads both structures through long ranges — a key stimulus for architectural hypertrophy such as increased fascicle length. The trailing leg's hip flexors — particularly the iliopsoas, originating on the lumbar vertebrae (L1–L5) and iliac fossa and inserting on the lesser trochanter — are placed under a sustained dynamic stretch during each step-through, contributing to hip flexor mobility under load."
+  },
+  {
+    "id": "lc-008",
+    "name": "Reverse Lunge",
+    "technical_cues": [
+      "Step directly backward, not to the side",
+      "Land on the ball of the rear foot and lower the knee to the floor",
+      "Keep the front shin vertical — front knee stays over mid-foot",
+      "Drive through the front heel to return — do not push off the rear foot",
+      "Keep the torso erect and do not lean forward at the hips"
+    ],
+    "biomechanical_why": "The reverse lunge reduces anterior knee shear compared to the forward lunge because the step pattern keeps the front tibia more vertical, decreasing the tibio-femoral compression force and making it a preferred variation for athletes with patellar tendon sensitivity. The leading quadriceps — vastus medialis, lateralis, intermedius, and rectus femoris — must produce a powerful concentric contraction from a deep knee-flexed position to drive the body back to standing, while the gluteus maximus simultaneously extends the hip. Unlike the forward lunge, the reverse step demands greater dynamic balance on the planted front leg and imposes higher demand on the hip abductors of that leg — the gluteus medius and minimus — to resist adduction collapse, producing a significant stabilisation training effect."
+  },
+  {
+    "id": "lc-009",
+    "name": "Step-Up",
+    "technical_cues": [
+      "Use a box height where the working thigh reaches parallel or slightly above",
+      "Drive through the heel of the elevated foot — not the trailing toe",
+      "Keep the torso upright and do not lean over the box",
+      "Fully extend the hip at the top before stepping down",
+      "Lower the trailing leg under control — resist the drop"
+    ],
+    "biomechanical_why": "The step-up is a single-leg closed-kinetic-chain exercise that loads the quadriceps and gluteus maximus through a functional movement pattern analogous to stair climbing and athletic acceleration mechanics. When the working foot is elevated, the gluteus maximus is placed at a stretched position — maximising the length-tension relationship — and must concentrically contract through its entire active range to achieve full hip extension at the top; the rectus femoris and vasti simultaneously extend the knee through the same motion. The absence of a contralateral push-off — enforced by driving only through the working heel — prevents compensation from the gastrocnemius and hip flexors of the trailing leg, ensuring the mechanical demand remains entirely on the target musculature and making load progression highly predictable."
+  },
+  {
+    "id": "lc-010",
+    "name": "Leg Extension",
+    "technical_cues": [
+      "Adjust the pad so it contacts the distal third of the shin",
+      "Adjust the seat so the knee joint aligns with the machine pivot",
+      "Extend to full lockout and pause briefly at the top",
+      "Control the lowering phase for at least two seconds",
+      "Avoid using momentum — isolate the quad contraction"
+    ],
+    "biomechanical_why": "The leg extension is an open-kinetic-chain exercise that isolates the quadriceps femoris as the sole knee extensor, removing all hip musculature involvement and producing maximum mechanical tension on the vastus group and rectus femoris at or near full knee extension where the vasti's moment arm is greatest. The patellar tendon — the common distal attachment of the quadriceps inserting on the tibial tuberosity — experiences high compressive and tensile forces at the patellofemoral joint during this movement, explaining both its efficacy for VMO hypertrophy and the caution required for those with existing patellar pathology. The machine's cam or weight-stack design ideally applies a varying resistance curve that matches the quadriceps strength curve, providing maximal loading through the full arc of extension rather than only at the mid-range."
+  },
+  {
+    "id": "lc-011",
+    "name": "Sissy Squat",
+    "technical_cues": [
+      "Hold a fixed support lightly with one hand for balance only",
+      "Allow the knees to travel as far forward as possible over the toes",
+      "Lean the torso back as the knees advance — body stays rigid",
+      "Lower until the hamstrings contact the calves if mobility allows",
+      "Drive through the balls of the feet to return to upright"
+    ],
+    "biomechanical_why": "The sissy squat is an extreme knee-dominant open-kinetic-chain exercise that places the quadriceps — particularly the rectus femoris — under maximum stretch at the bottom position due to the simultaneous hip extension (torso lean back) and deep knee flexion, placing the rectus femoris at a point of significant active insufficiency that demands maximal motor unit recruitment. The vasti, originating on the anterior and lateral surfaces of the femur, are loaded through an extreme range of knee flexion, producing a powerful hypertrophic stimulus concentrated at the distal quadriceps and just proximal to the patellar tendon. Because the heel is elevated and the tibial crest advances far in front of the foot, the lever arm of the body mass about the knee joint is maximised, creating a high shear demand that is appropriate only for healthy patellar tendons and should be progressed with bodyweight only before any load is added."
+  },
+  {
+    "id": "lc-012",
+    "name": "Wall Sit",
+    "technical_cues": [
+      "Press the back flat against the wall with no gap",
+      "Position feet so shins are vertical and thighs are parallel to the floor",
+      "Keep knees directly above the mid-foot — not caved in or bowed out",
+      "Breathe steadily — do not hold the breath during the isometric",
+      "Build duration progressively before adding load"
+    ],
+    "biomechanical_why": "The wall sit is an isometric quadriceps exercise held at approximately 90 degrees of knee flexion, the joint angle at which the quadriceps moment arm about the tibiofemoral joint is near its minimum, making the exercise mechanically demanding despite the absence of movement. Sustained isometric contraction at this angle produces prolonged occlusion of intramuscular blood flow, leading to metabolite accumulation — lactate, hydrogen ions, and phosphate — that strongly stimulates the local growth and endurance adaptations of the vastus group and rectus femoris. The wall support eliminates hip extensor contribution, making the wall sit a pure knee extensor stress test and a useful rehabilitative tool for building quadriceps strength after knee surgery when dynamic loading is contraindicated."
+  },
+  {
+    "id": "lc-013",
+    "name": "Romanian Deadlift",
+    "technical_cues": [
+      "Start standing with bar held at hip width, arms straight",
+      "Hinge at the hips by pushing them directly backward",
+      "Keep the bar dragging against the legs throughout the descent",
+      "Maintain a neutral spine — do not allow lumbar rounding",
+      "Lower until a strong hamstring stretch is felt, typically mid-shin",
+      "Drive hips forward to return — squeeze glutes at the top"
+    ],
+    "biomechanical_why": "The Romanian deadlift targets the hamstrings through a hip hinge pattern with the knees maintained at a slight fixed bend, allowing the three hamstring heads — biceps femoris long head, semitendinosus, and semimembranosus — to be loaded eccentrically from origin to near-maximum length as the pelvis anteriorly tilts. All three hamstring heads originate at the ischial tuberosity of the pelvis and insert on the tibia and fibula, meaning that as the hip flexes progressively during the descent, the muscle length increases and the mechanical tension on the proximal attachment rises substantially, which is a potent stimulus for fascicle length adaptation. The gluteus maximus acts as a powerful synergist on the concentric drive, and maintaining the bar close to the body reduces the moment arm of the load about the lumbar spine, protecting the erectors while concentrating stress in the posterior thigh."
+  },
+  {
+    "id": "lc-014",
+    "name": "Nordic Hamstring Curl",
+    "technical_cues": [
+      "Anchor the ankles securely under a fixed bar or partner's hands",
+      "Start with the body fully upright and hips extended",
+      "Lower under control by allowing the knees to extend — resist gravity",
+      "Catch at the bottom with the hands and push back to the start",
+      "Progress by delaying the catch and increasing the eccentric range"
+    ],
+    "biomechanical_why": "The Nordic hamstring curl is an eccentric-dominant knee flexion exercise that maximally loads the biceps femoris long head, semitendinosus, and semimembranosus as they decelerate knee extension under the body's full gravitational load — a stimulus that has been shown in multiple randomised trials to significantly increase fascicle length and reduce hamstring strain injury risk. Because the hips remain in a fixed extended position while the knee extends progressively during the lowering phase, the hamstrings are actively lengthened from their insertion on the tibia and fibula toward their maximum physiological length, creating an exceptional architectural remodelling signal. The extreme eccentric overload exceeds what is achievable with any concentric or isotonic machine curl, which explains the disproportionate hypertrophic and injury-prevention benefits observed in research on athletes who incorporate this exercise."
+  },
+  {
+    "id": "lc-015",
+    "name": "Lying Leg Curl",
+    "technical_cues": [
+      "Align the knee joint with the machine's pivot axis",
+      "Position the ankle pad just above the Achilles tendon",
+      "Curl through a full range until the pad nearly touches the glutes",
+      "Pause at peak contraction and squeeze the hamstrings",
+      "Lower with a slow, controlled two-to-three second eccentric"
+    ],
+    "biomechanical_why": "The lying leg curl is an open-kinetic-chain isolation exercise for the hamstrings, specifically loading the knee flexor function of the biceps femoris, semitendinosus, and semimembranosus while the hips remain in extension, a position that fully lengthens all three heads at their proximal ischial tuberosity origin before the curl begins. In the prone hip-extended position, the rectus femoris (a hip flexor antagonist) is at its shortest length and therefore contributes minimally to hip stability, allowing the hamstrings to be targeted without significant synergist assistance or compensation. The machine's resistance curve typically applies maximal load in the mid-range of knee flexion where the hamstring moment arm is greatest, and using a slow eccentric deliberately prolongs time under tension at long muscle lengths — the region most associated with myofibrillar damage and subsequent hypertrophic remodelling."
+  },
+  {
+    "id": "lc-016",
+    "name": "Seated Leg Curl",
+    "technical_cues": [
+      "Adjust the back pad so the knee joint aligns with the pivot",
+      "Ensure the thigh pad sits firmly on top of the mid-thigh",
+      "Curl to full range — aim to bring the ankle pad under the seat",
+      "Avoid lifting the hips off the seat during the movement",
+      "Control the return — do not let the stack drop"
+    ],
+    "biomechanical_why": "The seated leg curl differs from the lying variation because the hip is flexed to approximately 90 degrees during the exercise, which partially stretches the proximal hamstring attachment at the ischial tuberosity and increases the length-tension operating range of the biarticular hamstring heads — particularly the biceps femoris long head and semimembranosus. This hip-flexed position means the hamstrings cannot shorten as much at their proximal end, so the knee flexion range of motion is achieved from a more stretched starting point, producing a longer time under tension in the mechanically advantageous elongated region of the force-length curve. EMG and ultrasound fascicle studies suggest that the seated leg curl generates greater proximal hamstring hypertrophy than the lying variant, because the greater stretch at the ischial tuberosity origin corresponds to a training stimulus at the region of the muscle belly closest to the most common site of hamstring strains."
+  },
+  {
+    "id": "lc-017",
+    "name": "Stiff-Leg Deadlift",
+    "technical_cues": [
+      "Keep the knees nearly straight — a very slight soft bend only",
+      "Hinge at the hips, allowing the torso to become parallel to the floor",
+      "Maintain a neutral, slightly arched lumbar spine throughout",
+      "Let the bar travel close to the body on the way down",
+      "Drive through the hips and squeeze the glutes to return to standing"
+    ],
+    "biomechanical_why": "The stiff-leg deadlift emphasises the hamstrings and gluteus maximus through an extreme hip hinge with the knees largely immobilised in near-extension, which prevents the knee flexion compensation that would otherwise reduce hamstring stretch, resulting in a greater range of motion at the hip and therefore greater elongation of the hamstring muscle-tendon unit. By minimising knee flexion, the exercise removes much of the knee flexor contribution of the hamstrings and shifts emphasis to their hip extensor role — specifically the semimembranosus and biceps femoris long head — as well as to the adductor magnus acting as a powerful hip extensor synergist originating on the inferior ischiopubic ramus and inserting at the adductor tubercle. The erector spinae and multifidus must produce substantial isometric force throughout the descent to maintain lumbar lordosis against the flexion moment created by the load, making this exercise a combined hamstring and lower-back developer that demands thorough warm-up before heavy loading."
+  },
+  {
+    "id": "lc-018",
+    "name": "Glute-Ham Raise",
+    "technical_cues": [
+      "Anchor the feet firmly in the glute-ham developer pads",
+      "Start with the body horizontal and hips over the hip pad",
+      "Lower the torso by extending the knees under control",
+      "Pull back to horizontal by flexing the knees — do not use the hips",
+      "Keep the body straight from knee to shoulder throughout"
+    ],
+    "biomechanical_why": "The glute-ham raise is one of the few exercises that trains both the knee flexor and hip extensor functions of the hamstrings simultaneously through a large combined range of motion, making it an extraordinarily complete posterior chain developer. During the lowering phase, the hamstrings eccentrically control knee extension from a fully shortened (hips extended, knees flexed) starting position to a fully lengthened position as the knees approach extension and the hips simultaneously move toward flexion over the pad — increasing length at both the proximal and distal attachments at the same time. The concentric return requires a powerful biceps femoris, semitendinosus, and semimembranosus contraction through a dual-joint shortening motion, with the gastrocnemius acting as a significant knee flexor synergist because its proximal attachment at the posterior femoral condyles allows it to contribute meaningfully to the curl motion."
+  },
+  {
+    "id": "lc-019",
+    "name": "Single-Leg Romanian Deadlift",
+    "technical_cues": [
+      "Hold the weight in the contralateral hand to the working leg",
+      "Hinge from the hip of the standing leg — do not round the lower back",
+      "Allow the rear leg to rise naturally as a counterbalance",
+      "Keep the hips square — resist the urge to rotate open",
+      "Maintain a soft bend in the standing knee throughout"
+    ],
+    "biomechanical_why": "The single-leg Romanian deadlift loads the hamstrings and gluteus maximus of one leg at a time while simultaneously challenging the gluteus medius and minimus of the same leg to maintain pelvic stability in the frontal plane, converting what is primarily a sagittal-plane hinge into a multi-planar stabilisation exercise. The ipsilateral hamstrings — biceps femoris, semitendinosus, and semimembranosus — are loaded through the same hip hinge mechanism as the bilateral RDL, but the single-leg stance increases the moment arm of the body's centre of mass about the hip joint and forces unilateral neural activation patterns that bilateral exercises cannot replicate. The contralateral load held in the opposite hand creates a cross-body tension that engages the quadratus lumborum, oblique abdominals, and thoracolumbar fascia, reinforcing the principle that unilateral lower-body strength development cannot be fully decoupled from ipsilateral core and hip stabiliser function."
+  },
+  {
+    "id": "lc-020",
+    "name": "Cable Leg Curl",
+    "technical_cues": [
+      "Attach the ankle cuff to the low pulley on the working leg",
+      "Face the cable stack and hold the frame lightly for balance",
+      "Curl the heel toward the glutes through a full range of motion",
+      "Keep the thigh perpendicular to the floor — do not let the hip flex",
+      "Lower the foot under control — resist the cable on the way down"
+    ],
+    "biomechanical_why": "The cable leg curl provides a constant, direction-variable resistance throughout the entire arc of knee flexion because the cable's line of pull shifts as the ankle moves, producing a more consistent torque curve than gravity-based machines where resistance drops near full flexion. The biceps femoris short head — which originates on the linea aspera of the femur rather than the ischial tuberosity — is a pure knee flexor and receives substantial emphasis in cable curls because the movement is performed in a standing, near-hip-extended position that prevents the biarticular heads from reaching active insufficiency. The need to maintain hip position throughout the movement requires isometric contraction of the gluteus maximus and hip flexors as stabilisers, adding a secondary stabilisation training component that is absent in supported machine leg curl variations."
+  },
+  {
+    "id": "lc-021",
+    "name": "Dumbbell Leg Curl",
+    "technical_cues": [
+      "Lie prone on a bench and grip the dumbbell between the feet",
+      "Squeeze the dumbbell firmly between the soles before curling",
+      "Curl through a full range — bring the dumbbell toward the glutes",
+      "Pause at peak contraction before lowering",
+      "Lower the dumbbell slowly — two to three second eccentric"
+    ],
+    "biomechanical_why": "The dumbbell leg curl is a low-equipment alternative to the machine lying leg curl that loads the hamstrings through knee flexion while the hip remains extended, producing a stimulus equivalent to the machine variation but with the added demand of intrinsic ankle and foot stabilisation to prevent the dumbbell from dropping. The resistance profile differs from a machine in that peak torque occurs at approximately 90 degrees of knee flexion — where the gravitational moment arm of the dumbbell is greatest — and decreases toward full flexion and full extension, a characteristic that users can partially mitigate by tilting the hips slightly off the bench to maintain some tension at the short end of the range. Eccentric control during the lowering phase is particularly relevant here because the dumbbell's mass creates a clear resistance signal that encourages deliberate, controlled descent, reinforcing the eccentric hamstring loading that is associated with reduced strain injury incidence."
+  },
+  {
+    "id": "lc-022",
+    "name": "Hip Hinge",
+    "technical_cues": [
+      "Begin standing with feet hip-width apart and a slight knee bend",
+      "Push the hips directly backward — imagine a wall behind you",
+      "Keep the spine neutral from cervical to lumbar throughout",
+      "Maintain the chin tucked — do not look up at the top of the range",
+      "Drive the hips forward to stand — do not hyperextend the lumbar at the top"
+    ],
+    "biomechanical_why": "The hip hinge is the foundational movement pattern underlying all deadlift and Romanian deadlift variations, training the hamstrings, gluteus maximus, and erector spinae to work in concert as a posterior chain system to control and produce force about the hip joint while maintaining spinal rigidity. During the hinge, the hamstrings — originating at the ischial tuberosity — function primarily as hip extensor synergists and lumbo-pelvic stabilisers rather than pure knee flexors, meaning their proximal length changes as the pelvis anteriorly rotates, placing the proximal attachment under increasing eccentric load as the torso descends. The erector spinae — iliocostalis, longissimus, and spinalis — must generate substantial isometric extensor moment throughout the movement to prevent lumbar flexion under load, making the hip hinge a key training stimulus for back health and injury prevention in lifting athletes."
+  },
+  {
+    "id": "lc-023",
+    "name": "Hip Thrust",
+    "technical_cues": [
+      "Position the upper back across a bench at the inferior angle of the scapula",
+      "Place the bar over the hip crease — use a pad for comfort",
+      "Plant feet flat, hip-width apart, toes turned out slightly",
+      "Drive through the heels — squeeze the glutes hard at the top",
+      "Achieve full hip extension without hyperextending the lumbar spine"
+    ],
+    "biomechanical_why": "The hip thrust is the highest-EMG glute exercise available, producing peak gluteus maximus activation that consistently exceeds back squat, deadlift, and lunge variations because the exercise loads the gluteus maximus at its most mechanically advantageous position — near full hip extension — where its moment arm about the hip joint is greatest. The gluteus maximus originates on the posterior gluteal line of the ilium, dorsal sacrum, and coccyx and inserts on the gluteal tuberosity of the femur and the iliotibial band; during the hip thrust, it moves from a slightly stretched position at the bottom to full shortening at the top, traversing the optimal length-tension curve. The bench support eliminates axial loading on the spine and removes lower-back fatigue as a limiting factor, allowing the athlete to apply maximum intentional effort specifically to the glutes across multiple high-rep sets without erector or lumbar fatigue compromising technique."
+  },
+  {
+    "id": "lc-024",
+    "name": "Barbell Glute Bridge",
+    "technical_cues": [
+      "Lie supine with the barbell resting over the hip crease",
+      "Plant feet flat on the floor, hip-width apart",
+      "Drive the hips directly upward by squeezing the glutes",
+      "Achieve full hip extension at the top — hold for one second",
+      "Lower the hips to within 2 cm of the floor between reps"
+    ],
+    "biomechanical_why": "The barbell glute bridge is the supine, floor-based precursor to the hip thrust and loads the gluteus maximus through the same hip extension drive pattern but with a shorter range of motion because the hips begin near the floor without the bench elevation. Despite the reduced range, the exercise achieves high gluteus maximus EMG at the top because the hip reaches full extension and the bar provides direct compressive load over the hip crease that must be overcome by glute force production. The hamstrings — particularly the biceps femoris and semimembranosus — act as powerful synergists during the bridging motion, and the tendency for hamstrings to dominate can be minimised by driving the knees outward and consciously squeezing the glutes independently of the knee flexors throughout the repetition."
+  },
+  {
+    "id": "lc-025",
+    "name": "Single-Leg Hip Thrust",
+    "technical_cues": [
+      "Begin set up identically to the bilateral hip thrust",
+      "Extend one leg straight, maintaining it parallel to the floor",
+      "Drive entirely through the planted heel to extend the hip",
+      "Keep the pelvis level — do not let the unsupported side drop",
+      "Pause at full extension before lowering under control"
+    ],
+    "biomechanical_why": "The single-leg hip thrust doubles the load demand on the working gluteus maximus because the contralateral leg's weight contribution is removed, while simultaneously engaging the gluteus medius and minimus of the working side as frontal plane stabilisers to prevent pelvic drop toward the unloaded side. The unilateral nature exposes and corrects inter-limb asymmetries in gluteal strength that are invisible during bilateral movements, which is relevant because most athletic movements — sprinting, cutting, jumping — require single-leg power production. The hamstrings of the working leg — biceps femoris, semitendinosus, and semimembranosus — act as secondary hip extensors and also help stabilise the knee against collapse, making this a comprehensive unilateral posterior chain exercise that transfers directly to running mechanics."
+  },
+  {
+    "id": "lc-026",
+    "name": "Cable Kickback",
+    "technical_cues": [
+      "Attach the ankle cuff to a low pulley and face the cable stack",
+      "Hinge slightly at the hips and hold the frame for support",
+      "Drive the leg directly backward through full hip extension",
+      "Squeeze the glute maximally at the end range of extension",
+      "Return under control — do not let the cable pull the leg forward quickly"
+    ],
+    "biomechanical_why": "The cable kickback isolates the gluteus maximus through pure hip extension against a horizontal resistance vector, removing the knee flexion component that would engage the hamstrings as synergists and allowing specific mechanical loading of the glute through its primary function. Because the cable applies load horizontally rather than vertically, the resistance is greatest at end-range hip extension — where the glute is fully shortened — which differs from free-weight exercises where resistance is minimal at extension and maximal at mid-range; this end-range emphasis specifically trains the gluteus maximus at the short-muscle-length portion of its length-tension curve. The inferior gluteal nerve, which innervates the gluteus maximus, is maximally recruited during the end-range contraction, and deliberately slowing the return to near-neutral hip position ensures the muscle returns through an eccentric phase that adds to total time under tension and hypertrophic stimulus."
+  },
+  {
+    "id": "lc-027",
+    "name": "Donkey Kick",
+    "technical_cues": [
+      "Begin on hands and knees with a neutral spine",
+      "Drive one heel directly toward the ceiling — keep the knee at 90 degrees",
+      "Stop when the thigh is parallel to the floor — do not hyperextend the lumbar",
+      "Squeeze the glute hard at the top and hold briefly",
+      "Lower under control — do not let the knee touch the floor between reps"
+    ],
+    "biomechanical_why": "The donkey kick trains the gluteus maximus through hip extension in the quadruped position against gravity, with the knee remaining flexed at 90 degrees to reduce hamstring participation and isolate the glute as the primary mover for the hip extension force. The quadruped position — hips at 90 degrees of flexion at the start — places the gluteus maximus at a moderately stretched position before each rep, and driving the heel toward the ceiling requires it to concentrically shorten through a range of approximately 90 degrees of hip extension, covering most of its functional working range. Adding an ankle weight or cable resistance increases the mechanical demand and extends the hypertrophic training effect, while the fixed neutral spine requirement trains the athlete to dissociate hip extension from lumbar hyperextension — a critical motor pattern for glute activation quality."
+  },
+  {
+    "id": "lc-028",
+    "name": "Lateral Band Walk",
+    "technical_cues": [
+      "Place a resistance band around the ankles or just above the knees",
+      "Maintain a quarter-squat position throughout — do not stand fully upright",
+      "Step laterally — move the lead foot first, then follow with the trailing foot",
+      "Keep feet parallel and maintain band tension at all times",
+      "Drive each step from the glute — feel the hip abductor engagement"
+    ],
+    "biomechanical_why": "The lateral band walk specifically trains the gluteus medius and gluteus minimus in their role as hip abductors and internal rotators of the femur, muscle groups that are chronically weak in sedentary populations and directly implicated in knee valgus, IT band syndrome, and lower-back pain. The gluteus medius originates on the outer surface of the ilium between the anterior and posterior gluteal lines and inserts on the greater trochanter of the femur; in the partial-squat position, it is recruited at a biomechanically disadvantaged angle that maximises the stretch-shortening demand on each lateral step. The band's lateral pull on the trailing leg creates an abduction moment that must be resisted by the same muscle group that is simultaneously concentrically driving the leading leg out, creating a dual eccentric-concentric stimulus across both limbs with each step."
+  },
+  {
+    "id": "lc-029",
+    "name": "Sumo Deadlift",
+    "technical_cues": [
+      "Take a wide stance with toes pointed out 30–45 degrees",
+      "Grip the bar narrowly — inside the legs",
+      "Push the knees out over the toes as you drop into position",
+      "Drive the floor apart and maintain chest up throughout the pull",
+      "Lock out hips and knees simultaneously at the top"
+    ],
+    "biomechanical_why": "The sumo deadlift's wide stance reduces the horizontal distance between the bar and the hip joint compared to conventional stance, decreasing the lumbar extension moment and shifting mechanical demand from the erector spinae toward the hip extensors — particularly the gluteus maximus and adductor magnus. The adductor magnus is an underappreciated hip extensor that, in the sumo stance, is placed under substantial eccentric stretch at the start position because the hips are widely abducted and externally rotated; as the hips drive to extension and the knees track out, the adductor magnus shortens powerfully from its ischial origin toward its insertion at the adductor tubercle and medial epicondyle of the femur. The wide stance also shifts the line of pull of the gluteus maximus to a more advantageous angle relative to the femoral long axis, increasing the effective moment arm and allowing the glute to contribute proportionally more than in conventional deadlift mechanics."
+  },
+  {
+    "id": "lc-030",
+    "name": "Dumbbell Sumo Squat",
+    "technical_cues": [
+      "Stand with feet wider than shoulder-width, toes turned out 30–45 degrees",
+      "Hold a single dumbbell vertically from one end between both hands",
+      "Push knees out over toes — maintain throughout the descent",
+      "Lower until hips are at or below parallel",
+      "Drive through the heels and squeeze the glutes at the top"
+    ],
+    "biomechanical_why": "The dumbbell sumo squat trains the lower body in a wide-stance squat pattern that preferentially recruits the gluteus maximus, adductor magnus, and inner quadriceps (vastus medialis) due to the externally rotated hip position and deep squat depth required. The wide stance causes the hip joint to operate through a greater range of abduction and external rotation than a narrow stance squat, placing the gluteus medius and deep external rotators — piriformis, obturator internus and externus, superior and inferior gemellus, quadratus femoris — under sustained activation throughout the movement to maintain knee tracking. Holding the dumbbell between the legs lowers the centre of mass and reduces the flexion torque at the lumbar spine compared to a bar-on-back position, making this variation accessible to lifters with limited thoracic mobility while still providing substantial glute and adductor loading."
+  },
+  {
+    "id": "lc-031",
+    "name": "Fire Hydrant",
+    "technical_cues": [
+      "Begin on all fours with wrists under shoulders and knees under hips",
+      "Keeping the knee bent at 90 degrees, lift the leg out to the side",
+      "Raise until the thigh is parallel to the floor — stop there",
+      "Pause at the top and squeeze the hip abductors",
+      "Lower under control — do not let momentum swing the leg"
+    ],
+    "biomechanical_why": "The fire hydrant isolates the gluteus medius through hip abduction in the quadruped position, targeting the upper and anterior fibres of the muscle that produce the combined motion of abduction and external rotation of the femur from a flexed hip starting angle. The gluteus medius, originating on the external surface of the ilium between the anterior and posterior gluteal lines and inserting on the greater trochanter, acts as the primary abductor of the hip joint; in the quadruped position, its mechanical environment is similar to that encountered during mid-stance in gait, where it must resist the drop of the pelvis on the contralateral side. Adding a resistance band just above the knees increases the abduction moment arm of the resistance and exponentially increases the difficulty because the band's elastic resistance scales with stretch distance, requiring progressively greater gluteus medius force throughout the arc of the movement."
+  },
+  {
+    "id": "lc-032",
+    "name": "Frog Pump",
+    "technical_cues": [
+      "Lie supine with the soles of the feet pressed together",
+      "Position feet close to the hips — knees fall out to the sides",
+      "Drive the hips directly upward by squeezing the glutes",
+      "Achieve full hip extension at the top — hold for one count",
+      "Lower slowly — tap the hips to the floor between reps"
+    ],
+    "biomechanical_why": "The frog pump uses a butterfly-leg position that places the hips in external rotation and abduction simultaneously, which mechanically shortens the adductors and eliminates their ability to assist hip extension, forcing the gluteus maximus to produce the entire bridging force without significant synergist assistance from the hamstrings or adductors. The externally rotated hip position preferentially activates the superior and posterior fibres of the gluteus maximus — those responsible for hip external rotation and abduction in addition to extension — which are often under-recruited in conventional bilateral bridging due to the compensatory dominance of the hamstrings in hip extension. The frog pump is therefore useful as a pre-activation drill before heavy hip thrusts or squats, as it selectively warms the glute fibre subpopulations that are most important for hip external rotation stability during loaded movement."
+  },
+  {
+    "id": "lc-033",
+    "name": "Standing Calf Raise",
+    "technical_cues": [
+      "Stand with the ball of the foot on the edge of a raised platform",
+      "Lower the heel as far as flexibility allows before each rep",
+      "Rise explosively to full plantar flexion — maximise the range",
+      "Pause at the top — squeeze the calf hard for one second",
+      "Lower under control for three seconds — do not bounce at the bottom"
+    ],
+    "biomechanical_why": "The standing calf raise trains the gastrocnemius and soleus through plantar flexion, but the straight-knee position emphasises the gastrocnemius — a biarticular muscle originating on the posterior medial and lateral femoral condyles — because the knee extension places it under greater stretch at its proximal attachment before each repetition. The gastrocnemius inserts via the Achilles tendon onto the posterior calcaneus, and by using a raised platform to allow heel drop below the level of the forefoot, the total range of plantar flexion is extended, increasing the total arc over which the muscle contracts and the time under tension per set. The soleus, which originates on the posterior fibula head and soleal line of the tibia, also contributes substantially to standing calf raises, but is more selectively targeted when the knee is bent; at straight knee angles, gastrocnemius EMG exceeds soleus because the biarticular muscle's proximal stretch produces a superior length-tension operating condition."
+  },
+  {
+    "id": "lc-034",
+    "name": "Seated Calf Raise",
+    "technical_cues": [
+      "Sit with the pad resting on the distal thighs just above the knee",
+      "Place the ball of the foot on the footplate edge — heels hanging free",
+      "Lower the heels to a full stretch position before each rep",
+      "Drive through the ball of the foot to full plantar flexion",
+      "Pause and contract maximally at the top before lowering"
+    ],
+    "biomechanical_why": "The seated calf raise targets the soleus selectively by performing plantar flexion with the knee flexed to approximately 90 degrees — this position slackens the gastrocnemius at its proximal femoral attachment, removing it from the active length-tension range and ensuring that the soleus becomes the primary plantar flexor. The soleus, a broad and powerful muscle originating on the posterior head and proximal shaft of the fibula and the soleal line of the tibia, inserts alongside the gastrocnemius into the Achilles tendon and calcaneus; it is predominantly composed of slow-twitch type I fibres, which respond to higher-volume, moderate-load training with slow eccentrics. Because the soleus is the dominant contributor to plantar flexion force during all loaded activities performed at less than full knee extension — such as running — its isolated strengthening through seated calf raises has direct carryover to athletic performance and lower-leg injury prevention."
+  },
+  {
+    "id": "lc-035",
+    "name": "Single-Leg Calf Raise",
+    "technical_cues": [
+      "Stand on one foot with the ball of the foot on a platform edge",
+      "Hold a light support — balance only, no assistance from the arm",
+      "Lower into a full dorsiflexion stretch before each rep",
+      "Rise to complete plantar flexion on every single rep",
+      "Complete all reps on one leg before switching — do not alternate"
+    ],
+    "biomechanical_why": "The single-leg calf raise approximately doubles the load on the working gastrocnemius and soleus compared to the bilateral version because the full body weight is borne by one limb, creating a training stimulus that often exceeds what can be achieved with moderate machine loading in bilateral variations. The single-leg stance also demands that the peroneus longus and brevis — running posterior to the lateral malleolus and inserting on the base of the first metatarsal and fifth metatarsal respectively — produce continuous eversion and lateral ankle stabilisation throughout each repetition, adding a proprioceptive and ankle stability component that bilateral raises cannot replicate. Research has shown that bodyweight single-leg calf raises can produce force levels sufficient for hypertrophic stimulus in most individuals, and the bilateral-to-unilateral strength ratio can be used diagnostically to identify inter-limb asymmetries in posterior compartment strength that correlate with Achilles tendinopathy risk."
+  },
+  {
+    "id": "lc-036",
+    "name": "Donkey Calf Raise",
+    "technical_cues": [
+      "Hinge forward with the torso parallel to the floor and load across the lower back",
+      "Place the balls of both feet on the edge of a platform",
+      "Lower into a full heel-dropped stretch before each rep",
+      "Drive to complete plantar flexion — squeeze hard at the top",
+      "Keep the knees straight throughout to maximise gastrocnemius contribution"
+    ],
+    "biomechanical_why": "The donkey calf raise performs plantar flexion with the hip flexed and the knee extended, which stretches the gastrocnemius simultaneously at both its proximal (femoral condyle) and distal (Achilles-calcaneal) attachments to a greater degree than standing raises; this maximised length-tension position is associated with greater motor unit recruitment and myofibrillar tension during the concentric contraction. The forward-hinged torso also removes the compressive component of axial loading on the lumbar spine that can limit heavy standing calf raise performance in individuals with disc pathology, while still allowing substantial load via a partner or weight on the lower back. This exercise was popularised in early bodybuilding literature precisely because the stretched position of the gastrocnemius at the beginning of each rep — combined with the full plantar flexion at the top — produces an exceptional range of motion stimulus that maximises the mechanical tension-time integral for the triceps surae."
+  },
+  {
+    "id": "lc-037",
+    "name": "Jump Rope",
+    "technical_cues": [
+      "Stay on the balls of the feet — heels should not contact the floor",
+      "Keep jumps low — 2–3 cm clearance above the ground",
+      "Drive the rotation from the wrists — not the full arms",
+      "Keep the torso upright and elbows close to the sides",
+      "Land softly through the ankle — absorb force progressively"
+    ],
+    "biomechanical_why": "Jump rope training subjects the gastrocnemius and soleus to high-frequency elastic energy storage and release cycles — typically 120–180 impacts per minute — that develop the stiffness and reactive properties of the Achilles tendon-triceps surae complex through plyometric loading, a different adaptation mechanism from the quasi-static hypertrophic stimulus of weighted calf raises. Each landing involves rapid eccentric loading of the plantar flexors followed immediately by a concentric contraction; this stretch-shortening cycle trains the series elastic component of the muscle-tendon unit to store and return energy efficiently, improving the elastic energy return ratio (the ratio of energy returned to energy absorbed) of the Achilles tendon complex. The intrinsic foot musculature — flexor digitorum brevis, lumbricals, and interossei — and the peroneal muscles are also substantially loaded during the landing stabilisation phase, making jump rope a comprehensive lower-leg conditioning tool that improves both power and foot resilience."
+  },
+  {
+    "id": "lc-038",
+    "name": "Box Jump",
+    "technical_cues": [
+      "Begin in an athletic stance with feet hip-width apart",
+      "Perform a countermovement — arms back, hips and knees bend simultaneously",
+      "Swing the arms forward and drive explosively through the full foot",
+      "Land softly on the box with bent knees — absorb the landing",
+      "Step down — do not jump down — to protect the Achilles and knees"
+    ],
+    "biomechanical_why": "The box jump is a bilateral plyometric exercise that trains explosive concentric power in the quadriceps, gluteus maximus, and triceps surae through a rapid stretch-shortening cycle initiated by the countermovement, where the elastic energy stored in the stretched tendons and connective tissues is immediately converted to kinetic energy on the upward drive. The plantar flexors — gastrocnemius and soleus — are among the last muscles to contribute force before toe-off, providing the terminal ankle extension that accounts for a significant fraction of the vertical impulse, and they must also absorb the landing impact on the box through rapid eccentric contraction. Plyometric training at the intensities produced by box jumps induces neural adaptations — increased rate of force development, improved inter-muscular coordination, and enhanced motor unit synchronisation — that are distinct from and complementary to the hypertrophic adaptations of heavy lifting, making box jumps an essential component of any complete lower-body power development programme."
+  },
+  {
+    "id": "lc-039",
+    "name": "Leg Press Calf Press",
+    "technical_cues": [
+      "Position only the balls of the feet on the lower edge of the leg press platform",
+      "Extend the legs fully and lock out the knees before beginning",
+      "Lower the platform by dorsiflexing the ankle until a full stretch is felt",
+      "Drive through the ball of the foot to maximum plantar flexion",
+      "Control the eccentric — three seconds down — to maximise calf stimulus"
+    ],
+    "biomechanical_why": "The leg press calf press trains the gastrocnemius and soleus in a supine, knee-extended position that mirrors the mechanical conditions of the standing calf raise but allows significantly heavier loading because the legs are supported and the erector spinae and lumbar structures are not under axial compression, removing fatigue limitations from non-target muscle groups. With the knees locked in extension, the gastrocnemius is placed under its maximum possible stretch at the proximal femoral condyle attachment, and the additional range achieved by dropping the platform into full dorsiflexion maximises the total arc of plantar flexion available for each rep. The machine's fixed path of motion also eliminates the balance demands of standing and single-leg variations, allowing the athlete to direct all attentional resources toward maximising the mind-muscle connection with the triceps surae and executing a perfectly controlled eccentric phase on every repetition."
+  },
+  {
+    "id": "lc-040",
+    "name": "Tibialis Raise",
+    "technical_cues": [
+      "Stand with the heels on a raised surface or against a wall, weight on heels",
+      "Lift the forefoot as high as possible — maximise dorsiflexion range",
+      "Pause at peak dorsiflexion and feel the tibialis anterior contract",
+      "Lower under control — do not slam the foot to the floor",
+      "Add load by placing a weight plate on the distal foot when bodyweight becomes easy"
+    ],
+    "biomechanical_why": "The tibialis raise directly trains the tibialis anterior — the primary dorsiflexor of the foot — through a concentric dorsiflexion movement against gravity or added load, targeting a muscle that is frequently undertrained despite its critical role in foot clearance during the swing phase of gait and eccentric deceleration of foot strike during running. The tibialis anterior originates on the lateral condyle and upper two-thirds of the lateral tibial shaft and inserts on the medial cuneiform and base of the first metatarsal; its strengthening has been shown in recent research to reduce the incidence of shin splints (medial tibial stress syndrome) and improve anterior compartment endurance in distance runners. Training the tibialis anterior in the strength ratio balance with the triceps surae — which are far stronger in most individuals — restores the agonist-antagonist equilibrium at the ankle that reduces stress on the periosteum and the tibial bone during repetitive impact activities."
+  },
+  {
+    "id": "lc-041",
+    "name": "Plank",
+    "technical_cues": [
+      "Prop on forearms and toes — elbows directly under the shoulders",
+      "Create a rigid line from head to heel — no hip sag or pike",
+      "Squeeze the glutes, quads, and core simultaneously",
+      "Breathe steadily — inhale through the nose, exhale through pursed lips",
+      "Progressively increase duration or add external load before regressing to easier variations"
+    ],
+    "biomechanical_why": "The forearm plank is an isometric anti-extension core exercise that requires the rectus abdominis, transversus abdominis, and internal obliques to produce a sustained bending moment that resists the gravitational hip-sag torque applied by the body's weight acting through a lever arm from shoulder to ankle. The transversus abdominis — the deepest abdominal layer — functions as a hydraulic corset by increasing intra-abdominal pressure when co-contracted with the diaphragm and pelvic floor, creating a pressure system that stiffens the lumbar spine from within and reduces intervertebral shear forces to near zero. The lumbar erector spinae and multifidus work in synergy with the abdominals during the plank to maintain neutral lordosis, demonstrating that effective core stability training involves simultaneous activation of both anterior and posterior trunk musculature rather than isolated abdominal training."
+  },
+  {
+    "id": "lc-042",
+    "name": "Side Plank",
+    "technical_cues": [
+      "Stack the feet or stagger them for balance, side of the lower foot on the floor",
+      "Prop on the forearm — elbow directly under the shoulder",
+      "Drive the hip up until the body forms a straight lateral line",
+      "Keep the top hand on the hip or extend it toward the ceiling",
+      "Hold the position — prevent the hip from dropping toward the floor"
+    ],
+    "biomechanical_why": "The side plank is an isometric anti-lateral-flexion exercise that primarily trains the quadratus lumborum, internal and external obliques on the upside, and the hip abductors — particularly the gluteus medius — on the lower side, all of which must contract simultaneously to prevent the pelvis from dropping toward the floor under the gravitational moment. The quadratus lumborum, originating on the posterior iliac crest and iliolumbar ligament and inserting on the 12th rib and transverse processes of L1–L4, is the principal lateral stabiliser of the lumbar spine and is critically active during single-leg stance activities that require frontal plane pelvic control in sport. Research using electromyography consistently identifies the side plank as producing the highest oblique and quadratus lumborum activation among common core exercises, making it an essential component of lumbar stability protocols for athletes and rehabilitation patients with lateral trunk weakness."
+  },
+  {
+    "id": "lc-043",
+    "name": "Ab Rollout",
+    "technical_cues": [
+      "Begin kneeling with hands on the roller directly under the shoulders",
+      "Brace the core maximally before rolling forward",
+      "Roll forward by extending the hips and shoulders simultaneously",
+      "Stop just before losing neutral spine — do not allow lumbar extension",
+      "Pull back using the abs — do not use the hip flexors to return"
+    ],
+    "biomechanical_why": "The ab rollout is a dynamic anti-extension exercise that loads the rectus abdominis and transversus abdominis through a progressively increasing moment arm as the wheel moves forward, because the gravitational torque attempting to extend the lumbar spine scales with the horizontal distance from the knees to the wheel. This progressively increasing resistance makes the rollout unique among core exercises — tension on the rectus abdominis is minimal at the start position and maximal at full reach, which is the opposite of a crunch where resistance is greatest at the shortest muscle length. The latissimus dorsi, which originates on the posterior thoracolumbar fascia and iliac crest and inserts on the intertubercular groove of the humerus, must eccentrically control the forward reach and concentrically drive the pull-back; this simultaneously makes the ab rollout one of the rare exercises that trains both abdominal anti-extension strength and lat strength in a single movement."
+  },
+  {
+    "id": "lc-044",
+    "name": "Hanging Leg Raise",
+    "technical_cues": [
+      "Hang from a pull-up bar with a shoulder-width overhand grip",
+      "Begin with a posterior pelvic tilt — flatten the lumbar spine",
+      "Raise the legs by flexing the hips — keep the knees straight for hardest version",
+      "Continue until the legs are parallel to the floor or beyond",
+      "Lower under control — resist gravity on the way down for two seconds"
+    ],
+    "biomechanical_why": "The hanging leg raise trains the rectus abdominis and hip flexors — primarily the iliopsoas — through a demanding open-kinetic-chain movement where the spine must resist the hyperextension moment imposed by the weight of the legs as they are raised from vertical to horizontal. The rectus abdominis, running from the pubic crest and pubic symphysis to the costal cartilages of ribs 5–7 and the xiphoid process, is required to maintain posterior pelvic tilt and prevent the lumbar spine from arching into extension as the iliopsoas lifts the thighs, demanding high levels of isometric abdominal force throughout the motion. The hanging position additionally requires the forearm flexors, biceps brachii, and scapular stabilisers — serratus anterior and lower trapezius — to maintain the grip and prevent the shoulders from shrugging toward the ears, making the hanging leg raise a compound strength exercise for both the anterior core and the shoulder girdle."
+  },
+  {
+    "id": "lc-045",
+    "name": "Cable Crunch",
+    "technical_cues": [
+      "Kneel at the cable stack and grip the rope overhead",
+      "Fix the hips in place — do not flex them during the movement",
+      "Crunch by flexing the thoracic and lumbar spine — bring the elbows toward the knees",
+      "Pause at peak contraction and feel the rectus abdominis shorten",
+      "Return under control — allow the spine to fully extend before the next rep"
+    ],
+    "biomechanical_why": "The cable crunch provides constant mechanical resistance throughout the full flexion arc of the spine — unlike sit-ups and crunches where gravity provides minimal resistance at the most contracted position — because the cable tension remains horizontal and its moment arm about the lumbar spine stays substantial even when the trunk is fully flexed. The rectus abdominis, the primary spinal flexor, is trained from near full stretch (thoracic and lumbar extension at the start) through to maximum contraction (full spinal flexion), which spans the entire functional range of the muscle and maximises both mechanical tension and metabolic stress. The ability to independently select the resistance allows the cable crunch to be progressively overloaded across a spectrum from rehabilitation to high-level hypertrophy, making it superior to bodyweight crunches for experienced athletes seeking meaningful abdominal strength and size gains."
+  },
+  {
+    "id": "lc-046",
+    "name": "Russian Twist",
+    "technical_cues": [
+      "Sit with knees bent and heels off the floor — maintain a 45-degree torso lean",
+      "Hold a plate or medicine ball at the chest",
+      "Rotate the torso maximally to one side — lead with the shoulders, not the arms",
+      "Touch the weight to the floor beside the hip if range allows",
+      "Control the return through centre before rotating to the other side"
+    ],
+    "biomechanical_why": "The Russian twist trains the internal and external obliques through dynamic trunk rotation, with the external oblique of one side and the internal oblique of the contralateral side co-contracting to produce the rotational torque — a pattern that mirrors the diagonal muscular lines of force used in throwing, striking, and rotational athletic movements. The external oblique originates on the outer surfaces of ribs 5–12 and inserts on the anterior iliac crest, inguinal ligament, linea alba, and pubic tubercle; it rotates the trunk to the contralateral side when contracting unilaterally, and both sides must alternate as prime movers during each repetition of the Russian twist. Holding the feet off the floor increases the challenge to the hip flexors and rectus abdominis to maintain the inclined sitting position throughout the set, adding an isometric anterior core demand on top of the primary dynamic rotational stimulus."
+  },
+  {
+    "id": "lc-047",
+    "name": "Hollow Body Hold",
+    "technical_cues": [
+      "Lie supine and press the lower back flat into the floor",
+      "Raise the legs and arms simultaneously — legs to 30–45 degrees",
+      "Keep the arms extended overhead — biceps beside the ears",
+      "Maintain the lower back contact with the floor throughout",
+      "Breathe shallowly — do not lose tension during the inhale"
+    ],
+    "biomechanical_why": "The hollow body hold is an isometric anti-extension drill in the supine position that requires the rectus abdominis and transversus abdominis to simultaneously prevent lumbar hyperextension from the gravitational pull of the elevated legs and arms, which act as long levers creating powerful extension torque at the thoracolumbar junction. The position mirrors the fundamental body shape required during gymnastics, Olympic weightlifting overhead positions, and plyometric landings — making it a foundational motor control pattern that transfers across many athletic contexts rather than a purely cosmetic core exercise. The sustained co-contraction of all four layers of the abdominal wall — transversus abdominis, internal oblique, external oblique, and rectus abdominis — combined with the hip flexor isometric hold produces global anterior trunk stiffness that is qualitatively different from any spinal-movement core exercise and uniquely trains the neural ability to maintain tension through the breath cycle."
+  },
+  {
+    "id": "lc-048",
+    "name": "Dead Bug",
+    "technical_cues": [
+      "Lie supine — press the lower back hard into the floor before beginning",
+      "Raise both arms straight to the ceiling and both hips to 90 degrees",
+      "Extend the opposite arm and leg simultaneously toward the floor",
+      "Stop just before the lower back lifts off the floor",
+      "Return to the start position before alternating sides"
+    ],
+    "biomechanical_why": "The dead bug trains contralateral limb dissociation — the ability to move opposite arm and leg simultaneously — against a fixed, lumbar-stabilised trunk, which is the precise motor pattern used in running, walking, and virtually every unilateral athletic movement where the extremities must move independently while the core remains rigid. The transversus abdominis must produce isometric intra-abdominal pressure throughout the movement to prevent the lumbar spine from extending away from the floor as the extended limbs increase the gravitational moment arm at the lumbopelvic junction. Because the movement is performed in supine against gravity with no axial load on the spine, the dead bug is one of the most effective core exercises for individuals recovering from lumbar disc injuries, as it achieves high transversus abdominis activation without the compressive spinal loads associated with plank or squat variations."
+  },
+  {
+    "id": "lc-049",
+    "name": "Pallof Press",
+    "technical_cues": [
+      "Set the cable at chest height and stand perpendicular to the stack",
+      "Hold the handle with both hands at the chest — feet shoulder-width apart",
+      "Press the handle directly forward until the arms are fully extended",
+      "Pause with arms extended — resist the rotational pull of the cable",
+      "Return the handle to the chest under control before the next rep"
+    ],
+    "biomechanical_why": "The Pallof press is an anti-rotation core exercise in which the cable applies a continuous lateral pull — creating a rotational torque about the lumbar spine — that the internal and external obliques, transversus abdominis, and quadratus lumborum must resist isometrically throughout the pressing motion. As the arms extend, the moment arm of the cable load about the spine increases because the horizontal distance from the body's centre of mass to the handle grows, requiring proportionally greater anti-rotation muscular force at the point of maximum arm extension. This progressive loading with extended arms makes the Pallof press mechanically intelligent: resistance is self-regulated by arm reach length, allowing the exercise to be used as both an assessment tool for rotational stability asymmetries and a progressive strengthening intervention by increasing cable weight or arm reach distance."
+  },
+  {
+    "id": "lc-050",
+    "name": "Landmine Rotation",
+    "technical_cues": [
+      "Anchor the barbell in a landmine or corner at ground level",
+      "Hold the far end of the barbell with both hands at chest height",
+      "Rotate the bar in an arc from one hip to the other",
+      "Drive the movement from the hips and thoracic spine — not the arms",
+      "Keep the arms mostly extended and the torso upright throughout"
+    ],
+    "biomechanical_why": "The landmine rotation trains the obliques, erector spinae, and hip rotators through a dynamic three-dimensional arc of motion that closely replicates the rotational power production mechanics of throwing, swinging, and striking sports, where force is generated at the hips and transmitted through the trunk to the hands. The arc described by the bar end traces a diagonal path that engages the posterior oblique sling — latissimus dorsi, thoracolumbar fascia, and contralateral gluteus maximus — in an integrated pattern that represents how the trunk transfers force between the lower and upper limbs during functional athletic movements. The horizontal force vector applied by the loaded barbell arc produces a rotational moment that must be both accelerated concentrically and decelerated eccentrically on each swing, training the obliques and spinal rotators through a full functional cycle that isometric anti-rotation drills like the Pallof press cannot replicate."
+  },
+  {
+    "id": "lc-051",
+    "name": "Dragon Flag",
+    "technical_cues": [
+      "Grip a fixed support above the head — bench upright or pole",
+      "Begin flat on the back and kick the legs and hips to vertical",
+      "Lower the body as a rigid plank — only the upper back contacts the bench",
+      "Stop just before the hips touch the surface — return immediately",
+      "Keep the body perfectly straight — no piking at the hips"
+    ],
+    "biomechanical_why": "The dragon flag is an advanced total-body anti-extension exercise where the entire body from shoulder to ankle is held rigid and lowered against gravity as a cantilevered lever arm, requiring the rectus abdominis, transversus abdominis, and hip flexors to generate extraordinary isometric force to prevent the spine from hyperextending under the massive gravitational torque created by the long body lever. As the body lowers toward horizontal, the moment arm of the body's weight about the shoulder pivot increases toward its maximum, meaning the muscular demand scales progressively throughout the movement — making the mid-range the most mechanically demanding phase and the reason that partial ranges are used as regression steps toward the full movement. The serratus anterior and pectorals on the gripping arm must stabilise the shoulder girdle against downward traction throughout, and the scapular retractors — rhomboids and middle trapezius — must isometrically maintain scapular depression to prevent the shoulders from elevating and compromising the fixed pivot point."
+  },
+  {
+    "id": "lc-052",
+    "name": "V-Up",
+    "technical_cues": [
+      "Begin lying flat with arms extended overhead and legs straight",
+      "Simultaneously raise the legs and torso toward each other",
+      "Aim to touch the toes at the top — keep knees straight",
+      "Lower both the legs and torso under control simultaneously",
+      "Exhale forcefully during the rise — inhale on the descent"
+    ],
+    "biomechanical_why": "The V-up simultaneously trains spinal flexion and hip flexion against the weight of both the legs and the torso, creating a compound demand on the rectus abdominis, iliopsoas, and hip flexor complex that exceeds the total resistance of either a crunch or a hanging leg raise performed independently. The rectus abdominis must resist the extension torque of the descending torso while also generating the flexion force needed to raise it, while the iliopsoas — originating on the lumbar transverse processes and iliac fossa and inserting on the lesser trochanter — must lift the combined mass of the lower limbs against gravity simultaneously. The simultaneous approach briefly creates a folded position at the top where both the spine is flexed and the hips are flexed maximally, which is the point of shortest muscle length for both the rectus abdominis and the hip flexors, making this exercise useful for training the ability to sustain tension at the shortened end of the range — a position that most gravity-based exercises do not challenge effectively."
+  },
+  {
+    "id": "lc-053",
+    "name": "Decline Sit-Up",
+    "technical_cues": [
+      "Anchor the feet on the decline bench and set it at 30–45 degrees",
+      "Begin at the bottom with the spine straight — do not start rounded",
+      "Curl the spine from the bottom up — do not hip-flex your way to the top",
+      "Pause at the top and squeeze the abs before lowering",
+      "Lower with a three-second eccentric — do not drop back"
+    ],
+    "biomechanical_why": "The decline sit-up increases the gravitational moment arm acting on the upper body throughout the range of motion compared to a flat sit-up, because the inclined position means the torso remains at a greater horizontal distance from the hip pivot throughout the movement, requiring greater rectus abdominis force production at all phases. The increased range of motion at the start position — where the spine can achieve full extension before the curl begins — maximises the pre-stretch on the rectus abdominis, improving the length-tension conditions for the subsequent concentric phase and increasing the total arc over which muscular work is performed. The hip flexors — particularly the rectus femoris and iliopsoas — are recruited as synergists during the final portion of the movement as the trunk approaches vertical, which is unavoidable at the end range of spinal flexion; cueing the athlete to focus on the spinal curl rather than the hip movement helps maximise abdominal contribution relative to hip flexor contribution."
+  },
+  {
+    "id": "lc-054",
+    "name": "Bicycle Crunch",
+    "technical_cues": [
+      "Lie supine with hands lightly supporting the head — not pulling the neck",
+      "Raise the knees to 90 degrees and lift the shoulder blades off the floor",
+      "Rotate the left elbow toward the right knee while extending the left leg",
+      "Continue in a controlled cycling motion — fully rotate each side",
+      "Slow the tempo — feel the oblique contraction at each endpoint"
+    ],
+    "biomechanical_why": "The bicycle crunch trains both the obliques and the rectus abdominis through a combined spinal flexion-and-rotation movement, where the simultaneous diagonal reach of the elbow toward the opposite knee requires the contralateral external oblique and ipsilateral internal oblique to co-contract as the primary rotators while the rectus abdominis prevents full spinal extension. The cycling motion of the legs adds a hip flexor demand — specifically the iliopsoas and rectus femoris — while also training the ability to dissociate lower-limb movement from trunk rotation, which mirrors the rotational athletic patterns used in cutting, sprinting, and martial arts. EMG research consistently identifies the bicycle crunch as one of the highest-oblique-activation exercises available in the supine position because the combined flexion, rotation, and leg movement creates a greater total moment demand on the lateral trunk musculature than any purely sagittal or purely rotational drill performed in isolation."
+  },
+  {
+    "id": "lc-055",
+    "name": "Reverse Crunch",
+    "technical_cues": [
+      "Lie supine and grip a fixed support above the head for stability",
+      "Press the lower back into the floor before beginning",
+      "Bring the knees toward the chest by posteriorly tilting the pelvis",
+      "Curl the hips off the floor at the top — feel the lower abs compress",
+      "Lower the legs under control until they are parallel to the floor"
+    ],
+    "biomechanical_why": "The reverse crunch emphasises the lower fibres of the rectus abdominis — which, while anatomically continuous, are recruited preferentially during lower limb-driven flexion movements compared to upper-body crunch patterns — as well as the hip flexors, because the movement involves bringing the lower limbs toward the fixed trunk rather than the reverse. The posterior pelvic tilt that initiates the movement requires the pubococcygeus and lower rectus abdominis to produce the necessary pelvic rotation, and the subsequent hip flexion brings the ischium toward the navel, which is the direction of shortening of the lower rectus fibres from their pubic origin upward. Gripping a fixed overhead support stabilises the thorax and prevents the upper body from being pulled off the floor by momentum or compensatory latissimus dorsi activation, ensuring the movement remains genuinely abdominal-driven and not a hip-flexor-dominated straight-leg raise."
+  },
+  {
+    "id": "lc-056",
+    "name": "Toe Touch Crunch",
+    "technical_cues": [
+      "Lie supine with legs raised vertically — perpendicular to the floor",
+      "Extend the arms up toward the feet",
+      "Curl the shoulders off the floor and reach toward the toes",
+      "Keep the lower back pressed into the floor throughout",
+      "Lower the shoulders under control — do not let them crash down"
+    ],
+    "biomechanical_why": "The toe touch crunch performs spinal flexion against the weight of the thorax with the legs held vertically, which places the hip flexors in a shortened position and removes them from meaningful contribution to the movement, directing nearly all of the mechanical demand onto the rectus abdominis and external obliques as pure trunk flexors. The vertical leg position prevents lumbar hyperextension between reps — because the leg weight acts through a near-zero moment arm about the lumbar spine — which means the primary challenge is purely abdominal shortening and re-lengthening without the hip flexor recruitment that compromises lower-back comfort in other crunch variations. The exercise is often used as a finisher for abdominal hypertrophy because it combines the shortened-range high-tension region of the rectus abdominis with a clear visual target that encourages maximum voluntary spinal flexion on each repetition."
+  },
+  {
+    "id": "lc-057",
+    "name": "Mountain Climber",
+    "technical_cues": [
+      "Begin in a high plank position — hands directly under the shoulders",
+      "Keep the hips level with the shoulders — do not pike or sag",
+      "Drive one knee toward the chest in a running motion",
+      "Return the foot to the start position before driving the opposite knee",
+      "Maintain a rigid torso throughout — the hips must not rock side to side"
+    ],
+    "biomechanical_why": "The mountain climber is a dynamic plank variation that trains anti-extension and anti-rotation core stability while simultaneously imposing a hip flexor cardiovascular demand, because each knee drive requires the iliopsoas and rectus femoris to produce hip flexion against the bodyweight resistance of the elevated leg while the plank position demands continuous isometric trunk stiffness from the rectus abdominis and transversus abdominis. The alternating leg drive creates an alternating asymmetrical load on the pelvis that the obliques and quadratus lumborum must resist through isometric lateral flexion control, preventing the hip from dropping toward the floor on the side of the raised leg — a pattern directly relevant to running mechanics. At higher tempos, the cardiovascular and metabolic demand rises substantially while the core must maintain positional stability despite increasing fatigue, making the mountain climber a rare exercise that simultaneously develops core endurance, hip flexor power, and metabolic conditioning."
+  },
+  {
+    "id": "lc-058",
+    "name": "Copenhagen Plank",
+    "technical_cues": [
+      "Set up in a side plank with the top foot resting on an elevated surface",
+      "Lift the bottom foot off the floor and hold it hovering throughout",
+      "Keep the body in a straight lateral line from ankle to shoulder",
+      "Drive the top hip upward — do not let it sag toward the floor",
+      "Breathe steadily and maintain tension throughout the hold"
+    ],
+    "biomechanical_why": "The Copenhagen plank is a lateral core exercise that uniquely loads the hip adductors of the top leg as stabilisers — the adductor longus, brevis, and magnus must contract isometrically to maintain the contact between the top leg and the bench — while also training the ipsilateral obliques and quadratus lumborum in their anti-lateral-flexion role, creating a combined inner-thigh and lateral trunk stability stimulus. The hip adductors originate on the pubic body, inferior pubic ramus, and ischial tuberosity and insert along the medial femur; in the Copenhagen plank, their role shifts from their typical sagittal-plane function of adducting the moving leg to a structural role of maintaining the top leg's contact with a fixed surface against gravity. Research has demonstrated that the Copenhagen plank produces significantly greater adductor EMG activity than traditional adductor machine exercises, and randomised trials in football players have shown that programmes including this exercise significantly reduce groin strain injury incidence, making it a high-value injury prevention and strength tool."
+  },
+  {
+    "id": "lc-059",
+    "name": "Stir the Pot",
+    "technical_cues": [
+      "Begin in a forearm plank with both forearms on a stability ball",
+      "Keep the body rigid — no sag in the hips",
+      "Draw small clockwise circles with the forearms on the ball",
+      "Reverse direction after the prescribed number of circles",
+      "Increase circle size progressively to increase the challenge"
+    ],
+    "biomechanical_why": "Stir the Pot is a dynamic instability-based anti-extension and anti-rotation exercise performed on a stability ball that forces the transversus abdominis, internal obliques, and multifidus to produce continuous multi-directional stiffness as the forearms trace circles that create constantly shifting moment arms about the lumbar spine in all three planes simultaneously. The unstable surface of the ball introduces perturbations that cannot be resisted by simple isometric contractions in one direction, requiring the nervous system to continuously update and redirect motor commands to the trunk musculature — training the reactive stabilisation function of the core that is relevant during unexpected balance challenges and contact sports. The rotational component of each circle specifically trains the ability to resist torsional spinal forces while maintaining global trunk rigidity, an ability that is difficult to develop through linear plank or crunch variations alone and that is directly applicable to resisting rotational perturbation during Olympic lifting, wrestling, and contact sport collisions."
+  },
+  {
+    "id": "lc-060",
+    "name": "Farmer's Carry",
+    "technical_cues": [
+      "Pick the implements up from a deadlift position — brace before lifting",
+      "Stand tall — chest up, shoulders pulled back and down",
+      "Walk with deliberate steps — do not let the weights swing",
+      "Keep the core braced throughout the entire carry",
+      "Do not shrug the shoulders — let the traps and grip do the work"
+    ],
+    "biomechanical_why": "The Farmer's Carry is a loaded locomotion exercise that imposes bilateral axial compressive loading on the spine while requiring the lumbar extensors, quadratus lumborum, and deep stabilising multifidus to maintain neutral alignment against the gravitational compression force and the perturbative lateral forces generated by alternating single-leg stance phases during walking. Each step creates a brief unilateral stance phase during which the stance-side gluteus medius must resist hip adduction collapse and the ipsilateral quadratus lumborum must prevent lateral pelvic tilt, training the lateral stability chain under progressive fatigue in a manner that directly transfers to athletic single-leg stability demands. The grip and forearm flexors — flexor digitorum superficialis and profundus, flexor carpi radialis and ulnaris — receive substantial training stimulus as they maintain the implement hold throughout the set, and the systemic metabolic demand of walking under heavy load produces cardiovascular and work capacity adaptations that complement the structural core and grip development."
+  }
+]

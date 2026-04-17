@@ -1,0 +1,722 @@
+[
+  {
+    "id": "sa-001",
+    "name": "Overhead Press",
+    "technical_cues": [
+      "Grip the bar just outside shoulder width with a full thumb wrap",
+      "Brace the core and squeeze the glutes before initiating the lift",
+      "Press the bar in a slight arc, moving the head back to allow vertical bar path",
+      "Lock out fully at the top with ears between biceps",
+      "Lower the bar under control to the upper chest, elbows at roughly 45 degrees"
+    ],
+    "biomechanical_why": "The overhead press primarily loads the anterior and medial deltoid, which originates on the lateral clavicle and acromion and inserts onto the deltoid tuberosity of the humerus, creating powerful shoulder abduction and flexion. The triceps brachii acts as a critical synergist to extend the elbow through the top half of the range, while the upper trapezius and serratus anterior upwardly rotate the scapula to maintain proper glenohumeral rhythm. Because the barbell moves in a near-vertical path directly over the body's center of mass, the leverage demands on the shoulder stabilizers remain consistent throughout the press, making this the gold-standard compound movement for overall shoulder development."
+  },
+  {
+    "id": "sa-002",
+    "name": "Dumbbell Shoulder Press",
+    "technical_cues": [
+      "Set dumbbells at ear height with palms facing forward",
+      "Press both dumbbells simultaneously on a slight inward arc toward each other at the top",
+      "Avoid excessive lumbar extension by keeping the ribcage down",
+      "Control the eccentric to the starting position over two counts",
+      "Maintain a neutral wrist throughout the entire movement"
+    ],
+    "biomechanical_why": "Dumbbell shoulder pressing recruits the anterior deltoid as the primary mover while demanding greater stabilization from the rotator cuff compared to a barbell variation, because each arm operates independently and must control its own path. The anterior deltoid originates on the anterior border of the lateral clavicle and inserts on the deltoid tuberosity, making it the principal flexor and internal rotator of the humerus during pressing. The independent arm path allows a greater range of motion at the bottom of the lift, increasing the stretch under load on the anterior deltoid and providing a stronger hypertrophy stimulus through the lengthened position."
+  },
+  {
+    "id": "sa-003",
+    "name": "Arnold Press",
+    "technical_cues": [
+      "Begin with dumbbells at chin height, palms facing you",
+      "Rotate the palms outward as you press upward so they face forward at the top",
+      "Reverse the rotation as you lower the dumbbells back to the starting position",
+      "Keep the elbows moving outward and upward in a smooth arc",
+      "Avoid shrugging the traps; let the deltoids drive the movement"
+    ],
+    "biomechanical_why": "The Arnold press is unique in that the supination-to-pronation rotation during the pressing arc sequentially recruits all three heads of the deltoid: the anterior deltoid is maximally activated during the initial rotational phase, the medial deltoid takes over during mid-range abduction, and all heads co-contract at lockout. This rotational component also places the shoulder through a fuller arc of internal and external rotation, stimulating the subscapularis and infraspinatus as dynamic stabilizers of the glenohumeral joint. The deltoid inserts onto the deltoid tuberosity of the humerus, and the changing elbow orientation during the Arnold press alters the angle of force application continuously, creating a more varied mechanical stimulus compared to a standard press."
+  },
+  {
+    "id": "sa-004",
+    "name": "Military Press",
+    "technical_cues": [
+      "Stand with feet shoulder-width apart and brace the entire posterior chain",
+      "Hold the bar with a pronated grip, wrists directly over elbows",
+      "Press the bar strictly overhead with zero lower-body assistance",
+      "Avoid leaning back at any point during the concentric phase",
+      "Return the bar to the clavicle under complete muscular control"
+    ],
+    "biomechanical_why": "The strict military press eliminates leg drive, placing the entire loading demand on the deltoids, triceps, and upper trapezius without any compensation from hip extension momentum. The anterior deltoid and medial deltoid are the primary movers, with the clavicular head of the pectoralis major assisting in the early concentric phase before the arms reach 90 degrees of shoulder flexion. The absence of a layback component means the erector spinae and core must work isometrically to resist lumbar hyperextension, making this a superior movement for isolating true shoulder pressing strength and identifying weaknesses in scapular stabilization under axial load."
+  },
+  {
+    "id": "sa-005",
+    "name": "Push Press",
+    "technical_cues": [
+      "Dip by bending the knees 10–15 degrees, keeping the torso upright",
+      "Drive explosively through the legs to initiate the bar's upward momentum",
+      "Transfer the bar path from the legs to the shoulders and arms seamlessly",
+      "Lock out the arms and legs simultaneously at the top",
+      "Reset the feet and absorb the bar back to the rack position under control"
+    ],
+    "biomechanical_why": "The push press uses the stretch-shortening cycle in the lower body to generate initial momentum that allows heavier loads to be pressed overhead than in a strict press, overloading the deltoids and triceps during the lockout phase where pure pressing movements are often weakest. The coordinated hip and knee extension creates a ground reaction force that travels through the kinetic chain into the bar, with the deltoid and triceps taking over to complete elbow extension and shoulder elevation once the bar passes the sticking point. This ballistic component also recruits fast-twitch motor units in the deltoids more effectively than a strict press, making the push press valuable for developing explosive overhead strength and power."
+  },
+  {
+    "id": "sa-006",
+    "name": "Lateral Raise",
+    "technical_cues": [
+      "Hold dumbbells at the sides with a slight elbow bend of 10–15 degrees",
+      "Initiate the movement by abducting the arms, leading with the elbows not the wrists",
+      "Tilt the pinky slightly higher than the thumb at the top (internal rotation) to bias the medial delt",
+      "Stop at shoulder height to avoid trapezius takeover above 90 degrees",
+      "Lower slowly over three counts to maximize medial deltoid time under tension"
+    ],
+    "biomechanical_why": "The lateral raise is the most direct isolation movement for the medial deltoid, which originates on the acromion process of the scapula and inserts on the deltoid tuberosity, producing glenohumeral abduction in the frontal plane. The medial deltoid is mechanically disadvantaged at the bottom of the movement because the moment arm is nearly zero when the arms hang at the sides, which is why the first 15–30 degrees of abduction involves significant supraspinatus contribution before the medial deltoid achieves an effective pulling angle. By maintaining a slight internal rotation (pinky high) at the top, the athlete positions the deltoid's insertion more anteriorly, improving the leverage of the medial head and reducing impingement risk at the subacromial space."
+  },
+  {
+    "id": "sa-007",
+    "name": "Cable Lateral Raise",
+    "technical_cues": [
+      "Set the cable at the lowest pulley position and stand sideways to the machine",
+      "Hold the handle with the arm crossed in front of the body for a pre-stretch",
+      "Abduct the arm across the body in the frontal plane to shoulder height",
+      "Keep the elbow slightly bent and stable throughout the arc",
+      "Return under tension, resisting the cable's pull on the eccentric"
+    ],
+    "biomechanical_why": "The cable lateral raise provides constant tension on the medial deltoid throughout the full range of motion, unlike dumbbells which have a near-zero moment arm at the bottom of the arc. The cable's horizontal pull at the bottom of the movement creates a pre-stretch on the medial deltoid even before abduction begins, enhancing the force-length relationship and stimulating greater motor unit recruitment at the initiation of the lift. Because the cable resistance vector remains perpendicular to the forearm across the full arc, the medial deltoid, which inserts on the deltoid tuberosity at the midpoint of the humerus, experiences near-maximal tension from bottom to top, making this superior to dumbbells for continuous mechanical tension and hypertrophic adaptation."
+  },
+  {
+    "id": "sa-008",
+    "name": "Machine Lateral Raise",
+    "technical_cues": [
+      "Adjust the seat so the shoulder joint is aligned with the machine's pivot axis",
+      "Place the elbows or wrists on the pads depending on the machine design",
+      "Drive the pads upward through elbow abduction, not wrist pressing",
+      "Pause briefly at shoulder height before controlling the descent",
+      "Avoid shrugging by keeping the traps relaxed and the neck long"
+    ],
+    "biomechanical_why": "Machine lateral raises fix the resistance path mechanically, allowing the medial deltoid to work in near-isolation without the stabilization demands placed on the rotator cuff during free-weight variations. The medial deltoid's line of pull runs vertically from the acromion to the deltoid tuberosity, and the machine's cam system is often designed to compensate for the deltoid's changing moment arm across the range of motion, providing more even resistance. This makes the machine lateral raise particularly effective for higher-rep hypertrophy work and for lifters who struggle to isolate the medial deltoid due to excessive trapezius recruitment during dumbbell lateral raises."
+  },
+  {
+    "id": "sa-009",
+    "name": "Front Raise",
+    "technical_cues": [
+      "Hold dumbbells in front of the thighs with a pronated or neutral grip",
+      "Raise one or both arms forward to shoulder height, keeping a slight elbow bend",
+      "Avoid swinging the torso; use the core to resist anterior pelvic tilt",
+      "Stop at shoulder height or just above to maintain anterior deltoid tension",
+      "Lower under control, resisting gravity through the full eccentric"
+    ],
+    "biomechanical_why": "The front raise isolates the anterior deltoid, which originates on the anterior border and superior surface of the lateral clavicle and acts as the primary shoulder flexor from 0 to 90 degrees. The clavicular head of the pectoralis major assists in the early phase, but beyond 60 degrees of flexion the anterior deltoid becomes the dominant mover as the pec loses its mechanical advantage. Because the anterior deltoid is already well-developed in most pressing-focused lifters, front raises are best used as accessory work to address the top range of shoulder flexion, where the anterior delt inserts closer to the elbow than the other heads and therefore generates relatively higher torque at mid-to-upper range."
+  },
+  {
+    "id": "sa-010",
+    "name": "Cable Front Raise",
+    "technical_cues": [
+      "Attach a straight bar or single handle to the low pulley",
+      "Face away from the machine and hold the cable at thigh level",
+      "Raise the arm forward in a controlled arc to shoulder height",
+      "Keep the elbow fixed with a slight bend throughout the lift",
+      "Resist the cable's pull during the lowering phase for eccentric overload"
+    ],
+    "biomechanical_why": "The cable front raise maintains consistent horizontal tension on the anterior deltoid throughout the full arc, unlike a dumbbell front raise where resistance drops significantly at the top when the arm is parallel to the floor and gravity's moment arm approaches zero. The anterior deltoid originates along the clavicle and inserts on the deltoid tuberosity, generating shoulder flexion force; the cable's direction of pull remains roughly horizontal throughout, meaning the muscle faces a meaningful load even at the end range. This makes the cable front raise an excellent choice for targeting the anterior deltoid specifically through the full range of flexion, and the eccentric phase provides controlled loading that a standard dumbbell variation often lacks."
+  },
+  {
+    "id": "sa-011",
+    "name": "Dumbbell Rear Delt Fly",
+    "technical_cues": [
+      "Hinge at the hip to approximately 45–90 degrees, maintaining a neutral spine",
+      "Hold dumbbells below the chest with a slight elbow bend",
+      "Drive the elbows upward and outward in a wide arc to shoulder height",
+      "Pinch the scapulae together at the top without shrugging the traps",
+      "Lower under control to the starting position over two to three counts"
+    ],
+    "biomechanical_why": "The bent-over rear delt fly targets the posterior deltoid, which originates on the scapular spine and inserts on the deltoid tuberosity, acting as a primary horizontal abductor and external rotator of the humerus. In the hinged position, gravity loads the posterior deltoid directly as the arm moves away from the body in the transverse plane, providing a strong mechanical stimulus that is difficult to achieve in an upright posture. The rhomboids and middle trapezius act as strong synergists during the fly, retracting the scapula to maintain proper glenohumeral rhythm and preventing anterior shoulder rounding, which is why cuing scapular pinching at the top significantly improves posterior deltoid activation compared to a sloppy, trap-dominant repetition."
+  },
+  {
+    "id": "sa-012",
+    "name": "Cable Rear Delt Fly",
+    "technical_cues": [
+      "Set both cables at face height and cross the handles (left cable in right hand and vice versa)",
+      "Step back to create tension at the starting crossed-arm position",
+      "Pull the handles outward and apart in a horizontal arc while keeping the elbows soft",
+      "Squeeze the posterior deltoids and retract the scapulae at the end range",
+      "Slowly return the handles to the crossed position under tension"
+    ],
+    "biomechanical_why": "The cable rear delt fly with crossed cables provides continuous tension on the posterior deltoid throughout the horizontal abduction arc, unlike dumbbells where resistance peaks when the arm is parallel to the ground and drops off at the extremes. The crossed-cable setup pre-stretches the posterior deltoid before the movement begins, placing the muscle on a stretch that enhances the force-length relationship and increases motor unit recruitment. The posterior deltoid, originating on the scapular spine, benefits from horizontal abduction movements where the muscle shortens from a lengthened cross-body position, and the cable's consistent pull direction ensures that mechanical tension remains high even at full horizontal abduction."
+  },
+  {
+    "id": "sa-013",
+    "name": "Reverse Pec Deck",
+    "technical_cues": [
+      "Sit facing the pad of the pec deck machine in reverse orientation",
+      "Grip the handles with arms extended at shoulder height, elbows slightly soft",
+      "Drive the arms backward through horizontal abduction until the handles are behind the shoulder line",
+      "Squeeze the posterior deltoids and rhomboids hard at end range",
+      "Return under control without allowing the weight stack to slam"
+    ],
+    "biomechanical_why": "The reverse pec deck machine isolates the posterior deltoid and infraspinatus by guiding horizontal abduction through a fixed arc, removing the stabilization demands that make free-weight rear delt exercises technique-sensitive. The machine's cam system maintains near-constant resistance throughout the arc, ensuring the posterior deltoid is loaded both at its lengthened position (arms forward) and at peak contraction (arms wide). The posterior deltoid's origin on the scapular spine and insertion on the deltoid tuberosity means that the horizontal abduction vector of the reverse pec deck creates an ideal line of pull, making this one of the most efficient exercises for posterior deltoid isolation and hypertrophy."
+  },
+  {
+    "id": "sa-014",
+    "name": "Upright Row",
+    "technical_cues": [
+      "Hold a barbell or dumbbells in front of the thighs with a pronated, shoulder-width grip",
+      "Lead the pull with the elbows, driving them upward and outward",
+      "Pull the bar to the lower chest or upper abdomen, not above the chin",
+      "Keep the elbows above the wrists at all points during the lift",
+      "Lower the bar under control, maintaining an upright torso"
+    ],
+    "biomechanical_why": "The upright row is a compound movement that primarily loads the medial deltoid and upper trapezius through glenohumeral abduction and scapular elevation simultaneously. The medial deltoid abducts the humerus while the upper trapezius elevates and upwardly rotates the scapula, and both muscles are engaged maximally in the upper half of the pull where the elbows are above shoulder height. The supraspinatus contributes significantly in the early range before the medial deltoid reaches its effective pulling angle, and care must be taken not to pull above the lower chest because internal humeral rotation combined with excessive elevation can impinge the supraspinatus tendon against the acromion."
+  },
+  {
+    "id": "sa-015",
+    "name": "Cable Upright Row",
+    "technical_cues": [
+      "Attach a straight bar or EZ-bar to a low cable pulley",
+      "Stand close to the machine and grip the bar at shoulder width with a pronated grip",
+      "Pull the bar upward along the torso, leading with the elbows",
+      "Stop when the elbows are level with or just above the shoulders",
+      "Resist the cable on the descent to work the deltoids eccentrically"
+    ],
+    "biomechanical_why": "The cable upright row provides a more consistent loading curve than the barbell version because the cable's horizontal component of force remains present at the bottom of the movement where gravity's moment arm on a barbell is small. This constant tension improves medial deltoid activation in the initial phase of the pull, where the muscle is at a mechanical disadvantage with the arm hanging at the side. The upper trapezius elevates the clavicle and scapula in coordination with the deltoid's abduction action, and the cable's fixed direction of pull helps standardize the movement path, reducing the tendency to swing or cheat that can occur with free-weight upright rows."
+  },
+  {
+    "id": "sa-016",
+    "name": "Bradford Press",
+    "technical_cues": [
+      "Hold a barbell at the front rack position with a slightly wider than shoulder-width grip",
+      "Press the bar just high enough to clear the top of the head",
+      "Immediately lower to the rear of the neck in a controlled arc",
+      "Alternate between front and behind-the-neck positions for each repetition",
+      "Keep the movement continuous and the bar path smooth throughout the set"
+    ],
+    "biomechanical_why": "The Bradford press combines front and rear pressing arcs into a single continuous movement, creating constant time under tension for the deltoids without a true lockout rest point. The anterior deltoid is emphasized during the front press phase while the posterior and medial heads are recruited more heavily during the transition and rear descent, resulting in comprehensive deltoid stimulation across all three heads. The lack of a full lockout means the triceps never fully unload the shoulder, keeping cumulative tension on the deltoids high throughout the set, and the continuous bar arc around the head demands active scapular stabilization from the rotator cuff, serratus anterior, and trapezius for the full duration."
+  },
+  {
+    "id": "sa-017",
+    "name": "Z Press",
+    "technical_cues": [
+      "Sit on the floor with legs extended straight and together in front of you",
+      "Unrack or clean the barbell to the front rack position at shoulder level",
+      "Press the bar directly overhead without any back support or hip drive",
+      "Maintain a tall, upright spine and avoid any posterior lean during the press",
+      "Lower the bar back to the front rack position fully before the next repetition"
+    ],
+    "biomechanical_why": "The Z press forces the lifter to press entirely without spinal extension assistance because the seated-on-the-floor position eliminates lumbar arch and leg drive, placing the entire overhead pressing demand on the deltoids and triceps. The seated position also demands extreme core rigidity and hip flexor flexibility, as any posterior lean will tip the lifter over without a back support, making this a highly diagnostic press variation for revealing shoulder and core imbalances. The anterior and medial deltoids must generate sufficient force to elevate the humerus against gravity from a mechanically pure upright trunk position, and the lack of layback means the bar must travel directly vertical over the shoulder joint without any forward trunk lean advantage."
+  },
+  {
+    "id": "sa-018",
+    "name": "Seated Dumbbell Press",
+    "technical_cues": [
+      "Set the bench to 90 degrees or just slightly below vertical",
+      "Hold dumbbells at ear level with elbows flared at roughly 45–75 degrees",
+      "Press both dumbbells upward simultaneously without arching excessively off the bench",
+      "Allow a slight convergence at the top without clanging the dumbbells together",
+      "Lower under control to just below the ear line to maintain tension"
+    ],
+    "biomechanical_why": "The seated position provides spinal support from the bench, allowing the lifter to focus effort on the deltoids without recruiting lower body stabilizers, making it a controlled environment for shoulder hypertrophy work. The anterior and medial deltoids are the prime movers, with the upper pectoralis contributing in the lower range when the arm is below shoulder level and the elbow is in front of the body. Sitting with a back support eliminates the temptation to lean back under heavy loads, which would shift loading toward the clavicular pec and away from the deltoid, making the seated dumbbell press a stricter deltoid builder than standing variations when performed correctly."
+  },
+  {
+    "id": "sa-019",
+    "name": "Single-Arm Dumbbell Press (Shoulder)",
+    "technical_cues": [
+      "Hold one dumbbell at ear height and allow the free arm to stabilize on the thigh or at the side",
+      "Press the dumbbell straight up, resisting any lateral torso lean",
+      "Engage the contralateral oblique to counteract the asymmetric load",
+      "Complete all reps on one side before switching arms",
+      "Control the descent fully without rushing to use momentum"
+    ],
+    "biomechanical_why": "The single-arm dumbbell press introduces a significant anti-lateral-flexion demand on the core, as the asymmetric load attempts to pull the lifter's torso toward the working side, recruiting the contralateral quadratus lumborum and obliques as strong synergists. This anti-lateral demand forces greater neuromuscular recruitment from the core and hip stabilizers compared to bilateral pressing, potentially enhancing inter-muscular coordination across the entire kinetic chain. The pressing mechanics remain identical to standard dumbbell pressing for the anterior and medial deltoids, but the stabilization demands on the rotator cuff increase because the arm has no bilateral counterpart to balance the glenohumeral joint during the press."
+  },
+  {
+    "id": "sa-020",
+    "name": "Behind-the-Neck Press",
+    "technical_cues": [
+      "Use a wide pronated grip, well outside shoulder width",
+      "Lower the bar behind the head to the level of the ears or occiput only",
+      "Press straight up from the neck position with elbows tracking outward",
+      "Never allow the bar to descend lower than ear level to protect the cervical spine",
+      "Reserve this movement for those with established shoulder mobility and no impingement history"
+    ],
+    "biomechanical_why": "The behind-the-neck press places the glenohumeral joint in maximal external rotation and abduction simultaneously, creating a strong stimulus for the medial and posterior deltoid while also loading the rotator cuff in a highly compromised position. The deltoid's medial head is placed under a greater stretch at the bottom of the movement compared to a front press, because the humerus is both abducted and externally rotated, which elongates the medial head beyond its resting length. However, this position also narrows the subacromial space and increases shear forces on the anterior capsule of the glenohumeral joint, making proper shoulder mobility a prerequisite and limiting the applicability of this exercise to advanced lifters with excellent overhead flexibility."
+  },
+  {
+    "id": "sa-021",
+    "name": "Barbell Curl",
+    "technical_cues": [
+      "Stand upright with the barbell in a supinated grip at shoulder width or slightly narrower",
+      "Pin the elbows to the sides and keep them stationary throughout the movement",
+      "Curl the bar in an arc toward the upper chest, squeezing the biceps at peak contraction",
+      "Lower the bar under full control, resisting gravity through the full eccentric",
+      "Avoid rocking the torso or using hip extension to initiate the curl"
+    ],
+    "biomechanical_why": "The barbell curl is the foundational biceps mass builder, targeting the biceps brachii through elbow flexion against a heavy load with both heads actively contributing because the supinated grip positions the biceps at an optimal pulling angle. The biceps brachii originates from the supraglenoid tubercle of the scapula (long head) and the coracoid process (short head), inserting on the radial tuberosity, and performs both elbow flexion and forearm supination simultaneously during the curl. Because the forearm is already supinated by the barbell grip, the supination function is pre-engaged, meaning all biceps force is directed into pure elbow flexion, resulting in maximum torque production and motor unit recruitment across both heads."
+  },
+  {
+    "id": "sa-022",
+    "name": "Dumbbell Curl",
+    "technical_cues": [
+      "Hold dumbbells at the sides with a neutral grip and supinate as the curl begins",
+      "Alternate arms or curl both simultaneously depending on training goal",
+      "Supinate the wrist fully at the top to maximize biceps peak contraction",
+      "Keep the elbows stationary and close to the torso throughout",
+      "Fully extend the arm at the bottom to maximize the stretch on the biceps"
+    ],
+    "biomechanical_why": "The dumbbell curl allows for full forearm supination during the lifting phase, which activates the supination function of the biceps brachii in addition to elbow flexion, creating greater total biceps activation than movements that begin in a supinated position. The ability to supinate from neutral progressively loads the biceps through its entire functional range, from elbow flexion initiation to full supination at the top, creating a longer effective range of motion compared to a barbell curl where the wrist is locked in supination from the start. Each arm works independently, which eliminates the bilateral deficit that can occur with two-arm exercises and allows the weaker arm to be addressed in isolation."
+  },
+  {
+    "id": "sa-023",
+    "name": "Hammer Curl",
+    "technical_cues": [
+      "Hold dumbbells in a neutral grip (thumbs pointing up) throughout the entire movement",
+      "Curl the dumbbells in a vertical arc toward the shoulder without supinating the wrist",
+      "Keep the elbows fixed at the sides, preventing forward elbow swing",
+      "Squeeze the brachialis and brachioradialis at the top of the movement",
+      "Lower under control to full elbow extension before the next rep"
+    ],
+    "biomechanical_why": "The hammer curl targets the brachialis and brachioradialis as primary movers because the neutral grip eliminates biceps brachii's supination advantage, shifting the majority of the elbow flexion load to these synergists. The brachialis originates on the anterior surface of the humerus and inserts on the coronoid process and tuberosity of the ulna; it is a pure elbow flexor with no supination function, making it fully loaded in any grip position. The brachioradialis, originating on the lateral supracondylar ridge and inserting at the styloid process of the radius, is maximally recruited in a neutral grip, and developing this muscle adds significant mass to the lateral forearm and contributes to overall arm size and visible thickness."
+  },
+  {
+    "id": "sa-024",
+    "name": "Incline Dumbbell Curl",
+    "technical_cues": [
+      "Set the bench to a 45–60 degree incline and sit with back fully supported",
+      "Let the arms hang straight down from the shoulders, perpendicular to the floor",
+      "Curl the dumbbells upward while keeping the shoulders stationary and pinned to the bench",
+      "Supinate the wrist fully at the top for peak biceps contraction",
+      "Control the descent to the fully extended position to maintain the lengthened stretch"
+    ],
+    "biomechanical_why": "The incline position places the shoulder in extension behind the torso, which stretches the long head of the biceps brachii across both the shoulder and elbow joints simultaneously, creating greater tension in the lengthened position than any standing curl variation. The long head originates on the supraglenoid tubercle of the scapula and travels over the shoulder joint, meaning that when the arm hangs behind the body on the incline bench, both the shoulder extension and elbow extension create a biarticular stretch that enhances the force-length relationship and increases mechanical tension at the start of each repetition. This lengthened-position loading is a potent hypertrophic stimulus, as research consistently shows that training muscles at long muscle lengths produces superior growth compared to exercises that load primarily in the shortened position."
+  },
+  {
+    "id": "sa-025",
+    "name": "Preacher Curl",
+    "technical_cues": [
+      "Position the upper arm flush against the preacher pad with the armpit at the top of the pad",
+      "Lower the weight until the arm is near full extension without hyperextending the elbow",
+      "Curl the weight up in a smooth arc, squeezing the biceps at full flexion",
+      "Avoid rocking the torso forward to assist the concentric phase",
+      "Control the eccentric phase fully, feeling the stretch at the bottom before each rep"
+    ],
+    "biomechanical_why": "The preacher bench places the humerus in a forward-flexed position, which shortens the long head of the biceps at the shoulder while maximizing the short head's mechanical tension throughout the range of motion, making this exercise highly effective for short head development and peak contraction. With the upper arm fixed on the pad, momentum is eliminated and the biceps must perform every degree of elbow flexion through muscular force alone, improving mind-muscle connection and isolation quality. The preacher curl's stretched position at the bottom loads the biceps at its longest length, which combined with the fixed upper arm position, creates a high-tension stimulus especially at the beginning of each rep where the elbow approaches full extension."
+  },
+  {
+    "id": "sa-026",
+    "name": "Cable Curl",
+    "technical_cues": [
+      "Attach a straight bar to a low pulley and stand at arm's length from the machine",
+      "Curl the bar upward while keeping the elbows stationary at the sides",
+      "Squeeze the biceps hard at the top before controlling the descent",
+      "Maintain constant cable tension through the full arc including the bottom position",
+      "Avoid swinging or using the torso to assist the lift"
+    ],
+    "biomechanical_why": "The cable curl provides constant tension on the biceps brachii throughout the entire range of motion because the cable's horizontal pull maintains a significant moment arm on the elbow joint even when the forearm is vertical, unlike a dumbbell which provides zero resistance at the fully curled position. This continuous tension means the biceps is never in a fully unloaded state during the set, increasing total time under tension compared to dumbbell curls and potentially enhancing hypertrophic signaling. The cable's steady resistance also prevents the acceleration that occurs at the bottom of a dumbbell curl, forcing the biceps to generate force smoothly from the very beginning of each repetition."
+  },
+  {
+    "id": "sa-027",
+    "name": "EZ-Bar Curl",
+    "technical_cues": [
+      "Grip the inner angled portion of the EZ-bar with a semi-supinated grip",
+      "Keep the elbows pinned to the sides and avoid forward elbow swing",
+      "Curl the bar to the upper chest in a controlled arc",
+      "Pause briefly at the top, focusing on the biceps peak contraction",
+      "Lower to near-full elbow extension before each repetition"
+    ],
+    "biomechanical_why": "The EZ-bar's angled grip positions the forearm in a semi-supinated posture between neutral and full supination, which reduces wrist and elbow stress compared to the straight barbell while still maintaining high biceps brachii activation. The semi-supinated grip shifts some of the load from the biceps brachii to the brachialis and brachioradialis compared to a full supination barbell curl, but the biceps still remains the primary mover and total elbow flexion force is comparable. The EZ-bar is particularly beneficial for lifters with wrist or elbow discomfort during straight barbell curls, as the angled grip reduces the pronation torque demands on the radio-ulnar joints while preserving the elbow flexion stimulus."
+  },
+  {
+    "id": "sa-028",
+    "name": "Concentration Curl",
+    "technical_cues": [
+      "Sit on a bench with the elbow braced against the inner thigh of the same side",
+      "Hold the dumbbell with a fully supinated grip and let the arm fully extend at the bottom",
+      "Curl the dumbbell in a pure arc without moving the upper arm from the thigh",
+      "Supinate maximally at the top and squeeze the biceps for a full second",
+      "Lower completely under control before the next repetition"
+    ],
+    "biomechanical_why": "The concentration curl braces the humerus against the thigh in a position of slight shoulder flexion and adduction, which reduces long head tension and maximally loads the short head of the biceps brachii, contributing to the characteristic rounded 'peak' appearance of developed biceps. The fixed elbow position against the thigh eliminates all shoulder and torso momentum, forcing the biceps to generate every unit of elbow flexion force purely through muscular contraction, maximizing isolation and mind-muscle connection. EMG research has consistently identified the concentration curl as one of the highest activators of the biceps brachii among curl variations, likely due to the combination of pure elbow isolation, full supination at peak contraction, and the optimal length-tension relationship at the mid-point of the arc."
+  },
+  {
+    "id": "sa-029",
+    "name": "Cross-Body Hammer Curl",
+    "technical_cues": [
+      "Hold a dumbbell in a neutral grip at the side",
+      "Curl the dumbbell across the body toward the opposite shoulder rather than straight up",
+      "Keep the elbow close to the torso and the upper arm fixed throughout",
+      "Squeeze the brachialis and brachioradialis at peak contraction across the body",
+      "Lower under control and alternate sides each repetition"
+    ],
+    "biomechanical_why": "The cross-body path of the hammer curl increases the range of motion for the brachioradialis compared to a standard hammer curl, because the diagonal arm path across the midline creates additional radial deviation stress that further engages the brachioradialis throughout the arc. The brachialis, as a pure elbow flexor originating on the anterior humerus and inserting on the ulnar tuberosity, contributes equally to both standard and cross-body hammer curls, as its activation is grip-agnostic and depends solely on elbow flexion angle and load. The cross-body path also reduces direct shoulder involvement and forces greater forearm stabilization, making this a useful variation for building balanced arm thickness across the brachialis and brachioradialis without biceps brachii dominance."
+  },
+  {
+    "id": "sa-030",
+    "name": "Zottman Curl",
+    "technical_cues": [
+      "Begin with a supinated grip and curl the dumbbells upward using a standard biceps curl motion",
+      "At the top of the movement, rotate the wrists to a fully pronated grip",
+      "Lower the dumbbells under control in the pronated (reverse curl) position",
+      "Rotate back to supination at the bottom before the next repetition",
+      "Move slowly on both the concentric and eccentric to maximize stimulus on both grip phases"
+    ],
+    "biomechanical_why": "The Zottman curl is a two-phase exercise that trains elbow flexion with a supinated grip on the way up (targeting the biceps brachii) and a pronated grip on the way down (targeting the brachialis and brachioradialis in their most challenged position), effectively combining two curl variations into a single movement. During the eccentric phase in pronation, the brachialis bears the majority of the load because the biceps brachii is in a mechanically weaker position with the forearm pronated, reducing its ability to contribute significantly to the deceleration of the dumbbell. This eccentric overload on the brachialis and brachioradialis in the pronated position is difficult to achieve with other single exercises, making the Zottman curl an efficient tool for comprehensive elbow flexor development."
+  },
+  {
+    "id": "sa-031",
+    "name": "Spider Curl",
+    "technical_cues": [
+      "Lie face-down on an incline bench set to 45–60 degrees, with the chest against the pad",
+      "Allow the arms to hang perpendicular to the floor in full extension",
+      "Curl the dumbbells or barbell upward, keeping the upper arms vertical and stationary",
+      "Squeeze the biceps intensely at full flexion before lowering",
+      "Lower completely to full elbow extension against gravity for maximum stretch"
+    ],
+    "biomechanical_why": "The spider curl positions the humerus perpendicular to the floor and fixed against the bench, which removes all momentum and anterior deltoid involvement, leaving the biceps as the sole mover of elbow flexion through the entire arc. The face-down position means the biceps is loaded maximally at the top of the movement when the elbow is fully flexed, unlike an incline curl which peaks at the bottom; this shortened-position loading complements incline curls in a complete biceps training program. The fixed upper arm against the pad is similar to a preacher curl, but the vertical humerus position of the spider curl changes the torque curve, creating a high peak contraction stimulus that is particularly effective for developing the distal biceps insertion area near the radial tuberosity."
+  },
+  {
+    "id": "sa-032",
+    "name": "Machine Curl",
+    "technical_cues": [
+      "Adjust the seat so the elbows align with the machine's pivot axis",
+      "Place the upper arms flat on the pad and grip the handles in a supinated position",
+      "Curl the handles upward through a full range of motion to full elbow flexion",
+      "Pause at the top and squeeze before lowering under the machine's resistance",
+      "Use a controlled tempo without allowing the weight stack to drop between reps"
+    ],
+    "biomechanical_why": "Curl machines fix the movement path and eliminate the need for rotator cuff and shoulder stabilization, allowing complete focus on the elbow flexors, which makes them ideal for high-rep hypertrophy work and for lifters who struggle with proper barbell or dumbbell curl mechanics. The machine's cam system is designed to provide a more consistent resistance curve across the full range of elbow flexion compared to free weights, where resistance is heavily influenced by gravity and the changing moment arm of the forearm. The biceps brachii's role as a supinator is partially engaged depending on the machine's grip angle, but the primary loading is through elbow flexion against a controlled resistance, making machine curls a reliable and repeatable stimulus for biceps volume accumulation."
+  },
+  {
+    "id": "sa-033",
+    "name": "Reverse Curl",
+    "technical_cues": [
+      "Grip a barbell with a fully pronated (overhand) grip at shoulder width",
+      "Keep the elbows fixed at the sides and curl the bar upward",
+      "Lift to the point where the forearms are parallel to the floor or slightly beyond",
+      "Lower under full control; avoid dropping the bar or losing pronation",
+      "Maintain an upright torso without any backward lean"
+    ],
+    "biomechanical_why": "The reverse curl uses a pronated grip to drastically reduce biceps brachii's mechanical contribution, shifting primary loading to the brachialis and brachioradialis, which are grip-independent elbow flexors that remain strong in any forearm orientation. The brachioradialis is particularly emphasized in this variation because pronation places it at its most mechanically advantageous pulling angle, originating from the lateral supracondylar ridge and pulling on the radius to flex the elbow. The extensor carpi radialis and extensor digitorum are isometrically loaded to maintain wrist extension in the pronated position, creating simultaneous forearm extensor development alongside elbow flexor work, making the reverse curl a highly efficient exercise for overall forearm and upper arm thickness."
+  },
+  {
+    "id": "sa-034",
+    "name": "Cable Hammer Curl",
+    "technical_cues": [
+      "Attach a rope to a low cable pulley and hold both ends with a neutral grip",
+      "Stand at arm's length from the machine with the rope hanging in front",
+      "Curl both rope ends upward while keeping the elbows stationary at the sides",
+      "At the top, spread the rope ends apart slightly to emphasize peak contraction",
+      "Lower under cable tension through the full range of motion"
+    ],
+    "biomechanical_why": "The cable hammer curl using a rope provides constant tension on the brachialis and brachioradialis throughout the full elbow flexion arc, unlike dumbbell hammer curls where resistance drops near the top when the forearm approaches vertical. The rope's flexibility allows a slight wrist deviation at the top of the movement, which can increase brachioradialis activation by introducing a radial deviation component that further challenges the muscle's wrist-stabilizing role. The cable's consistent horizontal tension also ensures the brachialis is loaded meaningfully at the bottom of the movement where dumbbell resistance approaches zero, making the cable hammer curl superior for total brachialis time under tension within a set."
+  },
+  {
+    "id": "sa-035",
+    "name": "21s Curl",
+    "technical_cues": [
+      "Perform 7 reps from full extension to the halfway point (forearm parallel to floor)",
+      "Then perform 7 reps from the halfway point to full flexion (top half only)",
+      "Finally, perform 7 full range-of-motion reps from bottom to top",
+      "Use approximately 60 percent of your standard curl weight",
+      "Maintain strict form throughout all 21 repetitions without rest between the three phases"
+    ],
+    "biomechanical_why": "The 21s protocol systematically overloads the biceps brachii at three distinct segments of the torque-angle curve: the bottom half where the muscle is at a mechanical disadvantage with a poor moment arm on the elbow, the top half where the muscle is near its shortened position, and the full arc where both phases are combined. This partitioned approach accumulates significant metabolic stress and motor unit fatigue across the entire elbow flexion range, as different portions of the muscle's fibers are recruited preferentially depending on the joint angle and the position on the length-tension curve. The metabolic byproduct accumulation from 21 continuous repetitions creates a potent anabolic environment within the biceps, stimulating both mechanical and metabolic hypertrophic pathways simultaneously."
+  },
+  {
+    "id": "sa-036",
+    "name": "Single-Arm Cable Curl",
+    "technical_cues": [
+      "Attach a single handle to a low cable pulley",
+      "Stand with feet shoulder-width apart and hold the handle in a supinated grip",
+      "Curl the handle toward the shoulder while keeping the elbow fixed at the side",
+      "Supinate maximally at peak flexion and hold for a one-second contraction",
+      "Lower under control until the arm is fully extended before the next repetition"
+    ],
+    "biomechanical_why": "Single-arm cable curls allow individual limb loading, which eliminates the bilateral deficit and forces the weaker arm to reach its own full potential rather than compensating within a two-arm movement. The cable provides constant tension on the biceps brachii at all points including the fully curled top position where a dumbbell would be nearly unloaded, maximizing total time under tension per repetition. The unilateral nature also requires greater core and hip stabilization on the non-working side, and the ability to angle slightly or position the body relative to the cable pulley allows fine-tuning of the biceps long-head versus short-head emphasis by adjusting the degree of shoulder flexion or extension during the curl."
+  },
+  {
+    "id": "sa-037",
+    "name": "Triceps Pushdown",
+    "technical_cues": [
+      "Attach a straight bar or angled bar to a high cable pulley",
+      "Grip the bar with a pronated grip and position the elbows fixed at the sides",
+      "Extend the elbows fully, pressing the bar down to thigh level",
+      "Squeeze the triceps hard at full extension before slowly allowing the bar to rise",
+      "Keep the upper arms stationary; only the forearms should move"
+    ],
+    "biomechanical_why": "The triceps pushdown is a fundamental isolation exercise for the triceps brachii, specifically loading the lateral and medial heads through elbow extension against a vertical cable force. The lateral head originates on the posterior humerus below the greater tubercle and is maximally activated during pushdowns because the arm is adducted and the elbow is performing pure extension, placing this head in a highly favorable mechanical position. The medial head, originating on the posterior humerus below the radial groove, is the workhorse of elbow extension and is recruited in all elbow extension movements, while the long head's contribution is minimized in pushdowns because the shoulder is not in significant flexion, keeping the long head in a shortened biarticular position."
+  },
+  {
+    "id": "sa-038",
+    "name": "Skull Crusher",
+    "technical_cues": [
+      "Lie on a flat bench and hold an EZ-bar or barbell over the chest with arms fully extended",
+      "Keeping the upper arms vertical and fixed, bend the elbows to lower the bar toward the forehead",
+      "Lower to just above the forehead or hairline, not to the nose or chin",
+      "Extend the elbows back to full lockout, pressing through the triceps",
+      "Control the eccentric phase; do not let the bar fall toward the face"
+    ],
+    "biomechanical_why": "The skull crusher loads the triceps through elbow extension with the arms in a vertically elevated position, which places the long head of the triceps under a significant stretch because the shoulder is flexed and the elbow is also flexed simultaneously, creating a biarticular stretch that maximizes long head activation. The long head of the triceps originates on the infraglenoid tubercle of the scapula and inserts on the olecranon via the common triceps tendon; with the shoulder flexed overhead during skull crushers, this head is pulled to its greatest functional length. The lateral and medial heads, which originate on the humerus and have no shoulder crossing function, are also heavily loaded through elbow extension, making skull crushers a comprehensive triceps developer that specifically targets the often-underdeveloped long head."
+  },
+  {
+    "id": "sa-039",
+    "name": "Close-Grip Bench Press",
+    "technical_cues": [
+      "Grip the barbell at shoulder width or slightly narrower, avoiding a grip that causes wrist pain",
+      "Lower the bar to the lower chest or sternum with elbows tracking closer to the body than a wide-grip bench",
+      "Press the bar upward and very slightly back toward the face to maintain vertical forearm alignment",
+      "Lock out fully at the top before each repetition",
+      "Keep the elbows at approximately 45 degrees from the torso throughout the movement"
+    ],
+    "biomechanical_why": "The close-grip bench press shifts the primary loading from the pectoralis major to the triceps brachii by narrowing the grip, which reduces the pec's moment arm on the shoulder joint and increases the demand on elbow extension strength from the triceps. All three heads of the triceps contribute to elbow extension in this pressing movement, but the lateral and medial heads are particularly engaged because the shoulder remains in a relatively neutral position rather than being flexed overhead. The close-grip bench press allows for heavier absolute loading on the triceps compared to isolation exercises like pushdowns, making it the gold-standard compound triceps builder and a key accessory lift for improving the lockout portion of the standard bench press."
+  },
+  {
+    "id": "sa-040",
+    "name": "Overhead Triceps Extension",
+    "technical_cues": [
+      "Hold a dumbbell or EZ-bar with both hands overhead with the arms fully extended",
+      "Bend the elbows, lowering the weight behind the head while keeping the upper arms vertical",
+      "Lower until the forearms are parallel to the floor or slightly below",
+      "Extend the elbows to full lockout overhead, squeezing the triceps at the top",
+      "Keep the elbows pointed directly forward and avoid flaring them wide"
+    ],
+    "biomechanical_why": "The overhead triceps extension positions the shoulder in maximal flexion, which stretches the long head of the triceps brachii across both the shoulder and elbow joints, creating a biarticular stretch that dramatically increases long head activation compared to any pushdown variation. The long head's origin on the infraglenoid tubercle means that the greater the shoulder flexion, the more the long head is elongated and the more force it must generate to complete elbow extension, making overhead extensions the superior exercise for long head hypertrophy. The medial and lateral heads, which are monoarticular and originate on the humerus, also contribute significantly to elbow extension in this position, but the unique loading of the long head under biarticular stretch is what distinguishes overhead extensions from triceps pushdowns in terms of muscle fiber targeting."
+  },
+  {
+    "id": "sa-041",
+    "name": "Cable Overhead Triceps Extension",
+    "technical_cues": [
+      "Attach a rope to a high cable pulley and face away from the machine",
+      "Hold the rope behind the head with elbows pointed forward and bent to 90 degrees",
+      "Step away from the machine to create tension in the starting position",
+      "Extend the elbows forward and upward to full lockout without moving the upper arms",
+      "Control the return to the bent-elbow starting position slowly"
+    ],
+    "biomechanical_why": "The cable overhead triceps extension provides constant tension on the long head of the triceps through the full arc, unlike a dumbbell overhead extension where resistance is highest at the bottom (when gravity acts perpendicular to the forearm) and approaches zero at full lockout overhead. The cable's backward horizontal pull maintains meaningful force on the triceps throughout the entire movement, including at full extension where the dumbbell would be essentially unloaded. The shoulder-flexed position ensures maximal elongation of the long head, and the rope attachment allows slight divergence of the hands at lockout to increase the width of the extension and create a more complete squeeze on the lateral triceps at peak contraction."
+  },
+  {
+    "id": "sa-042",
+    "name": "Triceps Dip",
+    "technical_cues": [
+      "Grip parallel bars with the arms fully extended and the torso upright or slightly forward",
+      "Lower the body by bending the elbows, keeping them relatively close to the torso",
+      "Descend until the upper arms are parallel to the floor or slightly below",
+      "Press through the triceps to full lockout at the top",
+      "Avoid excessive forward lean, which shifts load toward the chest and away from the triceps"
+    ],
+    "biomechanical_why": "Triceps dips are a compound bodyweight or loaded exercise that places the triceps under load through elbow extension with the shoulder in a neutral to slightly extended position, which keeps the long head in a more favorable, less elongated position and emphasizes the lateral and medial heads as primary contributors. Unlike overhead extensions, the shoulder extension position during dips slightly shortens the long head, meaning the medial and lateral heads of the triceps bear a greater proportion of the load, making dips highly effective for building overall triceps mass and thickness from the lateral head perspective. The ability to add significant weight via a dip belt makes this exercise progressively loadable for long-term strength development, and the closed kinetic chain pressing mechanic activates the stabilizing muscles of the shoulder girdle simultaneously."
+  },
+  {
+    "id": "sa-043",
+    "name": "Kickback",
+    "technical_cues": [
+      "Hinge at the hip to approximately 45–90 degrees with the torso parallel to the floor",
+      "Bring the upper arm parallel to the floor and alongside the torso, elbow bent at 90 degrees",
+      "Extend the elbow fully, driving the hand backward and upward until the arm is straight",
+      "Hold the fully extended position for a brief squeeze before lowering",
+      "Avoid rotating the torso or using momentum to swing the weight back"
+    ],
+    "biomechanical_why": "The triceps kickback is unique in that it loads the triceps maximally at the fully extended position when the arm is parallel to the floor and the torque from the dumbbell is at its peak, unlike most pressing movements which are hardest at the beginning of the concentric phase. With the upper arm held parallel to the floor, the triceps must extend the forearm against gravity at a high moment arm, and the lateral and medial heads are primarily responsible for generating this extension force since the long head is slightly shortened with the shoulder in extension. The isometric hold at full extension creates a strong peak contraction on the lateral and medial triceps heads, and the prone hinge position eliminates momentum and forces the triceps to work in pure isolation, making kickbacks effective for developing the horseshoe-shaped definition of the lateral triceps head."
+  },
+  {
+    "id": "sa-044",
+    "name": "Diamond Push-Up (Triceps)",
+    "technical_cues": [
+      "Form a diamond shape with the index fingers and thumbs of both hands directly under the sternum",
+      "Maintain a rigid plank position with hips level and core braced throughout",
+      "Lower the chest toward the hands, keeping elbows close to the torso and tracking backward",
+      "Press back to full arm extension, squeezing the triceps at the top",
+      "Avoid letting the hips sag or the elbows flare wide during the movement"
+    ],
+    "biomechanical_why": "The diamond push-up narrows the base of support and positions the hands directly under the sternum, which dramatically reduces the pectoralis major's mechanical advantage and shifts the pressing load predominantly onto the triceps brachii for elbow extension. The close hand position also requires the elbows to track posteriorly and close to the body rather than flaring out, which further minimizes deltoid and chest involvement and directs force into the triceps. As a bodyweight exercise requiring no equipment, the diamond push-up provides progressive loading options through elevation changes and the use of weighted vests, while also training the shoulder stabilizers and core isometrically throughout each repetition."
+  },
+  {
+    "id": "sa-045",
+    "name": "Rope Pushdown",
+    "technical_cues": [
+      "Attach a rope to a high cable pulley and grip both ends with a neutral grip",
+      "Position the elbows at the sides and keep them fixed throughout the movement",
+      "Push the rope downward and at the very bottom spread the rope ends apart",
+      "Hold the spread-and-extended position briefly before slowly returning to the top",
+      "Feel the lateral triceps contract forcefully at the fully extended and flared position"
+    ],
+    "biomechanical_why": "The rope pushdown's defining feature is the ability to spread the rope handles apart at the bottom of the movement, which adds a shoulder extension component that further engages the lateral and long heads of the triceps at their most contracted position. The neutral grip on the rope reduces wrist stress compared to a pronated bar and allows a more natural alignment of the forearm during extension, which some lifters find reduces elbow discomfort. The rope's flexibility allows each hand to move through a slightly individualized path, reducing the joint stress associated with a rigid bar and enabling a stronger peak contraction by allowing the hands to travel slightly outward at the bottom, creating maximum triceps brachii shortening."
+  },
+  {
+    "id": "sa-046",
+    "name": "Single-Arm Pushdown",
+    "technical_cues": [
+      "Attach a single handle to a high cable pulley",
+      "Grip the handle with one hand in a pronated or neutral grip",
+      "Press the handle downward to full elbow extension while keeping the upper arm fixed",
+      "Hold the fully extended position, then slowly allow the elbow to flex back to 90 degrees",
+      "Complete all reps on one arm before switching sides"
+    ],
+    "biomechanical_why": "Single-arm pushdowns allow each triceps to be loaded and trained independently, addressing strength imbalances between limbs that bilateral exercises may mask or perpetuate. The unilateral movement also increases the demand on the ipsilateral core and obliques, which must resist the lateral pull of the cable, integrating some anti-lateral-flexion stability work into what is otherwise a pure triceps isolation exercise. Because each arm works alone without the compensation patterns that can develop in bilateral exercises, single-arm pushdowns are particularly useful for identifying and correcting elbow extension strength asymmetries that may affect bench press lockout mechanics or throwing performance."
+  },
+  {
+    "id": "sa-047",
+    "name": "Tate Press",
+    "technical_cues": [
+      "Lie on a flat bench and hold dumbbells over the chest with arms extended and palms facing the feet",
+      "Bend the elbows, rotating them outward while lowering the dumbbell heads to the chest",
+      "Keep the upper arms relatively stationary as the forearms rotate outward and down",
+      "Press back to full extension by extending the elbows while rotating the palms back to face inward",
+      "Use moderate weight and focus on the unique elbow flare mechanics of the movement"
+    ],
+    "biomechanical_why": "The Tate press is a specialized triceps exercise that loads the medial head particularly heavily due to the elbow-flared pressing path, which places the medial head in a mechanically unique position compared to standard pushdowns or overhead extensions. With the elbows flaring outward as the dumbbells are lowered toward the chest, the medial head of the triceps must extend the elbow against resistance while simultaneously resisting the inward-rotating torque from the weight, creating a combined extension and stabilization demand. This medial-head emphasis makes the Tate press a valuable exercise for building the inner triceps thickness that contributes to overall arm circumference and the appearance of fullness when viewing the arm from the front."
+  },
+  {
+    "id": "sa-048",
+    "name": "JM Press",
+    "technical_cues": [
+      "Set up on a flat bench as you would for a close-grip bench press",
+      "Lower the bar toward the lower chest but allow the elbows to travel slightly forward",
+      "The bar should travel in a path between a skull crusher and a close-grip press",
+      "Stop when the forearms nearly contact the upper arms, then press back to lockout",
+      "Use a controlled, moderate weight; this exercise is technique-sensitive"
+    ],
+    "biomechanical_why": "The JM press is a hybrid movement combining elements of the skull crusher and close-grip bench press, loading the triceps through a compound arc that challenges both the long head (via the forward elbow movement) and the lateral and medial heads (via the pressing component). The forward elbow travel increases shoulder flexion during the descent, creating a mid-range biarticular stretch on the long head that exceeds what occurs in a pure close-grip press but is less extreme than a full skull crusher, making the JM press an efficient middle-ground stimulus for all three triceps heads. Powerlifters frequently use this movement to overload the sticking point of the bench press, as the movement pattern closely mimics the elbow position that occurs just above the chest during a competition bench press."
+  },
+  {
+    "id": "sa-049",
+    "name": "Board Press",
+    "technical_cues": [
+      "Use a partner or wrist straps to hold 1–3 wooden boards on the chest during the press",
+      "Lower the bar until it contacts the board surface rather than the chest",
+      "The number of boards determines the range of motion: more boards equals shorter ROM",
+      "Press explosively from the board contact point to full lockout",
+      "Focus on the lockout phase where the triceps are the primary limiting factor"
+    ],
+    "biomechanical_why": "Board presses restrict the range of motion to the top portion of the bench press arc where the triceps are the primary movers and the pectoralis major is at a mechanical disadvantage, allowing for overloading of the triceps lockout mechanism with supramaximal or near-maximal loads. The shortened range means the pec's stretch-shortening cycle is not available, placing full lockout responsibility on the triceps lateral and medial heads, which must generate sufficient elbow extension force to complete the press without any elastic contribution from the chest. This targeted overload of the lockout position is valuable for powerlifters seeking to improve their competition bench press, and the ability to use loads exceeding full-range capacity builds neural adaptations and tendon strength specific to the partial range of elbow extension."
+  },
+  {
+    "id": "sa-050",
+    "name": "French Press",
+    "technical_cues": [
+      "Sit on a bench and hold an EZ-bar or barbell overhead with arms fully extended",
+      "Lower the bar behind the head by bending the elbows, keeping the upper arms vertical",
+      "Descend until the bar is level with the back of the head or slightly below",
+      "Extend the elbows back to full lockout without allowing the upper arms to drift forward",
+      "Use a smooth, controlled tempo throughout to protect the elbow joints"
+    ],
+    "biomechanical_why": "The French press is essentially a seated overhead triceps extension, placing the shoulder in full flexion to maximally stretch the long head of the triceps across both the shoulder and elbow joints. The long head's biarticular nature means that shoulder flexion during the French press creates a significant passive insufficiency on the long head, requiring it to generate greater active contractile force to complete elbow extension and contributing to superior long head hypertrophy compared to pushdowns. The seated position with an upright torso allows for heavier loads than a single-arm dumbbell overhead extension while maintaining a vertical upper arm position, which is critical for isolating the triceps and preventing the load from shifting to the deltoids or upper back."
+  },
+  {
+    "id": "sa-051",
+    "name": "Wrist Curl",
+    "technical_cues": [
+      "Sit on a bench and rest the forearms on the thighs with the wrists extending past the knees",
+      "Hold a barbell or dumbbells with a supinated (underhand) grip",
+      "Allow the wrist to drop into full extension, feeling a stretch in the wrist flexors",
+      "Curl the wrists upward through full flexion, squeezing the forearm flexors at the top",
+      "Lower slowly under control without allowing the weight to slip from the fingers"
+    ],
+    "biomechanical_why": "The wrist curl directly targets the wrist flexor group, primarily the flexor carpi radialis and flexor carpi ulnaris, which originate on the medial epicondyle of the humerus and insert on the carpal bones and metacarpals respectively. These muscles are responsible for wrist flexion and contribute to grip strength, and they are often undertrained compared to the wrist extensors, creating muscular imbalances that can predispose the elbow to medial epicondylitis. Training the wrist flexors through a full range of motion, from full extension at the bottom to full flexion at the top, stimulates hypertrophy in the entire forearm flexor compartment and improves wrist stability under loaded gripping tasks."
+  },
+  {
+    "id": "sa-052",
+    "name": "Reverse Wrist Curl",
+    "technical_cues": [
+      "Sit on a bench with forearms resting on the thighs and wrists extending past the knees",
+      "Hold a barbell or dumbbells with a pronated (overhand) grip",
+      "Allow the wrists to drop into full flexion toward the floor",
+      "Extend the wrists upward through full extension, raising the knuckles toward the ceiling",
+      "Lower under control; use light weight as the extensors are typically weaker than the flexors"
+    ],
+    "biomechanical_why": "The reverse wrist curl targets the wrist extensor group, specifically the extensor carpi radialis longus and brevis and the extensor carpi ulnaris, which originate primarily on the lateral epicondyle of the humerus and insert onto the dorsal surfaces of the metacarpal bases. The wrist extensors are consistently weaker than the wrist flexors in most individuals, and this imbalance is associated with lateral epicondylitis (tennis elbow), making reverse wrist curls a critical preventive and rehabilitative exercise. Strengthening the extensor compartment improves overall forearm balance, enhances wrist stability during heavy pulling and gripping movements, and increases the structural integrity of the lateral elbow complex."
+  },
+  {
+    "id": "sa-053",
+    "name": "Farmer's Walk",
+    "technical_cues": [
+      "Pick up heavy implements (dumbbells, farmer's handles, or trap bar) using a deadlift technique",
+      "Walk with an upright posture, maintaining a tall spine and braced core",
+      "Take short, deliberate steps and keep the implements close to the body",
+      "Grip tightly throughout the entire walk without re-gripping mid-set",
+      "Set the implements down under control using a hip-hinge pattern"
+    ],
+    "biomechanical_why": "The farmer's walk is one of the most comprehensive grip and forearm loading exercises because it requires sustained isometric contraction of the entire hand and forearm musculature, including the finger flexors (flexor digitorum superficialis and profundus), wrist flexors, and the intrinsic hand muscles, under a heavy gravitational load for an extended duration. The forearm flexor muscles must maintain constant high-force isometric contraction throughout the walk, accumulating significant metabolic fatigue in a way that repetitive concentric movements cannot replicate. The farmer's walk also loads the shoulder girdle statically, requiring the trapezius, levator scapulae, and rotator cuff to stabilize the glenohumeral and acromioclavicular joints against the downward pull of the implements, training the entire upper extremity chain simultaneously."
+  },
+  {
+    "id": "sa-054",
+    "name": "Plate Pinch",
+    "technical_cues": [
+      "Pinch two smooth-faced weight plates together between the fingers and thumb",
+      "Hold the plates at the sides or in front of the body for a set duration",
+      "Keep the shoulder relaxed and the arm slightly bent to reduce shoulder fatigue",
+      "Squeeze through the fingers and thumb to prevent the plates from slipping",
+      "Progress by adding more plates, using a single heavier plate, or extending hold time"
+    ],
+    "biomechanical_why": "Plate pinching specifically trains pinch grip strength, which requires coordinated force production from the thumb's flexor pollicis longus and flexor pollicis brevis working against the distal interphalangeal flexion of the opposing fingers, primarily the flexor digitorum profundus. Pinch grip is mechanically distinct from closed-hand gripping because the thumb and fingers must create opposing lateral forces rather than a simple closing motion, recruiting the thenar and hypothenar muscle groups of the hand more specifically than most grip exercises. This specialized grip pattern is highly transferable to deadlifting, Olympic lifting, and everyday functional tasks that require the ability to hold irregular-shaped objects with the fingertips."
+  },
+  {
+    "id": "sa-055",
+    "name": "Dead Hang",
+    "technical_cues": [
+      "Grip a pull-up bar with an overhand grip slightly wider than shoulder width",
+      "Hang with the arms fully extended and shoulders actively depressed away from the ears",
+      "Maintain engagement through the shoulder girdle to avoid passive hanging on the ligaments",
+      "Hold for 20–60 seconds, breathing steadily without breath holding",
+      "Progress by extending hang duration or switching to a towel or thick bar"
+    ],
+    "biomechanical_why": "The dead hang requires isometric gripping strength from the entire hand and forearm flexor complex to maintain contact with the bar, while simultaneously providing a decompressive traction force through the cervical and thoracic spine. The finger flexors, including the flexor digitorum superficialis and profundus, must sustain continuous high-force isometric contraction to prevent grip failure under bodyweight load, making this a powerful time-under-tension stimulus for forearm endurance. Active shoulder depression during the hang engages the lower trapezius and serratus anterior to maintain glenohumeral centration, preventing passive loading on the superior shoulder capsule and rotator cuff tendons that can contribute to shoulder impingement over time."
+  },
+  {
+    "id": "sa-056",
+    "name": "Towel Pull-Up",
+    "technical_cues": [
+      "Loop two towels over a pull-up bar and grip each towel end firmly with both hands",
+      "Begin from a dead hang with the towels fully stretched",
+      "Pull the body upward as in a standard pull-up while maintaining a crushing grip on the towels",
+      "Lower under control and maintain the grip tension throughout the descent",
+      "Do not allow the towels to unravel; ensure they are securely anchored before each set"
+    ],
+    "biomechanical_why": "Towel pull-ups introduce an unstable, thick grip surface that dramatically increases the demand on the forearm flexors and the intrinsic hand muscles compared to a standard pull-up bar, because the cylindrical towel requires a more forceful closing grip and continuous micro-adjustment of grip pressure to prevent the towel from slipping. The larger diameter of the towel reduces the mechanical advantage of the finger flexors, requiring greater force production from the flexor digitorum profundus and superficialis to generate the same gripping torque, serving as a form of thick-bar training that has been shown to enhance overall grip strength. The pull-up component simultaneously trains the latissimus dorsi, biceps, and scapular retractors, making towel pull-ups an integrated exercise that develops grip strength within the context of a major compound pulling movement."
+  },
+  {
+    "id": "sa-057",
+    "name": "Grip Trainer Squeeze",
+    "technical_cues": [
+      "Hold the grip trainer in one hand with the handles aligned vertically",
+      "Squeeze the handles together fully in a rapid and complete closing motion",
+      "Hold the closed position for one to two seconds for strength emphasis, or pulse for endurance",
+      "Fully open the hand between each repetition to train the extensors as well",
+      "Perform equal repetitions on both hands to prevent asymmetric grip development"
+    ],
+    "biomechanical_why": "Grip trainers provide a concentrated and progressive resistance tool for developing the finger flexors and intrinsic hand muscles through repeated concentric and eccentric cycles of hand closing, targeting the flexor digitorum superficialis, flexor digitorum profundus, and the lumbrical muscles. The spring resistance of grip trainers can be progressively increased as strength adapts, following the principle of progressive overload in a way that isometric holds like dead hangs cannot easily replicate. The repeated opening and closing also trains the extensor digitorum, which must eccentrically resist the spring's return force if controlled opening is practiced, creating a balanced training stimulus for both the flexor and extensor compartments of the forearm."
+  },
+  {
+    "id": "sa-058",
+    "name": "Wrist Roller",
+    "technical_cues": [
+      "Hold the wrist roller bar with arms extended horizontally or elevated, palms down",
+      "Wind the rope upward by alternately flexing each wrist in a rolling motion",
+      "Complete the full upward wind, then slowly reverse the motion to lower the weight",
+      "Keep the arms parallel to the floor throughout the exercise; do not allow the elbows to bend",
+      "Use a light weight and focus on continuous tension rather than maximal load"
+    ],
+    "biomechanical_why": "The wrist roller trains both the wrist flexors and extensors through concentric and eccentric contractions across the full wrist range of motion, depending on the direction of rolling, making it one of the most comprehensive forearm exercises available. During the winding phase, the wrist flexors (flexor carpi radialis and ulnaris) concentrically flex the wrist while the extensors eccentrically decelerate the movement, and the reverse occurs during unwinding, providing a thorough stimulus for both compartments. The arm-elevated position with extended elbows eliminates elbow flexion contribution from the biceps and brachialis, ensuring that all work is performed specifically by the wrist and forearm musculature, and the continuous nature of the exercise builds both muscular endurance and hypertrophy in the forearm through sustained metabolic stress."
+  },
+  {
+    "id": "sa-059",
+    "name": "Reverse Curl (Forearm Focus)",
+    "technical_cues": [
+      "Hold a barbell with a fully pronated (overhand) grip at hip width",
+      "Curl the bar upward while actively thinking about driving the knuckles toward the ceiling",
+      "Pause at the top and feel the forearm extensors and brachioradialis contract fully",
+      "Lower slowly over three to four counts to maximize eccentric extensor loading",
+      "Use deliberately lighter weight than a standard curl to maintain pronation and control"
+    ],
+    "biomechanical_why": "When performed with a forearm-focus intention, the reverse curl specifically emphasizes the brachioradialis and the wrist extensor group as the primary movers, leveraging the pronated grip to minimize biceps brachii contribution and direct loading toward the lateral forearm compartment. The brachioradialis, running from the lateral supracondylar ridge of the humerus to the distal radius, is at its peak mechanical efficiency in a pronated position where it acts as both an elbow flexor and a forearm supinator during the curl, and the slow eccentric in pronation specifically overloads its deceleration function. The extensor carpi radialis longus and brevis, which assist in wrist extension during the pronated curl, are under sustained isometric and eccentric load throughout the movement, contributing to the overall forearm extensor hypertrophy that gives the forearm its tapered, muscular appearance from the lateral view."
+  },
+  {
+    "id": "sa-060",
+    "name": "Hammer Curl (Forearm Emphasis)",
+    "technical_cues": [
+      "Hold dumbbells in a strict neutral grip without any supination at any point in the arc",
+      "Perform the curl slowly, taking four seconds on the concentric and four on the eccentric",
+      "Concentrate on the feel of the brachialis and lateral forearm during each repetition",
+      "Avoid any elbow flare or torso swing; isolate the forearm as much as possible",
+      "Use a weight light enough to maintain perfect neutral grip and slow tempo throughout"
+    ],
+    "biomechanical_why": "By performing hammer curls with a forearm emphasis, the neutral grip throughout the full arc ensures that the brachioradialis remains the primary elbow flexor, as the neutral position represents the angle of maximum mechanical advantage for this muscle compared to both supinated and pronated positions. The brachioradialis originates on the lateral supracondylar ridge of the humerus and inserts at the styloid process of the radius, spanning the elbow in a lateral position that makes it particularly effective in the neutral grip plane, explaining why it is significantly less active in either standard or reverse curls. The slow tempo prescribed for the forearm-emphasis variation dramatically increases time under tension for the brachioradialis and the stabilizing forearm muscles, maximizing the hypertrophic stimulus in the lateral forearm compartment and developing the visible mass between the elbow and wrist that constitutes forearm size."
+  }
+]
