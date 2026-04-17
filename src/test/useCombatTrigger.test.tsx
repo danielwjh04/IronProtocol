@@ -75,20 +75,21 @@ describe('useCombatTrigger', () => {
     expect(result.current.pendingBash?.intensity).toBe(0)
   })
 
-  it('heavy haptic pattern [120,30,40] when intensity > 0.7', async () => {
+  it('does not call vibrate directly (haptics fire at strike frame via onStrike)', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
     act(() => publish({ ...BASE, volume: 2000 }))
     await act(flush)
-    expect(vibrateMock).toHaveBeenCalledWith([120, 30, 40])
+    expect(vibrateMock).not.toHaveBeenCalled()
   })
 
-  it('light haptic pattern [60,30,40] when intensity <= 0.7', async () => {
+  it('dispatches combat for low intensity sets without calling vibrate', async () => {
     const { result } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
     act(() => publish({ ...BASE, volume: 1000 }))
     await act(flush)
-    expect(vibrateMock).toHaveBeenCalledWith([60, 30, 40])
+    expect(result.current.pendingBash?.intensity).toBe(0.5)
+    expect(vibrateMock).not.toHaveBeenCalled()
   })
 
   it('no vibrate call in focus mode', async () => {

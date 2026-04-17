@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion'
 import { useUIMode } from '../../context/UIModeContext'
 import { useCombatTrigger } from '../../hooks/useCombatTrigger'
 import { useHitCombo } from '../../hooks/useHitCombo'
+import { useSensoryFeedback } from '../../hooks/useSensoryFeedback'
 import { useTrackProgress } from '../../hooks/useTrackProgress'
 import { CombatCanvas } from './CombatCanvas'
 import { ComboCounter } from './ComboCounter'
@@ -24,6 +25,7 @@ export function HeroOverlay() {
   useCombatTrigger()
   const track = useTrackProgress()
   const { comboCount } = useHitCombo()
+  const { crunch, heavyDouble } = useSensoryFeedback()
   const [burst, setBurst] = useState<BurstState | null>(null)
   const [damageNumbers, setDamageNumbers] = useState<Array<{ id: string; value: number; intensity: number }>>([])
   const lastBurstId = useRef<string | null>(null)
@@ -55,7 +57,12 @@ export function HeroOverlay() {
   return (
     <>
       {track.active === 'power' && <ObsidianStairs progress={track.power} />}
-      <CombatCanvas />
+      <CombatCanvas
+        onStrike={(intensity) => {
+          crunch(intensity)
+          if (intensity > 0.7) heavyDouble()
+        }}
+      />
       <SummitModal />
       <MasterworkModal />
       <ComboCounter count={comboCount} />

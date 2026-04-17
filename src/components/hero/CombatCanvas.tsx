@@ -7,6 +7,7 @@ const FRAME_MS   = 65
 const ATTACKER_X = 35
 const MOB_X      = 170
 const BASE_Y     = 38
+const STRIKE_FRAME = 4
 
 interface SequenceFrame {
   attackerOffsetX: number
@@ -91,7 +92,11 @@ function drawFrame(ctx: CanvasRenderingContext2D, frame: SequenceFrame): void {
   ctx.restore()
 }
 
-export function CombatCanvas() {
+interface CombatCanvasProps {
+  onStrike?: (intensity: number) => void
+}
+
+export function CombatCanvas({ onStrike }: CombatCanvasProps) {
   const { pendingBash } = useUIMode()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animRef   = useRef<number | null>(null)
@@ -113,6 +118,7 @@ export function CombatCanvas() {
       if (ts - last >= FRAME_MS) {
         if (frameIdx < sequence.length) {
           drawFrame(ctx, sequence[frameIdx])
+          if (frameIdx === STRIKE_FRAME) onStrike?.(intensity)
           frameIdx++
           last = ts
         }
@@ -132,7 +138,7 @@ export function CombatCanvas() {
         animRef.current = null
       }
     }
-  }, [pendingBash?.id])
+  }, [pendingBash?.id, onStrike])
 
   return (
     <canvas

@@ -6,3 +6,6 @@ import { afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 
 afterEach(() => cleanup())
+afterEach(() => {
+  try { localStorage.removeItem('ip_ui_mode') } catch {}
+})

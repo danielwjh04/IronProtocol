@@ -49,3 +49,16 @@ describe('buildSequence', () => {
     expect(seq.every(f => f.shakeX === 0)).toBe(true)
   })
 })
+
+describe('CombatCanvas strike frame', () => {
+  it('frame 4 is the first frame with flashAlpha > 0', () => {
+    const seq = buildSequence(1.0)
+    expect(seq[3].flashAlpha).toBe(0)
+    expect(seq[4].flashAlpha).toBeGreaterThan(0)
+  })
+
+  it('frame 4 has shakeX > 0', () => {
+    const seq = buildSequence(1.0)
+    expect(seq[4].shakeX).toBeGreaterThan(0)
+  })
+})

@@ -9,7 +9,6 @@ export function useCombatTrigger(): void {
     return subscribe((event) => {
       if (uiMode !== 'hero') return
       const intensity = Math.min(event.volume / 2000, 1)
-      navigator.vibrate?.([intensity > 0.7 ? 120 : 60, 30, 40])
       dispatchCombat(intensity)
     })
   }, [uiMode, dispatchCombat])
