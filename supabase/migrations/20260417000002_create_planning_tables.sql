@@ -1,6 +1,6 @@
 create table exercises (
   id                uuid        primary key default gen_random_uuid(),
-  name              text        not null,
+  name              text        not null unique,
   movement_pattern  text        not null
     check (movement_pattern in ('squat','hinge','push','pull','carry','core')),
   stimulus_tags     text[]      not null default '{}',
@@ -19,7 +19,8 @@ create table exercises (
 
 create table plan_templates (
   id               uuid        primary key default gen_random_uuid(),
-  split_type       text        not null,
+  split_type       text        not null
+    check (split_type in ('full_body','upper_lower','push_pull_legs','bro_split')),
   goal_tags        text[]      not null default '{}',
   duration_minutes int         not null,
   intensity_band   text        not null

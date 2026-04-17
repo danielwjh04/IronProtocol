@@ -3,22 +3,44 @@ alter table retrieval_feedback enable row level security;
 alter table exercises          enable row level security;
 alter table plan_templates     enable row level security;
 
--- Users can only read/write their own profile
-create policy "own profile"
-  on user_profiles for all
+create policy "own profile select"
+  on user_profiles for select
   using (id = auth.uid());
 
--- Users can only read/write their own feedback
-create policy "own feedback"
-  on retrieval_feedback for all
+create policy "own profile insert"
+  on user_profiles for insert
+  with check (id = auth.uid());
+
+create policy "own profile update"
+  on user_profiles for update
+  using (id = auth.uid())
+  with check (id = auth.uid());
+
+create policy "own profile delete"
+  on user_profiles for delete
+  using (id = auth.uid());
+
+create policy "own feedback select"
+  on retrieval_feedback for select
   using (user_id = auth.uid());
 
--- Exercises readable by any authenticated user
+create policy "own feedback insert"
+  on retrieval_feedback for insert
+  with check (user_id = auth.uid());
+
+create policy "own feedback update"
+  on retrieval_feedback for update
+  using (user_id = auth.uid())
+  with check (user_id = auth.uid());
+
+create policy "own feedback delete"
+  on retrieval_feedback for delete
+  using (user_id = auth.uid());
+
 create policy "authenticated read exercises"
   on exercises for select
   using (auth.role() = 'authenticated');
 
--- Templates readable by any authenticated user
 create policy "authenticated read templates"
   on plan_templates for select
   using (auth.role() = 'authenticated');

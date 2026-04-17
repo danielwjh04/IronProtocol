@@ -1,4 +1,3 @@
--- search_plan_templates: filter by experience + max duration, then cosine ANN
 create or replace function search_plan_templates(
   query_embedding  vector(768),
   p_experience     text,
@@ -25,7 +24,6 @@ language sql stable as $$
   limit top_k;
 $$;
 
--- search_safe_exercises: derive excluded safety flags from user profile, hard filter, then cosine ANN
 create or replace function search_safe_exercises(
   query_embedding  vector(768),
   p_user_id        uuid,
@@ -69,7 +67,6 @@ begin
 end;
 $$;
 
--- find_swap_candidates: same swap group + tier + intensity, no excluded flags, no current plan exercises
 create or replace function find_swap_candidates(
   p_swap_group_id  text,
   p_intensity_band text,
