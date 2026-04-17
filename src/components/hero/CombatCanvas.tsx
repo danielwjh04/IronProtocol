@@ -101,8 +101,9 @@ export function CombatCanvas() {
     const { intensity } = pendingBash
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    const rawCtx = canvas.getContext('2d')
+    if (!rawCtx) return
+    const ctx: CanvasRenderingContext2D = rawCtx
 
     const sequence = buildSequence(intensity)
     let frameIdx = 0
@@ -111,22 +112,25 @@ export function CombatCanvas() {
     function step(ts: number) {
       if (ts - last >= FRAME_MS) {
         if (frameIdx < sequence.length) {
-          drawFrame(ctx!, sequence[frameIdx])
+          drawFrame(ctx, sequence[frameIdx])
           frameIdx++
           last = ts
-        } else {
-          ctx!.clearRect(0, 0, CANVAS_W, CANVAS_H)
-          return
         }
       }
       if (frameIdx < sequence.length) {
         animRef.current = requestAnimationFrame(step)
+      } else {
+        ctx.clearRect(0, 0, CANVAS_W, CANVAS_H)
+        animRef.current = null
       }
     }
 
     animRef.current = requestAnimationFrame(step)
     return () => {
-      if (animRef.current !== null) cancelAnimationFrame(animRef.current)
+      if (animRef.current !== null) {
+        cancelAnimationFrame(animRef.current)
+        animRef.current = null
+      }
     }
   }, [pendingBash?.id])
 
