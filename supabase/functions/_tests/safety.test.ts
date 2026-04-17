@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from 'https://deno.land/std@0.168.0/testing/asserts.ts'
+import { assertEquals, assertRejects, assertThrows } from 'https://deno.land/std@0.168.0/testing/asserts.ts'
 import { composePlan } from '../_shared/composePlan.ts'
 import { REP_SCHEMES } from '../_shared/repSchemes.ts'
 
@@ -21,11 +21,11 @@ Deno.test('composePlan fills slots without duplicates', () => {
   assertEquals(new Set(ids).size, 2)
 })
 
-Deno.test('composePlan throws when no candidate for a slot', async () => {
+Deno.test('composePlan throws when no candidate for a slot', () => {
   const template = { id: 'tpl-2', split_type: 'full_body', slots: [
     { movement_pattern: 'carry', tier: 1 as const, intensity_band: 'high' },
   ]}
-  await assertRejects(async () => composePlan(template, safePool, 'hypertrophy'))
+  assertThrows(() => composePlan(template, safePool, 'hypertrophy'))
 })
 
 Deno.test('composePlan: hypertrophy T1 rep scheme = 5-8 reps, 90s rest', () => {

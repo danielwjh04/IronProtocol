@@ -3,7 +3,6 @@ import { makeServiceClient, requireAuth, json } from '../_shared/auth.ts'
 import { embedText, buildRetrievalText, parseIntentWithGemini, generateTemplateWithGemini } from '../_shared/gemini.ts'
 import { rerank } from '../_shared/rerank.ts'
 import { composePlan } from '../_shared/composePlan.ts'
-import type { GoalKey } from '../_shared/repSchemes.ts'
 
 const CONFIDENCE_THRESHOLD = 0.72
 
@@ -57,7 +56,7 @@ serve(async (req) => {
   const confidence = Math.min(bestScore, 1)
   let resolvedExercises: ReturnType<typeof composePlan>
   try {
-    resolvedExercises = composePlan(template, exercises ?? [], intent.goal as GoalKey)
+    resolvedExercises = composePlan(template, exercises ?? [], intent.goal)
   } catch (err) {
     return json({ error: (err as Error).message }, 422)
   }

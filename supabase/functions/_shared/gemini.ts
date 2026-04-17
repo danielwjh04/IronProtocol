@@ -1,3 +1,5 @@
+import type { GoalKey } from './repSchemes.ts'
+
 const GEMINI_KEY = () => Deno.env.get('GEMINI_API_KEY')!
 
 export async function embedText(text: string): Promise<number[]> {
@@ -19,7 +21,7 @@ export async function embedText(text: string): Promise<number[]> {
 }
 
 export interface GoalIntent {
-  goal: 'fat_loss' | 'hypertrophy' | 'strength' | 'endurance' | 'recomp' | 'power'
+  goal: GoalKey
   daysPerWeek: number
   minutesPerSession: number
   experience: 'beginner' | 'intermediate' | 'advanced'
