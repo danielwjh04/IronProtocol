@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { useUIMode } from '../../context/UIModeContext'
 import { useCombatTrigger } from '../../hooks/useCombatTrigger'
+import { useHitCombo } from '../../hooks/useHitCombo'
 import { useTrackProgress } from '../../hooks/useTrackProgress'
 import { CombatCanvas } from './CombatCanvas'
+import { ComboCounter } from './ComboCounter'
 import { ImpactStars } from './ImpactStars'
 import { MasterworkModal } from './MasterworkModal'
 import { ObsidianStairs } from './ObsidianStairs'
@@ -20,6 +22,7 @@ export function HeroOverlay() {
   const { uiMode, pendingBash } = useUIMode()
   useCombatTrigger()
   const track = useTrackProgress()
+  const { comboCount } = useHitCombo()
   const [burst, setBurst] = useState<BurstState | null>(null)
   const lastBurstId = useRef<string | null>(null)
 
@@ -47,6 +50,7 @@ export function HeroOverlay() {
       <CombatCanvas />
       <SummitModal />
       <MasterworkModal />
+      <ComboCounter count={comboCount} />
       <AnimatePresence>
         {burst && (
           <ImpactStars
