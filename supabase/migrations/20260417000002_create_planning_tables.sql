@@ -36,7 +36,8 @@ create table user_profiles (
   id                  uuid        primary key references auth.users(id) on delete cascade,
   persistent_injuries jsonb       not null default '[]',
   equipment           text[]      not null default '{}',
-  experience_level    text        not null default 'beginner',
+  experience_level    text        not null default 'beginner'
+    check (experience_level in ('beginner','intermediate','advanced')),
   goals               text[]      not null default '{}',
   days_per_week       int                  default 3,
   minutes_per_session int                  default 45,
