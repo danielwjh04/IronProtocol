@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { UIModeProvider, useUIMode } from '../context/UIModeContext'
 import { useCombatTrigger } from '../hooks/useCombatTrigger'
-import { publish } from '../events/setCommitEvents'
+import { publish, subscribe } from '../events/setCommitEvents'
 import type { SetCommitEvent } from '../events/setCommitEvents'
 
 const vibrateMock = vi.fn()
@@ -102,7 +102,12 @@ describe('useCombatTrigger', () => {
     const { result, unmount } = renderHook(() => useCombined(), { wrapper })
     act(() => result.current.setUIMode('hero'))
     unmount()
+    const probe = vi.fn()
+    const unsub = subscribe(probe)
     act(() => publish(BASE))
     await act(flush)
+    expect(probe).toHaveBeenCalledOnce()
+    expect(result.current.pendingBash).toBeNull()
+    unsub()
   })
 })
