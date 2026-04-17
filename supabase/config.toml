@@ -1,0 +1,25 @@
+# Supabase Project Configuration
+# Reference: https://supabase.com/docs/guides/self-hosting/docker#managing-secrets
+
+[build]
+dockerfile_path = "Dockerfile"
+
+[env.development]
+api_external_url = ""
+db_host = ""
+studio_default_query_only = false
+
+[env.production]
+api_external_url = ""
+db_host = ""
+studio_default_query_only = true
+
+# Configure functions to deploy
+[functions.plans-query]
+verify_jwt = true
+
+[functions.plans-swap]
+verify_jwt = true
+
+[functions.plans-feedback]
+verify_jwt = true
