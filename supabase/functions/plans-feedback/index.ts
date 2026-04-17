@@ -6,7 +6,10 @@ serve(async (req) => {
   let user: { id: string }
   try { user = await requireAuth(req, supabase) } catch (res) { return res as Response }
 
-  const body = await req.json()
+  let body: Record<string, unknown>
+  try { body = await req.json() } catch { return json({ error: 'Invalid JSON body' }, 400) }
+
+  if (body.accepted === undefined) return json({ error: 'accepted is required' }, 400)
 
   const { error } = await supabase.from('retrieval_feedback').insert({
     user_id:               user.id,

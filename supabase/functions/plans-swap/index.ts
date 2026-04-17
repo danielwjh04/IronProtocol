@@ -7,7 +7,12 @@ serve(async (req) => {
   let user: { id: string }
   try { user = await requireAuth(req, supabase) } catch (res) { return res as Response }
 
-  const { exerciseId, reason, currentPlanExerciseIds, goalTag } = await req.json()
+  let exerciseId: string, reason: string, currentPlanExerciseIds: string[], goalTag: string | undefined
+  try {
+    ({ exerciseId, reason, currentPlanExerciseIds, goalTag } = await req.json())
+  } catch {
+    return json({ error: 'Invalid JSON body' }, 400)
+  }
 
   const { data: profile } = await supabase
     .from('user_profiles')
