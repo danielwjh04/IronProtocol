@@ -10,7 +10,10 @@ type RepScheme = {
   sets: number; repsMin: number; repsMax: number; restSeconds: number; rpe?: number
 }
 
-const REP_SCHEMES: Record<string, Record<number, RepScheme>> = {
+type GoalKey = 'hypertrophy' | 'power' | 'strength' | 'fat_loss' | 'endurance' | 'recomp'
+type Tier = 1 | 2 | 3
+
+const REP_SCHEMES: Record<GoalKey, Record<Tier, RepScheme>> = {
   hypertrophy: {
     1: { sets: 4, repsMin: 5,  repsMax: 8,  restSeconds: 90  },
     2: { sets: 4, repsMin: 8,  repsMax: 12, restSeconds: 60  },
@@ -43,7 +46,7 @@ const REP_SCHEMES: Record<string, Record<number, RepScheme>> = {
   },
 }
 
-function slot(pattern: string, tier: 1|2|3, band: string, goal: string) {
+function slot(pattern: string, tier: Tier, band: string, goal: GoalKey) {
   return { movement_pattern: pattern, tier, intensity_band: band, rep_scheme: REP_SCHEMES[goal][tier] }
 }
 
