@@ -10,12 +10,13 @@ returns table (
   goal_tags        text[],
   slots            jsonb,
   intensity_band   text,
+  experience_level text,
   duration_minutes int,
   similarity       float
 )
 language sql stable as $$
   select
-    id, split_type, goal_tags, slots, intensity_band, duration_minutes,
+    id, split_type, goal_tags, slots, intensity_band, experience_level, duration_minutes,
     1 - (embedding <=> query_embedding) as similarity
   from plan_templates
   where experience_level = p_experience

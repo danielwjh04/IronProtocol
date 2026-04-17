@@ -16,7 +16,14 @@ serve(async (req) => {
     return res as Response
   }
 
-  const { goalText } = await req.json()
+  let goalText: string
+  try {
+    const body = await req.json()
+    if (!body.goalText || typeof body.goalText !== 'string') return json({ error: 'goalText is required' }, 400)
+    goalText = body.goalText
+  } catch {
+    return json({ error: 'Invalid JSON body' }, 400)
+  }
 
   const { data: profile } = await supabase
     .from('user_profiles')

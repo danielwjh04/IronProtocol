@@ -72,7 +72,7 @@ User goal: "${goalText}"`
 
 export async function generateTemplateWithGemini(intent: GoalIntent): Promise<Record<string, unknown>> {
   const prompt = `Generate a workout template JSON for: goal=${intent.goal}, experience=${intent.experience}, duration=${intent.minutesPerSession}min.
-Return ONLY: {"split_type":"Full Body"|"PPL"|"Upper-Lower","slots":[{"movement_pattern":"squat"|"hinge"|"push"|"pull"|"carry"|"core","tier":1|2|3,"intensity_band":"low"|"medium"|"high"}]}`
+Return ONLY: {"split_type":"full_body"|"upper_lower"|"push_pull_legs","slots":[{"movement_pattern":"squat"|"hinge"|"push"|"pull"|"carry"|"core","tier":1|2|3,"intensity_band":"low"|"medium"|"high"}]}`
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY()}`,
