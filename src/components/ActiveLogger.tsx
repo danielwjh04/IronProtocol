@@ -15,7 +15,7 @@ import {
 } from '../db/schema'
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 import { PersonalBestsService } from '../services/personalBestsService'
-import { useCombatTrigger } from '../hooks/useCombatTrigger'
+import { publish } from '../events/setCommitEvents'
 import FeaturePulse from './FeaturePulse'
 import FunctionalWhy from './FunctionalWhy'
 import SemanticSwapDrawer from './SemanticSwapDrawer'
@@ -68,7 +68,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       }]
 
   const pbService = useMemo(() => new PersonalBestsService(db), [db])
-  const { triggerBash } = useCombatTrigger()
 
   const resumableDraft = (() => {
     if (!initialDraft) {
@@ -200,7 +199,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   }
 
   async function handleCompleteSet() {
-    triggerBash(weight, reps)
     try {
       const newSet: CompletedSet = {
         exerciseId: currentEx.exerciseId,
@@ -239,6 +237,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
           )
         )
         await db.tempSessions.delete(TEMP_SESSION_ID)
+        publish({ exerciseId: currentEx.exerciseId, weight, reps, volume: weight * reps, timestamp: Date.now(), source: 'final' })
         setCompletedSets(newCompleted)
         setCompletedWorkoutId(workoutId)
         setShowRecoveryForm(true)
@@ -282,6 +281,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
           restSecondsLeft: restSeconds,
           completedSets: newCompleted,
         })
+        publish({ exerciseId: currentEx.exerciseId, weight, reps, volume: weight * reps, timestamp: Date.now(), source: 'mid-session' })
       }
     } catch (error) {
       if (!isDatabaseClosedError(error)) {

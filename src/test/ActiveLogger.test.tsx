@@ -6,6 +6,8 @@ import { IronProtocolDB, TEMP_SESSION_ID } from '../db/schema'
 import ActiveLogger from '../components/ActiveLogger'
 import { UIModeProvider } from '../context/UIModeContext'
 import type { PlannedWorkout } from '../planner/autoPlanner'
+import * as setCommitEvents from '../events/setCommitEvents'
+import { subscribe } from '../events/setCommitEvents'
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return <UIModeProvider>{children}</UIModeProvider>
@@ -302,5 +304,40 @@ describe('ActiveLogger', () => {
 
     fireEvent.change(weightInput, { target: { value: '60' } })
     expect(screen.getByDisplayValue('60')).toBeInTheDocument()
+  })
+
+  it('publishes set-commit event after mid-session set', async () => {
+    const publishSpy = vi.spyOn(setCommitEvents, 'publish')
+    render(<ActiveLogger plan={BENCH_PLAN} db={db} />, { wrapper: Wrapper })
+    fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
+    await waitFor(() => expect(publishSpy).toHaveBeenCalledOnce())
+    const call = publishSpy.mock.calls[0][0]
+    expect(call.exerciseId).toBe('ex-bench')
+    expect(call.weight).toBe(80)
+    expect(call.reps).toBe(10)
+    expect(call.volume).toBe(800)
+    expect(call.source).toBe('mid-session')
+    publishSpy.mockRestore()
+  })
+
+  it('publishes set-commit event with source final after last set', async () => {
+    const publishSpy = vi.spyOn(setCommitEvents, 'publish')
+    render(<ActiveLogger plan={SINGLE_SET_PLAN} db={db} />, { wrapper: Wrapper })
+    fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
+    await waitFor(() => expect(publishSpy).toHaveBeenCalledOnce())
+    expect(publishSpy.mock.calls[0][0].source).toBe('final')
+    expect(publishSpy.mock.calls[0][0].exerciseId).toBe('ex-squat')
+    publishSpy.mockRestore()
+  })
+
+  it('commit path succeeds even when a combat listener throws', async () => {
+    const unsub = subscribe(() => { throw new Error('combat exploded') })
+    render(<ActiveLogger plan={SINGLE_SET_PLAN} db={db} />, { wrapper: Wrapper })
+    fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
+    await waitFor(async () => {
+      const workouts = await db.workouts.toArray()
+      expect(workouts).toHaveLength(1)
+    })
+    unsub()
   })
 })
