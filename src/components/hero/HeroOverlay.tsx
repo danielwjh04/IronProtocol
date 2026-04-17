@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { useUIMode } from '../../context/UIModeContext'
 import { useCombatTrigger } from '../../hooks/useCombatTrigger'
@@ -17,20 +17,22 @@ export function HeroOverlay() {
   useCombatTrigger()
   const [burst, setBurst] = useState<BurstState | null>(null)
 
-  if (uiMode !== 'hero') return null
-
-  if (pendingBash && burst?.key !== pendingBash.id) {
-    setBurst({
-      key:       pendingBash.id,
-      x:         window.innerWidth / 2,
-      y:         window.innerHeight / 2,
-      intensity: pendingBash.intensity,
-    })
-  }
+  useEffect(() => {
+    if (pendingBash && burst?.key !== pendingBash.id) {
+      setBurst({
+        key:       pendingBash.id,
+        x:         window.innerWidth / 2,
+        y:         window.innerHeight / 2,
+        intensity: pendingBash.intensity,
+      })
+    }
+  }, [pendingBash, burst?.key])
 
   function handleBurstDone() {
     setBurst(null)
   }
+
+  if (uiMode !== 'hero') return null
 
   return (
     <>
