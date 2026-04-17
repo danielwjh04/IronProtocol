@@ -40,7 +40,8 @@ async function run() {
 
   for (const t of templates ?? []) {
     const embedding = await embedText(templateText(t))
-    await supabase.from('plan_templates').update({ embedding }).eq('id', t.id)
+    const { error: tErr } = await supabase.from('plan_templates').update({ embedding }).eq('id', t.id)
+    if (tErr) throw new Error(`Template update failed (${t.id}): ${tErr.message}`)
     console.log(`Embedded template: ${t.split_type} / ${(t.goal_tags as string[]).join(',')}`)
     await new Promise(r => setTimeout(r, 100))
   }
@@ -51,7 +52,8 @@ async function run() {
 
   for (const e of exercises ?? []) {
     const embedding = await embedText(exerciseText(e))
-    await supabase.from('exercises').update({ embedding }).eq('id', e.id)
+    const { error: eErr } = await supabase.from('exercises').update({ embedding }).eq('id', e.id)
+    if (eErr) throw new Error(`Exercise update failed (${e.id}): ${eErr.message}`)
     console.log(`Embedded exercise: ${e.name}`)
     await new Promise(r => setTimeout(r, 100))
   }
