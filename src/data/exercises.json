@@ -1,0 +1,3062 @@
+[
+  {
+    "id": "cb-001",
+    "name": "Barbell Bench Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-002",
+    "name": "Incline Barbell Bench Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-003",
+    "name": "Decline Barbell Bench Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-004",
+    "name": "Dumbbell Flat Bench Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-005",
+    "name": "Incline Dumbbell Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-006",
+    "name": "Decline Dumbbell Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-007",
+    "name": "Cable Chest Fly",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-008",
+    "name": "Dumbbell Flat Fly",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-009",
+    "name": "Incline Dumbbell Fly",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-010",
+    "name": "Pec Deck Machine Fly",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-011",
+    "name": "Push-Up",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-012",
+    "name": "Wide-Grip Push-Up",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-013",
+    "name": "Diamond Push-Up",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-014",
+    "name": "Chest Dip",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-015",
+    "name": "Low Cable Crossover",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-016",
+    "name": "High Cable Crossover",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-017",
+    "name": "Svend Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-018",
+    "name": "Landmine Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-019",
+    "name": "Machine Chest Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-020",
+    "name": "Smith Machine Bench Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-021",
+    "name": "Incline Machine Chest Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-022",
+    "name": "Resistance Band Fly",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-023",
+    "name": "Single-Arm Dumbbell Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-024",
+    "name": "Guillotine Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-025",
+    "name": "Dumbbell Pullover",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-026",
+    "name": "Cable Crossover (Standing)",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-027",
+    "name": "Push-Up on Medicine Ball",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-028",
+    "name": "Plate Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-029",
+    "name": "Isometric Chest Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-030",
+    "name": "Reverse-Grip Bench Press",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-031",
+    "name": "Barbell Bent-Over Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-032",
+    "name": "Dumbbell Single-Arm Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-033",
+    "name": "Seated Cable Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-034",
+    "name": "Lat Pulldown",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-035",
+    "name": "Wide-Grip Pull-Up",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-036",
+    "name": "Close-Grip Chin-Up",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-037",
+    "name": "T-Bar Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-038",
+    "name": "Chest-Supported Dumbbell Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-039",
+    "name": "Meadows Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-040",
+    "name": "Pendlay Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-041",
+    "name": "Smith Machine Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-042",
+    "name": "Cable Pull-Through",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-043",
+    "name": "Straight-Arm Pulldown",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-044",
+    "name": "Face Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-045",
+    "name": "Inverted Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-046",
+    "name": "Rear Delt Dumbbell Fly",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-047",
+    "name": "Rack Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-048",
+    "name": "Good Morning",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-049",
+    "name": "Hyperextension",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-050",
+    "name": "Renegade Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-051",
+    "name": "Underhand Barbell Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-052",
+    "name": "Band Pull-Apart",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-053",
+    "name": "High Row Machine",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-054",
+    "name": "Low Row Machine",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-055",
+    "name": "Neutral-Grip Pull-Up",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-056",
+    "name": "Lat Stretch Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-057",
+    "name": "Cable Lat Pullover",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-058",
+    "name": "Snatch-Grip Deadlift Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "cb-059",
+    "name": "Dumbbell Shrug",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "cb-060",
+    "name": "Trap Bar Shrug",
+    "muscleGroup": "chest",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "fc-001",
+    "name": "Cable Woodchop",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-002",
+    "name": "Low-to-High Cable Chop",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-003",
+    "name": "High-to-Low Cable Chop",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-004",
+    "name": "Cable Hip Abduction",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-005",
+    "name": "Cable Hip Adduction",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-006",
+    "name": "Cable Pull-Apart",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-007",
+    "name": "Cable External Rotation",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-008",
+    "name": "Cable Internal Rotation",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-009",
+    "name": "Single-Arm Cable Row (Standing)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-010",
+    "name": "Single-Arm Cable Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-011",
+    "name": "Cable Biceps Curl (Single-Arm)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-012",
+    "name": "Cable Triceps Extension (Single-Arm)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-013",
+    "name": "Cable Lateral Raise (Single-Arm)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-014",
+    "name": "Cable Front Raise (Single-Arm)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-015",
+    "name": "Cable Hip Flexion",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-016",
+    "name": "Cable Glute Kickback",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-017",
+    "name": "Cable Pallof Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-018",
+    "name": "Cable Core Rotation",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-019",
+    "name": "Cable Face Pull (Single-Arm)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-020",
+    "name": "Cable Romanian Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-021",
+    "name": "Cable Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-022",
+    "name": "Cable Chest Fly (Single-Arm)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-023",
+    "name": "Kneeling Cable Crunch",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-024",
+    "name": "Cable Reverse Fly",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-025",
+    "name": "Cable Row to Neck",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-026",
+    "name": "Single-Leg Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-027",
+    "name": "Single-Leg Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-028",
+    "name": "Single-Leg Squat (Pistol)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-029",
+    "name": "Rear-Foot Elevated Split Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-030",
+    "name": "Single-Arm Dumbbell Row (Unilateral)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-031",
+    "name": "Single-Leg Hip Thrust (Unilateral)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-032",
+    "name": "Single-Arm Landmine Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-033",
+    "name": "Single-Arm Kettlebell Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-034",
+    "name": "Single-Leg Calf Raise Machine",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-035",
+    "name": "Unilateral Leg Extension",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-036",
+    "name": "Unilateral Leg Curl",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-037",
+    "name": "Single-Arm Kettlebell Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-038",
+    "name": "Suitcase Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-039",
+    "name": "Single-Arm Farmer's Carry",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-040",
+    "name": "Offset Barbell Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-041",
+    "name": "Single-Arm Landmine Row",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-042",
+    "name": "Contralateral Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-043",
+    "name": "Single-Leg Good Morning",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-044",
+    "name": "Single-Arm Chest Press (Cable)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-045",
+    "name": "Unilateral Hip Abduction Machine",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-046",
+    "name": "Turkish Get-Up",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-047",
+    "name": "Windmill",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-048",
+    "name": "Hip 90/90 Stretch",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-049",
+    "name": "World's Greatest Stretch",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-050",
+    "name": "Hip Circle",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-051",
+    "name": "Inchworm",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-052",
+    "name": "Thoracic Extension on Foam Roller",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-053",
+    "name": "Hip Flexor Lunge Stretch",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-054",
+    "name": "Lateral Band Monster Walk",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-055",
+    "name": "Dead Bug (Contralateral)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-056",
+    "name": "Bird Dog",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-057",
+    "name": "Quadruped Shoulder Tap",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 2
+  },
+  {
+    "id": "fc-058",
+    "name": "Deep Squat Hold",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-059",
+    "name": "Cossack Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "fc-060",
+    "name": "Kang Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "functional",
+      "cable"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "lc-001",
+    "name": "Barbell Back Squat",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-002",
+    "name": "Front Squat",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-003",
+    "name": "Goblet Squat",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-004",
+    "name": "Leg Press",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-005",
+    "name": "Hack Squat",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-006",
+    "name": "Bulgarian Split Squat",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-007",
+    "name": "Walking Lunge",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-008",
+    "name": "Reverse Lunge",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-009",
+    "name": "Step-Up",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-010",
+    "name": "Leg Extension",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-011",
+    "name": "Sissy Squat",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-012",
+    "name": "Wall Sit",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-013",
+    "name": "Romanian Deadlift",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-014",
+    "name": "Nordic Hamstring Curl",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-015",
+    "name": "Lying Leg Curl",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-016",
+    "name": "Seated Leg Curl",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-017",
+    "name": "Stiff-Leg Deadlift",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-018",
+    "name": "Glute-Ham Raise",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-019",
+    "name": "Single-Leg Romanian Deadlift",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-020",
+    "name": "Cable Leg Curl",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-021",
+    "name": "Dumbbell Leg Curl",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-022",
+    "name": "Hip Hinge",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-023",
+    "name": "Hip Thrust",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-024",
+    "name": "Barbell Glute Bridge",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-025",
+    "name": "Single-Leg Hip Thrust",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-026",
+    "name": "Cable Kickback",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-027",
+    "name": "Donkey Kick",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-028",
+    "name": "Lateral Band Walk",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-029",
+    "name": "Sumo Deadlift",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-030",
+    "name": "Dumbbell Sumo Squat",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "lc-031",
+    "name": "Fire Hydrant",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-032",
+    "name": "Frog Pump",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-033",
+    "name": "Standing Calf Raise",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-034",
+    "name": "Seated Calf Raise",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-035",
+    "name": "Single-Leg Calf Raise",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-036",
+    "name": "Donkey Calf Raise",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-037",
+    "name": "Jump Rope",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-038",
+    "name": "Box Jump",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-039",
+    "name": "Leg Press Calf Press",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-040",
+    "name": "Tibialis Raise",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-041",
+    "name": "Plank",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-042",
+    "name": "Side Plank",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-043",
+    "name": "Ab Rollout",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-044",
+    "name": "Hanging Leg Raise",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-045",
+    "name": "Cable Crunch",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-046",
+    "name": "Russian Twist",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-047",
+    "name": "Hollow Body Hold",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-048",
+    "name": "Dead Bug",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-049",
+    "name": "Pallof Press",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-050",
+    "name": "Landmine Rotation",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-051",
+    "name": "Dragon Flag",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-052",
+    "name": "V-Up",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-053",
+    "name": "Decline Sit-Up",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-054",
+    "name": "Bicycle Crunch",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-055",
+    "name": "Reverse Crunch",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-056",
+    "name": "Toe Touch Crunch",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-057",
+    "name": "Mountain Climber",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-058",
+    "name": "Copenhagen Plank",
+    "muscleGroup": "core",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-059",
+    "name": "Stir the Pot",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "lc-060",
+    "name": "Farmer's Carry",
+    "muscleGroup": "legs",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "ps-001",
+    "name": "Power Clean",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-002",
+    "name": "Hang Power Clean",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-003",
+    "name": "Power Snatch",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-004",
+    "name": "Hang Power Snatch",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-005",
+    "name": "Clean and Jerk",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-006",
+    "name": "Split Jerk",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-007",
+    "name": "Push Jerk",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-008",
+    "name": "Squat Clean",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-009",
+    "name": "Muscle Clean",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-010",
+    "name": "Clean Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-011",
+    "name": "Snatch Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-012",
+    "name": "Hang Clean",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-013",
+    "name": "Hang Snatch",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-014",
+    "name": "High Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-015",
+    "name": "Snatch Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-016",
+    "name": "Log Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-017",
+    "name": "Atlas Stone Lift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-018",
+    "name": "Yoke Walk",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-019",
+    "name": "Tire Flip",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-020",
+    "name": "Farmers Walk (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-021",
+    "name": "Axle Bar Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-022",
+    "name": "Circus Dumbbell Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-023",
+    "name": "Keg Carry",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-024",
+    "name": "Sandbag Clean",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-025",
+    "name": "Sandbag Carry",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-026",
+    "name": "Loading Race",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-027",
+    "name": "Arm-Over-Arm Rope Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-028",
+    "name": "Viking Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-029",
+    "name": "Stone to Shoulder",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-030",
+    "name": "Car Deadlift Simulation",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-031",
+    "name": "Duck Walk",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-032",
+    "name": "Hummer Tire Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-033",
+    "name": "Block Press",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-034",
+    "name": "Keg Toss",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-035",
+    "name": "Super Yoke",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-036",
+    "name": "Trap Bar Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-037",
+    "name": "Sumo Deadlift (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-038",
+    "name": "Conventional Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-039",
+    "name": "Romanian Deadlift (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-040",
+    "name": "Paused Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-041",
+    "name": "Box Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-042",
+    "name": "Safety Bar Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-043",
+    "name": "Zercher Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-044",
+    "name": "Anderson Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-045",
+    "name": "Belt Squat",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-046",
+    "name": "Deficit Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-047",
+    "name": "Block Pull",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-048",
+    "name": "Pause Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-049",
+    "name": "Stiff-Leg Deadlift (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-050",
+    "name": "Barbell Hip Thrust (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-051",
+    "name": "Glute-Ham Raise (Weighted)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-052",
+    "name": "Barbell Good Morning (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-053",
+    "name": "Pendlay Row (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-054",
+    "name": "Barbell Shrug (Heavy)",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-055",
+    "name": "Power Shrug",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-056",
+    "name": "Snatch-Grip Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-057",
+    "name": "Overhand Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-058",
+    "name": "Reverse Hyper",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-059",
+    "name": "Glute Drive",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "ps-060",
+    "name": "Zercher Deadlift",
+    "muscleGroup": "back",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [
+      "compound",
+      "power"
+    ],
+    "tier": 1
+  },
+  {
+    "id": "sa-001",
+    "name": "Overhead Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "sa-002",
+    "name": "Dumbbell Shoulder Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-003",
+    "name": "Arnold Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-004",
+    "name": "Military Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-005",
+    "name": "Push Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-006",
+    "name": "Lateral Raise",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-007",
+    "name": "Cable Lateral Raise",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-008",
+    "name": "Machine Lateral Raise",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-009",
+    "name": "Front Raise",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-010",
+    "name": "Cable Front Raise",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-011",
+    "name": "Dumbbell Rear Delt Fly",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-012",
+    "name": "Cable Rear Delt Fly",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-013",
+    "name": "Reverse Pec Deck",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-014",
+    "name": "Upright Row",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-015",
+    "name": "Cable Upright Row",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-016",
+    "name": "Bradford Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-017",
+    "name": "Z Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-018",
+    "name": "Seated Dumbbell Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-019",
+    "name": "Single-Arm Dumbbell Press (Shoulder)",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-020",
+    "name": "Behind-the-Neck Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-021",
+    "name": "Barbell Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-022",
+    "name": "Dumbbell Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-023",
+    "name": "Hammer Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-024",
+    "name": "Incline Dumbbell Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-025",
+    "name": "Preacher Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-026",
+    "name": "Cable Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-027",
+    "name": "EZ-Bar Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-028",
+    "name": "Concentration Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-029",
+    "name": "Cross-Body Hammer Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-030",
+    "name": "Zottman Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-031",
+    "name": "Spider Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-032",
+    "name": "Machine Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-033",
+    "name": "Reverse Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-034",
+    "name": "Cable Hammer Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-035",
+    "name": "21s Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-036",
+    "name": "Single-Arm Cable Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-037",
+    "name": "Triceps Pushdown",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-038",
+    "name": "Skull Crusher",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-039",
+    "name": "Close-Grip Bench Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 1
+  },
+  {
+    "id": "sa-040",
+    "name": "Overhead Triceps Extension",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-041",
+    "name": "Cable Overhead Triceps Extension",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-042",
+    "name": "Triceps Dip",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-043",
+    "name": "Kickback",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-044",
+    "name": "Diamond Push-Up (Triceps)",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-045",
+    "name": "Rope Pushdown",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-046",
+    "name": "Single-Arm Pushdown",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-047",
+    "name": "Tate Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-048",
+    "name": "JM Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-049",
+    "name": "Board Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-050",
+    "name": "French Press",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-051",
+    "name": "Wrist Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-052",
+    "name": "Reverse Wrist Curl",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-053",
+    "name": "Farmer's Walk",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-054",
+    "name": "Plate Pinch",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-055",
+    "name": "Dead Hang",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-056",
+    "name": "Towel Pull-Up",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-057",
+    "name": "Grip Trainer Squeeze",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-058",
+    "name": "Wrist Roller",
+    "muscleGroup": "shoulders",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-059",
+    "name": "Reverse Curl (Forearm Focus)",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  },
+  {
+    "id": "sa-060",
+    "name": "Hammer Curl (Forearm Emphasis)",
+    "muscleGroup": "arms",
+    "mediaType": "none",
+    "mediaRef": "",
+    "tags": [],
+    "tier": 3
+  }
+]
