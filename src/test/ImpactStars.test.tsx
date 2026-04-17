@@ -34,7 +34,7 @@ describe('ImpactStars', () => {
     vi.useFakeTimers()
     const onDone = vi.fn()
     render(<ImpactStars originX={0} originY={0} intensity={0.5} onDone={onDone} />)
-    vi.advanceTimersByTime(849)
+    vi.advanceTimersByTime(1029)
     expect(onDone).not.toHaveBeenCalled()
     vi.advanceTimersByTime(1)
     expect(onDone).toHaveBeenCalledTimes(1)

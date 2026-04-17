@@ -23,23 +23,21 @@ function buildStars(count: number, spread: number): Star[] {
 }
 
 export function ImpactStars({ originX, originY, intensity, onDone }: ImpactStarsProps) {
+  const count    = Math.max(4, Math.round(4 + intensity * 8))
+  const spread   = 40 + intensity * 80
   const size     = 4 + intensity * 6
   const duration = 0.5 + intensity * 0.4
 
-  const [stars] = useState<Star[]>(() => {
-    const count  = Math.max(4, Math.round(4 + intensity * 8))
-    const spread = 40 + intensity * 80
-    return buildStars(count, spread)
-  })
+  const [stars] = useState<Star[]>(() => buildStars(count, spread))
   const [visible, setVisible] = useState(true)
 
   useEffect(() => {
     const t = setTimeout(() => {
       setVisible(false)
       onDone()
-    }, (duration + 0.15) * 1000)
+    }, (duration + (count - 1) * 0.04 + 0.05) * 1000)
     return () => clearTimeout(t)
-  }, [onDone, duration])
+  }, [onDone, duration, count])
 
   return (
     <AnimatePresence>
