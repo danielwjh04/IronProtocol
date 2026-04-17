@@ -152,6 +152,10 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   }, [currentExIndex])
 
   useEffect(() => {
+    setCommitError(null)
+  }, [currentExIndex, currentSetInEx])
+
+  useEffect(() => {
     db.exercises.toArray().then((exs) => setExerciseDB(exs)).catch(() => {})
     db.settings.get(APP_SETTINGS_ID).then((s) => {
       if (s?.v11PromptContract) setV11Contract(s.v11PromptContract)
@@ -289,6 +293,16 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       if (!isDatabaseClosedError(error)) {
         throw error
       }
+    }
+  }
+
+  async function handleCompleteSetClick() {
+    setCommitError(null)
+    try {
+      await handleCompleteSet()
+    } catch (error) {
+      console.error('Failed to commit set:', error)
+      setCommitError('Failed to save set. Please try again.')
     }
   }
 
@@ -517,15 +531,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       <motion.button
         whileTap={{ scale: 0.95 }}
         type="button"
-        onClick={async () => {
-          setCommitError(null)
-          try {
-            await handleCompleteSet()
-          } catch (error) {
-            console.error('Failed to commit set:', error)
-            setCommitError('Failed to save set. Please try again.')
-          }
-        }}
+        onClick={handleCompleteSetClick}
         disabled={phase === 'resting'}
         className={`h-16 w-full cursor-pointer rounded-3xl px-6 text-xl font-black text-white transition-colors ${
           phase === 'resting'
@@ -587,6 +593,8 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                         }
                   )
                 )
+                setWeight(0)
+                setReps(0)
                 setSwapTarget(null)
               }}
               onClose={() => setSwapTarget(null)}
