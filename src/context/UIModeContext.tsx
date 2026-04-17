@@ -6,12 +6,13 @@ type UIMode = 'focus' | 'hero'
 interface PendingBash {
   intensity: number
   id: string
+  tonnage?: number
 }
 
 interface UIModeContextValue {
   uiMode: UIMode
   setUIMode: (mode: UIMode) => void
-  dispatchCombat: (intensity: number) => void
+  dispatchCombat: (intensity: number, tonnage?: number) => void
   pendingBash: PendingBash | null
 }
 
@@ -45,8 +46,8 @@ export function UIModeProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, [])
 
-  const dispatchCombat = useCallback((intensity: number) => {
-    setPendingBash({ intensity, id: crypto.randomUUID() })
+  const dispatchCombat = useCallback((intensity: number, tonnage?: number) => {
+    setPendingBash({ intensity, id: crypto.randomUUID(), ...(tonnage !== undefined ? { tonnage } : {}) })
   }, [])
 
   return (
