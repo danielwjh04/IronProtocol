@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useUIMode } from '../../context/UIModeContext'
 import { useCombatTrigger } from '../../hooks/useCombatTrigger'
 import { useHitCombo } from '../../hooks/useHitCombo'
@@ -11,6 +11,7 @@ import { DamageNumber } from './DamageNumber'
 import { ImpactStars } from './ImpactStars'
 import { MasterworkModal } from './MasterworkModal'
 import { ObsidianStairs } from './ObsidianStairs'
+import { TheForge } from './TheForge'
 import { PrestigeFlash } from './PrestigeFlash'
 import { SummitModal } from './SummitModal'
 
@@ -58,7 +59,29 @@ export function HeroOverlay() {
 
   return (
     <>
-      {track.active === 'power' && <ObsidianStairs progress={track.power} />}
+      <AnimatePresence mode="wait">
+        {track.active === 'power' ? (
+          <motion.div
+            key="stairs"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ObsidianStairs progress={track.power} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="forge"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <TheForge />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <CombatCanvas
         onStrike={(intensity) => {
           crunch(intensity)
