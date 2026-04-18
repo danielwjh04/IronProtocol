@@ -1,12 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import BottomNav from './components/BottomNav'
 import CalibrateBaselinesCard from './components/CalibrateBaselinesCard'
 import CoreIgnition from './components/CoreIgnition'
 import DataOwnershipCard from './components/DataOwnershipCard'
+import { HeroErrorBoundary } from './components/UI/HeroErrorBoundary'
 import { HeroOverlay } from './components/hero/HeroOverlay'
 import { ModeToggleButton } from './components/hero/ModeToggleButton'
-import { UIModeProvider } from './context/UIModeContext'
+import { UIModeProvider, useUIMode } from './context/UIModeContext'
 import { db } from './db/db'
 import HistoryPage from './pages/HistoryPage'
 import HomePage from './pages/HomePage'
@@ -21,6 +23,18 @@ function resolveRoute(pathname: string): RoutePath {
     return '/settings'
   }
   return '/'
+}
+
+function HeroOverlayWithBoundary() {
+  const { setUIMode } = useUIMode()
+  return (
+    <HeroErrorBoundary onFallback={() => {
+      setUIMode('focus')
+      toast.error('Hero overlay crashed — switched to Focus Mode', { duration: 4000 })
+    }}>
+      <HeroOverlay />
+    </HeroErrorBoundary>
+  )
 }
 
 export default function App() {
@@ -94,7 +108,7 @@ export default function App() {
           </>
         )}
 
-        <HeroOverlay />
+        <HeroOverlayWithBoundary />
       </div>
     </UIModeProvider>
   )

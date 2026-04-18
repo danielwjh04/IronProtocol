@@ -48,41 +48,45 @@ export function TheForge() {
     if (!ctx) return
 
     function tick() {
-      const p = progressRef.current
-      frameRef.current++
+      try {
+        const p = progressRef.current
+        frameRef.current++
 
-      const spawnInterval = Math.max(1, Math.round(12 / (1 + p * 9)))
-      if (frameRef.current % spawnInterval === 0) {
-        embersRef.current.push(spawnEmber(p))
+        const spawnInterval = Math.max(1, Math.round(12 / (1 + p * 9)))
+        if (frameRef.current % spawnInterval === 0) {
+          embersRef.current.push(spawnEmber(p))
+        }
+
+        if (embersRef.current.length > 150) {
+          embersRef.current.splice(0, embersRef.current.length - 150)
+        }
+
+        ctx!.clearRect(0, 0, W, H)
+
+        const glowAlpha = 0.08 + p * 0.52
+        const grad = ctx!.createRadialGradient(W / 2, H, 5, W / 2, H, H * 0.85)
+        grad.addColorStop(0, `rgba(255, 90, 10, ${glowAlpha})`)
+        grad.addColorStop(0.45, `rgba(200, 35, 5, ${glowAlpha * 0.55})`)
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)')
+        ctx!.fillStyle = grad
+        ctx!.fillRect(0, 0, W, H)
+
+        embersRef.current = embersRef.current.filter(e => e.alpha > 0)
+        for (const e of embersRef.current) {
+          e.x += e.vx
+          e.y += e.vy
+          e.alpha -= e.decay
+          e.vx += (Math.random() - 0.5) * 0.12
+
+          ctx!.beginPath()
+          ctx!.arc(e.x, e.y, Math.max(0.4, e.radius), 0, Math.PI * 2)
+          ctx!.fillStyle = `hsla(${e.hue}, 100%, 62%, ${Math.max(0, e.alpha)})`
+          ctx!.fill()
+        }
+      } catch (e) {
+        if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+        throw e
       }
-
-      if (embersRef.current.length > 150) {
-        embersRef.current.splice(0, embersRef.current.length - 150)
-      }
-
-      ctx!.clearRect(0, 0, W, H)
-
-      const glowAlpha = 0.08 + p * 0.52
-      const grad = ctx!.createRadialGradient(W / 2, H, 5, W / 2, H, H * 0.85)
-      grad.addColorStop(0, `rgba(255, 90, 10, ${glowAlpha})`)
-      grad.addColorStop(0.45, `rgba(200, 35, 5, ${glowAlpha * 0.55})`)
-      grad.addColorStop(1, 'rgba(0, 0, 0, 0)')
-      ctx!.fillStyle = grad
-      ctx!.fillRect(0, 0, W, H)
-
-      embersRef.current = embersRef.current.filter(e => e.alpha > 0)
-      for (const e of embersRef.current) {
-        e.x += e.vx
-        e.y += e.vy
-        e.alpha -= e.decay
-        e.vx += (Math.random() - 0.5) * 0.12
-
-        ctx!.beginPath()
-        ctx!.arc(e.x, e.y, Math.max(0.4, e.radius), 0, Math.PI * 2)
-        ctx!.fillStyle = `hsla(${e.hue}, 100%, 62%, ${Math.max(0, e.alpha)})`
-        ctx!.fill()
-      }
-
       rafRef.current = requestAnimationFrame(tick)
     }
 

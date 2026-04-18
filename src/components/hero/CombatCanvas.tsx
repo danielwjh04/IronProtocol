@@ -115,13 +115,18 @@ export function CombatCanvas({ onStrike }: CombatCanvasProps) {
     let last = 0
 
     function step(ts: number) {
-      if (ts - last >= FRAME_MS) {
-        if (frameIdx < sequence.length) {
-          drawFrame(ctx, sequence[frameIdx])
-          if (frameIdx === STRIKE_FRAME) onStrike?.(intensity)
-          frameIdx++
-          last = ts
+      try {
+        if (ts - last >= FRAME_MS) {
+          if (frameIdx < sequence.length) {
+            drawFrame(ctx, sequence[frameIdx])
+            if (frameIdx === STRIKE_FRAME) onStrike?.(intensity)
+            frameIdx++
+            last = ts
+          }
         }
+      } catch (e) {
+        if (animRef.current !== null) cancelAnimationFrame(animRef.current)
+        throw e
       }
       if (frameIdx < sequence.length) {
         animRef.current = requestAnimationFrame(step)
