@@ -4,15 +4,15 @@
 
 **Goal:** Complete all remaining unchecked TODO.md items (Phases 1–5) with TDD, one commit per task, zero inline comments.
 
-**Architecture:** React 18 + Vite + Tailwind + Dexie v15. Hero overlay in `src/components/hero/`. Search in `src/components/Search/`. Error boundary in `src/components/UI/`. Tests in `src/test/`.
+**Architecture:** React 18 + Vite + Tailwind + Dexie v15. Hero overlay in `src/components/hero/`. Search in `src/components/Search/`. Error boundary in `src/components/UI/`. Tests in `src/test/`. Hooks in `src/hooks/`.
 
-**Tech Stack:** React 18, Framer Motion, Dexie v15, Vitest, TypeScript strict, @xenova/transformers. Named imports only. Spring physics for UI. No wildcards. No inline comments.
+**Tech Stack:** React 18, Framer Motion, Dexie v15, Vitest, TypeScript strict, @xenova/transformers, sonner (to install). Named imports only. Spring physics for UI. No wildcards. No inline comments.
 
-**Generated:** 2026-04-18 (replan pass #14)
+**Generated:** 2026-04-18 (replan pass #21 — file-verified, Phase 3.3 committed 174f504)
 
 ---
 
-## 0. Live-state snapshot (pass #14, 2026-04-18 — file-verified)
+## 0. Live-state snapshot (pass #21, 2026-04-18 — file-verified from disk)
 
 | Item | State | Commit |
 |---|---|---|
@@ -28,49 +28,51 @@
 | Phase 6.3 DamageNumber floating | **DONE** | `f45a94c` |
 | Phase 6.4 HeavyBash sensory sync at strike frame | **DONE** | `64bd56c` |
 | Phase 4.1–4.5 raw exercise JSONs (5 files) | **DONE** | `59ee7c1` |
-| Phase 4.6 mergeExercises utility | **DONE** | — |
-| Phase 4.7 execute merge + delete raw dir | **MISSING** | — |
-| Phase 4.8 chunked seedEmbeddings | **MISSING** | — |
-| Phase 1.0 embeddingWorker progress callback | **MISSING** | — |
-| Phase 3.1 NLPSearchBar scaffold | **MISSING** | — |
-| Phase 3.2 useDebouncedValue hook | **MISSING** | — |
-| Phase 3.3 exerciseSearchService + full NLPSearchBar | **MISSING** | — |
-| Phase 3.5 ExerciseCard confidence badge | **MISSING** | — |
+| Phase 4.6 mergeExercises utility | **DONE** | `e12a22c` |
+| Phase 4.7 execute merge + delete raw dir | **DONE** | `0e22469` |
+| Phase 4.8 chunked seedEmbeddings | **DONE** | `f485528` |
+| Phase 1.0 embeddingWorker progress callback | **DONE** | `403ecb8` |
+| Phase 3.2 useDebouncedValue | **DONE** | `ac42ee0` |
+| Phase 3.1 NLPSearchBar scaffold | **DONE** | `c19352a` |
+| Phase 3.3 exerciseSearchService + full NLPSearchBar | **DONE** | `174f504` |
+| Phase 3.5 ExerciseCard confidence badge | **DONE** | (next commit) |
 | Phase 5.1 prestige wiring + 2s particle flash | **MISSING** | — |
 | Phase 5.2 ObsidianStairs→TheForge cross-fade | **MISSING** | — |
-| Phase 5.3 Brain Initializing state | **MISSING — integrated into Phase 3.3** | — |
+| Phase 5.3 Brain Initializing state | **DONE** | `174f504` (integrated into 3.3) |
 | Phase 8.1 HeroErrorBoundary | **MISSING** | — |
-| Phase 8.2 Wrap overlay + RAF safety | **MISSING** | — |
+| Phase 8.2 Wrap overlay + RAF safety + toast | **MISSING** | — |
 | Phase 7.1 verify completedAscensions badge | **MISSING** | — |
 
-### Critical verified facts (pass #14 — read from disk, 2026-04-18)
+### Critical verified facts (pass #21 — file-verified from disk, 2026-04-18)
 
 | Assumption | Reality |
 |---|---|
-| `TheForge.tsx` exists | **Confirmed** — `src/components/hero/TheForge.tsx` exists; just not rendered in HeroOverlay |
-| `HeroOverlay` renders TheForge | **Does NOT** — line 59 renders only `<ObsidianStairs>` when `track.active === 'power'`; no else branch |
-| `HeroOverlay` passes `onPrestige` to `MasterworkModal` | **Does NOT** — line 67: `<MasterworkModal />` no props; Phase 5.1 must add the prop |
-| `HeroOverlay` passes `onAscend` to `SummitModal` | **Does NOT** — line 66: `<SummitModal />` no props; Phase 5.1 must add the prop |
-| `MasterworkModal.handlePrestige` calls `forgeMasterwork()` | **Does NOT** — calls `onPrestige?.()` then `setDismissed(true)` only |
-| `SummitModal` calls `ascend()` directly | **Confirmed** — `ba67a46` |
-| `UIMode` is `'focus' \| 'hero'` | Confirmed — use `setUIMode('focus')` not `'professional'` |
+| `exercises.json` is plain 300-entry array | **Confirmed** — `raw/` deleted |
+| `src/hooks/useDebouncedValue.ts` exists | **Confirmed** — committed `ac42ee0` |
+| `src/components/Search/NLPSearchBar.tsx` is fully wired | **Confirmed** — dropdown, Brain Initializing, arrow-key nav live (commit `174f504`) |
+| `exerciseSearchService.ts` exists | **Confirmed** — exports `searchExercises` + `invalidateSearchCache` (commit `174f504`) |
+| `src/components/UI/` directory exists | **No** — Phase 8.1 creates it |
+| `embeddingWorker.ts` has `progress_callback` | **Yes** — sends `{ type: 'loading', progress }` and `{ type: 'ready' }` |
+| `localAIService.ts` exports `subscribeToModelLoading` | **Confirmed** — added by `403ecb8` |
+| `PrestigeFlash.tsx` exists | **No** — Phase 5.1 creates it |
+| `TheForge.tsx` exists | **Yes** — `src/components/hero/TheForge.tsx` confirmed on disk |
+| `TheForge` imported in `HeroOverlay` | **No** — Phase 5.2 adds the import |
+| `motion` imported in `HeroOverlay` | **No** — only `AnimatePresence` is imported; Phase 5.2 adds `motion` |
+| `HeroOverlay` line 59 renders TheForge | **No** — only `{track.active === 'power' && <ObsidianStairs progress={track.power} />}`; no else branch; Phase 5.2 adds it |
+| `HeroOverlay` passes props to `SummitModal`/`MasterworkModal` | **No** — both rendered with zero props at lines 66–67; Phase 5.1 wires them |
+| `MasterworkModal` has `onPrestige?: () => void` prop | **Yes** — prop exists at line 6; but `handlePrestige` does NOT call `forgeMasterwork()` — only calls `onPrestige?.()` + `setDismissed(true)` |
+| `SummitModal` has `onAscend` prop | **No** — takes zero props; `handleAscend` calls `ascend()` internally only; Phase 5.1 adds `onAscend` |
+| Toast system (sonner/useToast) installed | **No** — zero toast imports anywhere; Phase 8.2 installs `sonner` |
+| `UIMode` is `'focus' \| 'hero'` | **Confirmed** — use `setUIMode('focus')` not `'professional'` |
 | `db.embeddings` table exists | **No** — embeddings stored as `exercise.embedding: number[]` |
-| `cosineSimilarity` exists | **Yes** — `src/utils/vectorMath.ts` |
-| `getEmbedding` is named export | `import { getEmbedding } from './localAIService'` |
-| `dispatchCombat` signature | `dispatchCombat(intensity: number, tonnage?: number)` |
-| `src/components/Search/` exists | **No** — created in Phase 3.1 |
-| `src/components/UI/` exists | **No** — created in Phase 8.1 |
-| `src/data/raw/` exists | **Confirmed** — all 5 JSON files present |
-| `exercises.json` format | **Wrapped** (not plain array); Phase 4.7 overwrites with plain 300-entry array |
-| `embeddingWorker.ts` has progress_callback | **Does NOT** — bare `pipeline()` call, no callback; Phase 1.0 adds it |
-| `seedEmbeddings.ts` is chunked | **Does NOT** — sequential loop, no batch size, no console.log; Phase 4.8 replaces it |
-| `ExerciseTier` is `'T1'\|'T2'\|'T3'` | **No** — `1 \| 2 \| 3` (numeric) |
-| `STRIKE_FRAME = 4` | **Confirmed** — frame index 4 is first with `flashAlpha > 0` |
-| `DamageNumber.tsx` exists | **Confirmed** — `f45a94c` |
-| `useDebouncedValue` hook exists | **No** — Phase 3.2 creates it |
-| `exerciseSearchService.ts` exists | **No** — Phase 3.3 creates it |
-| `localAIService.ts` exports `subscribeToModelLoading` | **No** — Phase 1.0 adds this export |
-| `HeroOverlay` imports `AnimatePresence` | **Confirmed** — already imported (line 2) |
+| `cosineSimilarity` exported from `src/utils/vectorMath.ts` | **Confirmed** |
+| `getEmbedding` is named export from `localAIService` | **Confirmed** |
+| `forgeMasterwork` and `ascend` exported from `heroMathService` | **Confirmed** — at lines 76 and 72 respectively |
+| `AnimatePresence` already imported in `HeroOverlay` | **Confirmed** — line 2 |
+| `ExerciseTier` is `'T1' \| 'T2' \| 'T3'` on `ExerciseCard` | **Confirmed** — `matchScore` is independent cosine float |
+| `ExerciseCard` has `matchScore` prop | **No** — Phase 3.5 adds it as optional |
+| `shadcn components.json` exists | **No** — plain Tailwind; install `sonner` directly |
+| `PrestigeBadge` renders in `SessionBlueprint.tsx` | **Confirmed** — line 758 with `completedAscensions`; Phase 7.1 must verify `useLiveQuery` reactivity |
 
 ---
 
@@ -86,7 +88,6 @@ For every task marked **[STITCH UI]**:
 
 | Phase | [STITCH UI] task | Stitch calls required |
 |---|---|---|
-| 3.1 | NLPSearchBar scaffold | 2 × `mcp__stitch__generate_screen_from_text` |
 | 3.3 | exerciseSearchService + full NLPSearchBar | 2 × dropdown variant |
 | 3.5 | ExerciseCard confidence badge | 2 × card variant |
 | 5.1 | Prestige wiring + PrestigeFlash | 2 × flash overlay variant |
@@ -97,17 +98,18 @@ For every task marked **[STITCH UI]**:
 ## 1. Dependency graph
 
 ```
-4.1–4.5 (parallel) → 4.6 → 4.7 → 4.8
-1.0                        (independent)
-4.8 + 1.0 → 3.1 → 3.2 → 3.3 → 3.5
-5.1                        (independent — fixes broken MasterworkModal)
-5.2                        (independent — adds TheForge to HeroOverlay)
-3.1 + 1.0 → 5.3            (Brain loading state, already inside Phase 3.3)
-8.1 → 8.2                  (error boundary, last)
-7.1                        (verify, after 5.1)
+3.3 DONE ✓ (174f504)
+3.5 (unblocked — 3.3 done ✓)
+5.1 (independent — unblocked)
+5.2 (independent — unblocked)
+8.1 (independent — unblocked)
+
+5.1 → 7.1
+8.1 → 8.2
 ```
 
-**Critical path:** 4.1–4.5 → 4.6 → 4.7 → 4.8 → 3.1 → 3.3 → 3.5
+**Critical path:** ~~3.3 →~~ 3.5 (unblocked now)
+**Parallelisable now:** 3.5, 5.1, 5.2, 8.1 are all unblocked.
 
 ---
 
@@ -115,630 +117,9 @@ For every task marked **[STITCH UI]**:
 
 ---
 
-### Phase 4.1–4.5: Generate five raw exercise JSON files
-
-> **These five can run as parallel subagents.** Each writes one file to `src/data/raw/`.
-
-**Schema (all five files, strict):**
-
-```ts
-{
-  id: string            // kebab-case prefix (see table below) + sequential number
-  name: string          // unique (case-insensitive)
-  technical_cues: string[]   // 3–6 imperative strings
-  biomechanical_why: string  // ≥ 3 sentences: primary movers, origin/insertion, leverage
-}
-```
-
-| File | ID prefix | Focus |
-|---|---|---|
-| `src/data/raw/chest_back.json` | `cb-` | Chest + Back (30 chest, 30 back) |
-| `src/data/raw/legs_core.json` | `lc-` | Quads, Hamstrings, Glutes, Calves, Core |
-| `src/data/raw/shoulders_arms.json` | `sa-` | Deltoids, Biceps, Triceps, Forearms |
-| `src/data/raw/functional_cables.json` | `fc-` | Unilateral, Cable, Functional mobility |
-| `src/data/raw/power_strongman.json` | `ps-` | Olympic lifts, Strongman, Heavy compounds |
-
-**Steps per file (repeat for each):**
-
-- [ ] **Step 1: Generate 60 unique exercises following schema**
-
-  Top-level structure must be a JSON array (not wrapped in an object). 60 entries per file. IDs use the file's prefix + sequential number (e.g., `cb-001`, `cb-002`…).
-
-- [ ] **Step 2: Validate**
-
-  ```bash
-  node -e "const d=require('./src/data/raw/<file>.json'); console.log('count:', d.length, 'ok:', d.every(e=>e.id&&e.name&&Array.isArray(e.technical_cues)&&e.biomechanical_why))"
-  ```
-
-  Expected: `count: 60 ok: true`
-
-- [ ] **Step 3: Commit**
-
-  ```bash
-  git add src/data/raw/<file>.json
-  git commit -m "feat(data): seed 60 <category> exercises"
-  ```
-
-**Acceptance per file:** Exactly 60 entries. No duplicate `id`. No duplicate lowercased `name`. `biomechanical_why` ≥ 3 sentences. `technical_cues` has 3–6 entries. Valid JSON array.
-
----
-
-### Phase 4.6: `mergeExercises.ts` utility
-
-**Depends on:** 4.1–4.5 all committed.
-**Files:**
-- Create: `src/utils/mergeExercises.ts`
-- Create: `src/test/mergeExercises.test.ts`
-
-**Important:** `Exercise` type (`src/db/schema.ts`) fields: `id, name, muscleGroup, mediaType, mediaRef, tags, tier (1|2|3 numeric), embedding?`. Raw JSON has `technical_cues` and `biomechanical_why` — the merge script **drops** these.
-
-- [ ] **Step 1: Write failing test**
-
-  Create `src/test/mergeExercises.test.ts`:
-
-  ```ts
-  import { describe, it, expect } from 'vitest'
-  import { mergeRawExercises } from '../utils/mergeExercises'
-
-  describe('mergeRawExercises', () => {
-    it('returns exactly 300 entries', async () => {
-      const result = await mergeRawExercises()
-      expect(result).toHaveLength(300)
-    })
-
-    it('has no duplicate ids', async () => {
-      const result = await mergeRawExercises()
-      expect(new Set(result.map(e => e.id)).size).toBe(300)
-    })
-
-    it('has no duplicate lowercased names', async () => {
-      const result = await mergeRawExercises()
-      expect(new Set(result.map(e => e.name.toLowerCase())).size).toBe(300)
-    })
-
-    it('all entries have numeric tier and no raw-only fields', async () => {
-      const result = await mergeRawExercises()
-      for (const e of result) {
-        expect([1, 2, 3]).toContain(e.tier)
-        expect('technical_cues' in e).toBe(false)
-        expect('biomechanical_why' in e).toBe(false)
-      }
-    })
-  })
-  ```
-
-- [ ] **Step 2: Run test to verify it fails**
-
-  ```bash
-  npm run test -- mergeExercises
-  ```
-
-- [ ] **Step 3: Implement `mergeExercises.ts`**
-
-  Create `src/utils/mergeExercises.ts`:
-
-  ```ts
-  import fs from 'fs'
-  import path from 'path'
-  import type { Exercise } from '../db/schema'
-
-  const RAW_DIR  = path.resolve('src/data/raw')
-  const OUT_FILE = path.resolve('src/data/exercises.json')
-
-  type RawEntry = { id: string; name: string; technical_cues: string[]; biomechanical_why: string }
-
-  const FILE_META: Record<string, { baseMuscleGroup: string; tags: string[] }> = {
-    'chest_back.json':        { baseMuscleGroup: 'chest',     tags: [] },
-    'legs_core.json':         { baseMuscleGroup: 'legs',      tags: [] },
-    'shoulders_arms.json':    { baseMuscleGroup: 'shoulders', tags: [] },
-    'functional_cables.json': { baseMuscleGroup: 'back',      tags: ['functional', 'cable'] },
-    'power_strongman.json':   { baseMuscleGroup: 'back',      tags: ['compound', 'power'] },
-  }
-
-  function inferMuscleGroup(filename: string, name: string): string {
-    const lc = name.toLowerCase()
-    if (filename === 'chest_back.json') {
-      return /row|pull|lat|deadlift/.test(lc) ? 'back' : 'chest'
-    }
-    if (filename === 'legs_core.json') {
-      return /crunch|plank|\bab\b|core/.test(lc) ? 'core' : 'legs'
-    }
-    if (filename === 'shoulders_arms.json') {
-      return /curl|tricep|hammer|pressdown|pushdown/.test(lc) ? 'arms' : 'shoulders'
-    }
-    return FILE_META[filename]?.baseMuscleGroup ?? 'other'
-  }
-
-  function inferTier(name: string, tags: string[]): 1 | 2 | 3 {
-    const lc = name.toLowerCase()
-    const isT1 = ['bench press', 'squat', 'deadlift', 'overhead press', 'barbell row',
-      'clean', 'snatch', 'jerk', 'log press', 'yoke'].some(k => lc.includes(k))
-    if (isT1 || tags.includes('power')) return 1
-    if (tags.includes('compound') || tags.includes('cable') || tags.includes('functional')) return 2
-    return 3
-  }
-
-  export async function mergeRawExercises(): Promise<Exercise[]> {
-    const files = fs.readdirSync(RAW_DIR).filter(f => f.endsWith('.json')).sort()
-    const allRaw: Array<RawEntry & { _file: string }> = []
-
-    for (const file of files) {
-      const raw = JSON.parse(fs.readFileSync(path.join(RAW_DIR, file), 'utf-8')) as RawEntry[]
-      raw.forEach(e => allRaw.push({ ...e, _file: file }))
-    }
-
-    const seenIds   = new Set<string>()
-    const seenNames = new Set<string>()
-
-    return allRaw.map(raw => {
-      if (seenIds.has(raw.id)) throw new Error(`Duplicate id: ${raw.id}`)
-      if (seenNames.has(raw.name.toLowerCase())) throw new Error(`Duplicate name: ${raw.name}`)
-      seenIds.add(raw.id)
-      seenNames.add(raw.name.toLowerCase())
-      const tags        = [...(FILE_META[raw._file]?.tags ?? [])]
-      const muscleGroup = inferMuscleGroup(raw._file, raw.name)
-      const tier        = inferTier(raw.name, tags)
-      return {
-        id: raw.id, name: raw.name,
-        muscleGroup, mediaType: 'none', mediaRef: '',
-        tags, tier,
-      } satisfies Exercise
-    })
-  }
-
-  if (process.argv[1]?.replace(/\\/g, '/').endsWith('mergeExercises.ts')) {
-    mergeRawExercises().then(merged => {
-      fs.writeFileSync(OUT_FILE, JSON.stringify(merged, null, 2))
-      console.log(`Written ${merged.length} exercises to ${OUT_FILE}`)
-    }).catch(e => { console.error(e); process.exit(1) })
-  }
-  ```
-
-- [ ] **Step 4: Run test to verify it passes**
-
-  ```bash
-  npm run test -- mergeExercises
-  ```
-
-- [ ] **Step 5: Commit**
-
-  ```bash
-  git add src/utils/mergeExercises.ts src/test/mergeExercises.test.ts
-  git commit -m "feat(data): mergeExercises utility with cross-file dedup and tier inference"
-  ```
-
-**Acceptance:** 300 entries, no dup ids/names, numeric tier 1/2/3, no raw-only fields.
-
----
-
-### Phase 4.7: Execute merge + overwrite `exercises.json`
-
-**Depends on:** 4.6 committed; all 5 raw files exist.
-**Note:** `src/data/exercises.json` currently has 53 old entries in wrapped format — this step replaces it with a plain 300-entry array.
-
-- [ ] **Step 1: Execute merge script**
-
-  ```bash
-  npx tsx src/utils/mergeExercises.ts
-  ```
-
-  Expected output: `Written 300 exercises to src/data/exercises.json`
-
-- [ ] **Step 2: Verify count**
-
-  ```bash
-  node -e "const d=require('./src/data/exercises.json'); console.log('count:', d.length, 'isArray:', Array.isArray(d))"
-  ```
-
-  Expected: `count: 300 isArray: true`
-
-- [ ] **Step 3: Delete raw dir**
-
-  ```bash
-  rm -rf src/data/raw
-  ```
-
-- [ ] **Step 4: Run full tests**
-
-  ```bash
-  npm run test
-  ```
-
-- [ ] **Step 5: Commit**
-
-  ```bash
-  git add src/data/exercises.json
-  git rm -r src/data/raw
-  git commit -m "chore(data): generate 300-exercise library, delete raw partitions"
-  ```
-
-**Acceptance:** `exercises.json` is a plain 300-entry array (not wrapped). `src/data/raw/` gone. Tests green.
-
----
-
-### Phase 4.8: Refactor `seedEmbeddings.ts` to chunked batches
-
-**Depends on:** 4.7 committed.
-**Files:**
-- Modify: `src/utils/seedEmbeddings.ts`
-- Create: `src/test/seedEmbeddings.test.ts`
-
-- [ ] **Step 1: Write failing test**
-
-  Create `src/test/seedEmbeddings.test.ts`:
-
-  ```ts
-  // @vitest-environment jsdom
-  import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-  const mockGetEmbedding = vi.fn().mockResolvedValue(new Array(384).fill(0))
-  vi.mock('../services/localAIService', () => ({ getEmbedding: mockGetEmbedding }))
-
-  const mockUpdate = vi.fn().mockResolvedValue(1)
-  const fakeExercises = Array.from({ length: 10 }, (_, i) => ({
-    id: `e${i}`, name: `Ex ${i}`, muscleGroup: 'chest', tags: [], tier: 3 as const,
-    mediaType: 'none', mediaRef: '', embedding: undefined,
-  }))
-  vi.mock('../db/db', () => ({
-    db: { exercises: { toArray: vi.fn().mockResolvedValue(fakeExercises), update: mockUpdate } },
-  }))
-
-  import { seedEmbeddings } from '../utils/seedEmbeddings'
-
-  describe('seedEmbeddings chunked', () => {
-    beforeEach(() => mockGetEmbedding.mockClear())
-
-    it('calls getEmbedding once per exercise with missing embedding', async () => {
-      await seedEmbeddings()
-      expect(mockGetEmbedding).toHaveBeenCalledTimes(10)
-    })
-
-    it('logs batch progress to console', async () => {
-      const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
-      await seedEmbeddings()
-      const calls = spy.mock.calls.map(c => c[0] as string)
-      expect(calls.some(s => s.startsWith('Processed batch'))).toBe(true)
-      spy.mockRestore()
-    })
-  })
-  ```
-
-- [ ] **Step 2: Run test to verify it fails**
-
-  ```bash
-  npm run test -- seedEmbeddings
-  ```
-
-- [ ] **Step 3: Replace `seedEmbeddings.ts`**
-
-  ```ts
-  import { db } from '../db/db'
-  import { getEmbedding } from '../services/localAIService'
-  import type { Exercise } from '../db/schema'
-
-  const BATCH_SIZE = 5
-
-  function buildExerciseText(exercise: Exercise): string {
-    return `${exercise.name} ${exercise.muscleGroup} ${exercise.tags.join(' ')}`
-  }
-
-  export async function seedEmbeddings(): Promise<void> {
-    const exercises = await db.exercises.toArray()
-    const missing   = exercises.filter(e => !e.embedding || e.embedding.length === 0)
-    const total     = Math.ceil(missing.length / BATCH_SIZE)
-
-    for (let i = 0; i < missing.length; i += BATCH_SIZE) {
-      const batch    = missing.slice(i, i + BATCH_SIZE)
-      const batchNum = Math.floor(i / BATCH_SIZE) + 1
-      await Promise.all(batch.map(async ex => {
-        const embedding = await getEmbedding(buildExerciseText(ex))
-        await db.exercises.update(ex.id, { embedding })
-      }))
-      console.log(`Processed batch ${batchNum} of ${total}`)
-      await new Promise(r => setTimeout(r, 0))
-    }
-  }
-  ```
-
-- [ ] **Step 4: Run test to verify it passes**
-
-  ```bash
-  npm run test -- seedEmbeddings
-  ```
-
-- [ ] **Step 5: Commit**
-
-  ```bash
-  git add src/utils/seedEmbeddings.ts src/test/seedEmbeddings.test.ts
-  git commit -m "feat(data): seed embeddings in chunks of 5 with OOM guard and batch logging"
-  ```
-
-**Acceptance:** 300 exercises → 60 batches; console shows "Processed batch X of 60"; skips exercises with existing embeddings.
-
----
-
-### Phase 1.0: `embeddingWorker.ts` progress callback
-
-**Depends on:** Nothing (independent).
-**Files:**
-- Modify: `src/workers/embeddingWorker.ts`
-- Modify: `src/services/localAIService.ts`
-
-Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model downloads.
-
-- [ ] **Step 1: Replace `embeddingWorker.ts` with progress-aware version**
-
-  ```ts
-  import { pipeline } from '@xenova/transformers'
-
-  type FeatureExtractionPipeline = Awaited<ReturnType<typeof pipeline>>
-
-  let extractor: FeatureExtractionPipeline | null = null
-
-  async function getExtractor(): Promise<FeatureExtractionPipeline> {
-    if (!extractor) {
-      extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-        progress_callback: (info: { progress?: number }) => {
-          self.postMessage({ type: 'loading', progress: info.progress ?? 0 })
-        },
-      })
-      self.postMessage({ type: 'ready' })
-    }
-    return extractor
-  }
-
-  self.onmessage = async (event: MessageEvent<string>) => {
-    const text = event.data
-    try {
-      const pipe = await getExtractor()
-      const output = await pipe(text, { pooling: 'mean', normalize: true })
-      const embedding = Array.from(output.data as Float32Array)
-      self.postMessage({ ok: true, embedding })
-    } catch (err) {
-      self.postMessage({ ok: false, error: String(err) })
-    }
-  }
-  ```
-
-- [ ] **Step 2: Replace `localAIService.ts` with subscription-aware version**
-
-  ```ts
-  import EmbeddingWorker from '../workers/embeddingWorker?worker'
-
-  type WorkerResponse =
-    | { ok: true; embedding: number[] }
-    | { ok: false; error: string }
-    | { type: 'loading'; progress: number }
-    | { type: 'ready' }
-
-  type LoadingListener = (isLoading: boolean, progress?: number) => void
-
-  let worker: Worker | null = null
-  let modelReady = false
-  let loadingListeners: LoadingListener[] = []
-
-  function getWorker(): Worker {
-    if (!worker) {
-      worker = new EmbeddingWorker()
-      worker.addEventListener('message', (e: MessageEvent<WorkerResponse>) => {
-        if (!('type' in e.data)) return
-        if (e.data.type === 'loading') {
-          loadingListeners.forEach(fn => fn(true, e.data.progress))
-        } else if (e.data.type === 'ready') {
-          modelReady = true
-          loadingListeners.forEach(fn => fn(false))
-        }
-      })
-    }
-    return worker
-  }
-
-  export function subscribeToModelLoading(fn: LoadingListener): () => void {
-    if (modelReady) { fn(false); return () => {} }
-    loadingListeners = [...loadingListeners, fn]
-    return () => { loadingListeners = loadingListeners.filter(l => l !== fn) }
-  }
-
-  export function getEmbedding(text: string): Promise<number[]> {
-    return new Promise((resolve, reject) => {
-      const w = getWorker()
-      const handler = (e: MessageEvent<WorkerResponse>) => {
-        if ('type' in e.data) return
-        w.removeEventListener('message', handler)
-        if (e.data.ok) resolve(e.data.embedding)
-        else reject(new Error(e.data.error))
-      }
-      w.addEventListener('message', handler)
-      w.postMessage(text)
-    })
-  }
-  ```
-
-- [ ] **Step 3: Run full tests**
-
-  ```bash
-  npm run test
-  ```
-
-  All existing tests that mock `localAIService` mock `getEmbedding` by name — still works.
-
-- [ ] **Step 4: Commit**
-
-  ```bash
-  git add src/workers/embeddingWorker.ts src/services/localAIService.ts
-  git commit -m "feat(nlp): embeddingWorker progress callback + subscribeToModelLoading export"
-  ```
-
-**Acceptance:** Worker sends `{ type: 'loading', progress }` during model download; `{ type: 'ready' }` once loaded; `getEmbedding` callers unaffected.
-
----
-
-### Phase 3.1: `NLPSearchBar.tsx` scaffold [STITCH UI]
-
-**Depends on:** 4.8 committed (rich exercise embeddings available).
-**Files:**
-- Create: `src/components/Search/NLPSearchBar.tsx`
-- Create: `src/test/NLPSearchBar.test.tsx`
-
-#### Stitch Selection — Phase 3.1
-- [ ] **Step 1: Generate Stitch variants**
-
-  Call `mcp__stitch__generate_screen_from_text` twice:
-
-  - **Prompt A:** "Dark workout app NLP search bar component, slate-900 background, indigo accent border on focus, placeholder 'Try: upper chest with shoulder injury…', floating dropdown list beneath with exercise name + green/amber/red percentage match badge on right, mobile width 430px"
-  - **Prompt B:** "AI exercise search bar for dark RPG fitness app, obsidian/navy background, subtle glow on input, dropdown shows ranked results with colored match score pill, clean minimalist typography, mobile-first"
-
-  _Selected variant ID:_ **[fill in during execution]**
-  _Reasoning:_ **[fill in during execution]**
-
-- [ ] **Step 2: Write failing test**
-
-  Create `src/test/NLPSearchBar.test.tsx`:
-
-  ```tsx
-  // @vitest-environment jsdom
-  import { render, screen, fireEvent } from '@testing-library/react'
-  import { describe, it, expect, vi } from 'vitest'
-
-  vi.mock('../services/localAIService', () => ({ subscribeToModelLoading: vi.fn(() => () => {}) }))
-  vi.mock('../services/exerciseSearchService', () => ({ searchExercises: vi.fn().mockResolvedValue([]) }))
-  vi.mock('../hooks/useDebouncedValue', () => ({ useDebouncedValue: (v: string) => v }))
-
-  import { NLPSearchBar } from '../components/Search/NLPSearchBar'
-
-  describe('NLPSearchBar', () => {
-    it('renders with placeholder', () => {
-      render(<NLPSearchBar onSelect={vi.fn()} placeholder="Search exercises..." />)
-      expect(screen.getByPlaceholderText('Search exercises...')).toBeTruthy()
-    })
-
-    it('updates value on change', () => {
-      render(<NLPSearchBar onSelect={vi.fn()} placeholder="Search" />)
-      const input = screen.getByRole('textbox')
-      fireEvent.change(input, { target: { value: 'bench' } })
-      expect((input as HTMLInputElement).value).toBe('bench')
-    })
-  })
-  ```
-
-- [ ] **Step 3: Implement scaffold `NLPSearchBar.tsx`** (match selected Stitch variant layout)
-
-  Create `src/components/Search/NLPSearchBar.tsx`:
-
-  ```tsx
-  import { useState } from 'react'
-
-  interface NLPSearchBarProps {
-    onSelect: (exerciseId: string) => void
-    placeholder?: string
-  }
-
-  export function NLPSearchBar({ onSelect: _onSelect, placeholder = 'Try: upper chest with shoulder injury…' }: NLPSearchBarProps) {
-    const [query, setQuery] = useState('')
-
-    return (
-      <div className="relative w-full">
-        <input
-          type="text"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder={placeholder}
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50"
-          aria-label={placeholder}
-        />
-      </div>
-    )
-  }
-  ```
-
-- [ ] **Step 4: Run test + commit**
-
-  ```bash
-  npm run test -- NLPSearchBar
-  git add src/components/Search/NLPSearchBar.tsx src/test/NLPSearchBar.test.tsx
-  git commit -m "feat(search): NLPSearchBar scaffold with controlled input"
-  ```
-
-**Acceptance:** Input renders with placeholder; value updates on change; no crash without search service.
-
----
-
-### Phase 3.2: `useDebouncedValue` hook
-
-**Depends on:** Nothing (independent).
-**Files:**
-- Create: `src/hooks/useDebouncedValue.ts`
-- Create: `src/test/useDebouncedValue.test.ts`
-
-- [ ] **Step 1: Write failing test**
-
-  Create `src/test/useDebouncedValue.test.ts`:
-
-  ```ts
-  // @vitest-environment jsdom
-  import { renderHook, act } from '@testing-library/react'
-  import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-  import { useDebouncedValue } from '../hooks/useDebouncedValue'
-
-  describe('useDebouncedValue', () => {
-    beforeEach(() => vi.useFakeTimers())
-    afterEach(() => vi.useRealTimers())
-
-    it('does not update before delay', () => {
-      const { result, rerender } = renderHook(({ val }) => useDebouncedValue(val, 300), { initialProps: { val: 'a' } })
-      rerender({ val: 'bench' })
-      expect(result.current).toBe('a')
-    })
-
-    it('updates after delay', () => {
-      const { result, rerender } = renderHook(({ val }) => useDebouncedValue(val, 300), { initialProps: { val: 'a' } })
-      rerender({ val: 'bench' })
-      act(() => vi.advanceTimersByTime(300))
-      expect(result.current).toBe('bench')
-    })
-
-    it('coalesces rapid changes', () => {
-      const { result, rerender } = renderHook(({ val }) => useDebouncedValue(val, 300), { initialProps: { val: 'a' } })
-      rerender({ val: 'b' })
-      rerender({ val: 'c' })
-      act(() => vi.advanceTimersByTime(300))
-      expect(result.current).toBe('c')
-    })
-  })
-  ```
-
-- [ ] **Step 2: Implement `useDebouncedValue.ts`**
-
-  Create `src/hooks/useDebouncedValue.ts`:
-
-  ```ts
-  import { useEffect, useState } from 'react'
-
-  export function useDebouncedValue<T>(value: T, delay: number): T {
-    const [debounced, setDebounced] = useState(value)
-    useEffect(() => {
-      const id = setTimeout(() => setDebounced(value), delay)
-      return () => clearTimeout(id)
-    }, [value, delay])
-    return debounced
-  }
-  ```
-
-- [ ] **Step 3: Run test + commit**
-
-  ```bash
-  npm run test -- useDebouncedValue
-  git add src/hooks/useDebouncedValue.ts src/test/useDebouncedValue.test.ts
-  git commit -m "feat(search): useDebouncedValue hook (300ms)"
-  ```
-
-**Acceptance:** Value not updated before delay; updated exactly at delay boundary; rapid changes coalesce to final value.
-
----
-
 ### Phase 3.3: `exerciseSearchService.ts` + full `NLPSearchBar` wiring [STITCH UI]
 
-**Depends on:** 3.1, 3.2, 4.8 committed.
+**Depends on:** 3.1 committed ✓ — **UNBLOCKED**
 **Note:** Phase 5.3 (Brain Initializing loading state) is integrated here — no separate task needed.
 **Files:**
 - Create: `src/services/exerciseSearchService.ts`
@@ -746,6 +127,7 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 - Modify: `src/components/Search/NLPSearchBar.tsx`
 
 #### Stitch Selection — Phase 3.3
+
 - [ ] **Step 1: Generate Stitch variants for dropdown**
 
   Call `mcp__stitch__generate_screen_from_text` twice:
@@ -753,10 +135,10 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   - **Prompt A:** "Dark dropdown search results for workout app, slate-900 panel, each row: exercise name left-aligned + percentage badge right (green ≥85%, amber 60-84%, red <60%), smooth hover highlight, max-height 60vh scrollable, rounded-xl shadow"
   - **Prompt B:** "AI cosine-ranked exercise results dropdown, dark navy theme, each item shows exercise name + muscle group tag + match score badge, clean rows with subtle dividers, keyboard-navigable"
 
-  _Selected variant ID:_ **[fill in during execution]**
-  _Reasoning:_ **[fill in during execution]**
+  _Selected variant ID:_ **`3bb444b44d204650a5b792cd0eedb6dd`** ("Search Results Dropdown")
+  _Reasoning:_ Exercise name left + color-coded % badge right matches the spec exactly; avoids dividers which conflict with the design system's No-Line Rule.
 
-- [ ] **Step 2: Write failing service test**
+- [x] **Step 2: Write failing service test**
 
   Create `src/test/exerciseSearchService.test.ts`:
 
@@ -801,6 +183,8 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   ```bash
   npm run test -- exerciseSearchService
   ```
+
+  Expected: FAIL with `Cannot find module '../services/exerciseSearchService'`
 
 - [ ] **Step 4: Implement `exerciseSearchService.ts`**
 
@@ -847,9 +231,11 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   npm run test -- exerciseSearchService
   ```
 
+  Expected: PASS (2 tests)
+
 - [ ] **Step 6: Replace `NLPSearchBar.tsx` with fully wired version** (use layout from selected Stitch variant)
 
-  Replace `src/components/Search/NLPSearchBar.tsx`:
+  Replace entire contents of `src/components/Search/NLPSearchBar.tsx`:
 
   ```tsx
   import { useEffect, useRef, useState } from 'react'
@@ -865,12 +251,12 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   }
 
   export function NLPSearchBar({ onSelect, placeholder = 'Try: upper chest with shoulder injury…' }: NLPSearchBarProps) {
-    const [query, setQuery]             = useState('')
-    const [results, setResults]         = useState<SearchResult[]>([])
-    const [activeIndex, setActiveIndex] = useState(-1)
+    const [query, setQuery]               = useState('')
+    const [results, setResults]           = useState<SearchResult[]>([])
+    const [activeIndex, setActiveIndex]   = useState(-1)
     const [modelLoading, setModelLoading] = useState(false)
-    const activeQuery                   = useRef('')
-    const debouncedQuery                = useDebouncedValue(query, 300)
+    const activeQuery                     = useRef('')
+    const debouncedQuery                  = useDebouncedValue(query, 300)
 
     useEffect(() => subscribeToModelLoading((loading) => setModelLoading(loading)), [])
 
@@ -964,6 +350,7 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 - Modify: `src/components/ExerciseCard.tsx`
 
 #### Stitch Selection — Phase 3.5
+
 - [ ] **Step 1: Generate Stitch variants**
 
   Call `mcp__stitch__generate_screen_from_text` twice:
@@ -971,12 +358,12 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   - **Prompt A:** "Workout exercise card component, dark slate background, exercise name + tier badge + optional green/amber/red percentage match pill in top-right corner, match pill only visible when score provided"
   - **Prompt B:** "Dark fitness app exercise card, compact match score badge (e.g. '95% Match') shown as small colored pill below the exercise name when a score is passed, RPG dark aesthetic"
 
-  _Selected variant ID:_ **[fill in during execution]**
-  _Reasoning:_ **[fill in during execution]**
+  _Selected variant ID:_ **`c3e4182d74564ff2b0b5afcc903af7fe`** ("Exercise Card Showcase")
+  _Reasoning:_ Variant A places the match pill inline with the name/tier badge row, matching the plan spec exactly, and demonstrates all three color states (green/amber/red) plus the hidden-when-absent case without adding data fields that don't exist in the model.
 
-- [ ] **Step 2: Add `matchScore` prop to `ExerciseCard.tsx`**
+- [x] **Step 2: Add `matchScore` prop to `ExerciseCard.tsx`**
 
-  In `src/components/ExerciseCard.tsx`, update the props interface:
+  In `src/components/ExerciseCard.tsx`, update the `ExerciseCardProps` interface (currently at line 22–25) and function signature:
 
   ```tsx
   interface ExerciseCardProps {
@@ -988,7 +375,7 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   export default function ExerciseCard({ exercise, onSelect, matchScore }: ExerciseCardProps) {
   ```
 
-  Inside the name/tier row, after the tier badge span, add:
+  Inside the name/tier row (wherever the tier badge `<span>` is rendered), add immediately after it:
 
   ```tsx
   {matchScore !== undefined && (
@@ -1002,7 +389,7 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   )}
   ```
 
-- [ ] **Step 3: Run full tests + commit**
+- [x] **Step 3: Run full tests + commit**
 
   ```bash
   npm run test
@@ -1010,13 +397,13 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   git commit -m "feat(search): optional matchScore confidence badge on ExerciseCard"
   ```
 
-**Acceptance:** `matchScore` undefined → no badge (no regression to existing callers). `matchScore=0.92` → green "92% Match" pill. `matchScore=0.65` → amber. `matchScore=0.40` → red.
+**Acceptance:** `matchScore` undefined → no badge (no regression to existing callers). `matchScore=0.92` → green "92% Match" pill. `matchScore=0.65` → amber. `matchScore=0.40` → red. **STATUS: DONE**
 
 ---
 
 ### Phase 5.1: Prestige wiring + 2s particle flash [STITCH UI]
 
-**Depends on:** Nothing (independent). Fixes the broken `MasterworkModal` prestige button.
+**Depends on:** Nothing (independent — unblocked now).
 **Files:**
 - Create: `src/components/hero/PrestigeFlash.tsx`
 - Modify: `src/components/hero/MasterworkModal.tsx`
@@ -1024,6 +411,7 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 - Modify: `src/components/hero/HeroOverlay.tsx`
 
 #### Stitch Selection — Phase 5.1
+
 - [ ] **Step 1: Generate Stitch variants**
 
   Call `mcp__stitch__generate_screen_from_text` twice:
@@ -1078,12 +466,14 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 
 - [ ] **Step 3: Wire `forgeMasterwork()` into `MasterworkModal.tsx`**
 
-  Add import to `src/components/hero/MasterworkModal.tsx`:
+  `onPrestige?: () => void` prop already exists at line 6. The current `handlePrestige` (line 18–21) only calls `onPrestige?.()` + `setDismissed(true)` and does NOT call `forgeMasterwork()`. Fix:
+
+  Add import at top of `src/components/hero/MasterworkModal.tsx`:
   ```tsx
   import { forgeMasterwork } from '../../services/heroMathService'
   ```
 
-  Change `handlePrestige` inside `MasterworkModal`:
+  Replace `handlePrestige`:
   ```tsx
   function handlePrestige() {
     void forgeMasterwork()
@@ -1092,9 +482,11 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   }
   ```
 
-- [ ] **Step 4: Add `onAscend` notification prop to `SummitModal.tsx`**
+- [ ] **Step 4: Add `onAscend` prop to `SummitModal.tsx`**
 
-  Update interface and `handleAscend` in `src/components/hero/SummitModal.tsx`:
+  `SummitModal` currently calls `ascend()` in `handleAscend` but has no external callback. Add:
+
+  Update `src/components/hero/SummitModal.tsx` — add props interface before `export function SummitModal`:
 
   ```tsx
   interface SummitModalProps {
@@ -1102,27 +494,30 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   }
 
   export function SummitModal({ onAscend }: SummitModalProps) {
-    // ...
-    function handleAscend() {
-      setDismissed(true)
-      ascend()
-      onAscend?.()
-    }
+  ```
+
+  Update `handleAscend` (currently lines 15–18):
+  ```tsx
+  function handleAscend() {
+    setDismissed(true)
+    ascend()
+    onAscend?.()
+  }
   ```
 
 - [ ] **Step 5: Wire flash + updated modals into `HeroOverlay.tsx`**
 
-  Add import:
+  Add to the import block in `src/components/hero/HeroOverlay.tsx`:
   ```tsx
   import { PrestigeFlash } from './PrestigeFlash'
   ```
 
-  Add state inside `HeroOverlay()`:
+  Add state inside `HeroOverlay()` (after existing state declarations):
   ```tsx
   const [prestigeFlashActive, setPrestigeFlashActive] = useState(false)
   ```
 
-  Update modal renders:
+  Update modal renders at lines 66–67 (currently `<SummitModal />` and `<MasterworkModal />` with no props):
   ```tsx
   <SummitModal onAscend={() => setPrestigeFlashActive(true)} />
   <MasterworkModal onPrestige={() => setPrestigeFlashActive(true)} />
@@ -1143,11 +538,12 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 
 ### Phase 5.2: ObsidianStairs → TheForge 500ms cross-fade [STITCH UI]
 
-**Depends on:** Nothing (independent). Adds TheForge render path to HeroOverlay (currently missing).
+**Depends on:** Nothing (independent — unblocked now).
 **Files:**
 - Modify: `src/components/hero/HeroOverlay.tsx`
 
 #### Stitch Selection — Phase 5.2
+
 - [ ] **Step 1: Generate Stitch variants**
 
   Call `mcp__stitch__generate_screen_from_text` twice:
@@ -1158,14 +554,21 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   _Selected variant ID:_ **[fill in during execution]**
   _Reasoning:_ **[fill in during execution]**
 
-- [ ] **Step 2: Add TheForge + AnimatePresence cross-fade to `HeroOverlay.tsx`**
+- [ ] **Step 2: Add `TheForge` + `motion` imports and AnimatePresence cross-fade to `HeroOverlay.tsx`**
 
-  Add import to `src/components/hero/HeroOverlay.tsx`:
+  Add to the framer-motion import (currently `import { AnimatePresence } from 'framer-motion'`):
+  ```tsx
+  import { AnimatePresence, motion } from 'framer-motion'
+  ```
+
+  Add TheForge import:
   ```tsx
   import { TheForge } from './TheForge'
   ```
 
-  Find the current line rendering ObsidianStairs (conditional on power track) and replace it with:
+  Find line 59: `{track.active === 'power' && <ObsidianStairs progress={track.power} />}`
+
+  Replace it with:
   ```tsx
   <AnimatePresence mode="wait">
     {track.active === 'power' ? (
@@ -1200,13 +603,13 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   git commit -m "feat(hero): 500ms cross-fade between ObsidianStairs and TheForge on track switch"
   ```
 
-**Acceptance:** TheForge renders when `track.active === 'hypertrophy'` (was missing entirely); ObsidianStairs renders when `track.active === 'power'`; switching Primary Goal in settings cross-fades over 500ms; both backgrounds never visible simultaneously.
+**Acceptance:** TheForge renders when `track.active !== 'power'` (was missing entirely); ObsidianStairs renders when `track.active === 'power'`; switching Primary Goal in settings cross-fades over 500ms; both backgrounds never visible simultaneously.
 
 ---
 
 ### Phase 8.1: `HeroErrorBoundary.tsx`
 
-**Depends on:** Nothing (independent, but deploy after hero components are stable).
+**Depends on:** Nothing (independent — unblocked now).
 **Files:**
 - Create: `src/components/UI/HeroErrorBoundary.tsx`
 - Create: `src/test/HeroErrorBoundary.test.tsx`
@@ -1243,7 +646,15 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   })
   ```
 
-- [ ] **Step 2: Implement `HeroErrorBoundary.tsx`**
+- [ ] **Step 2: Run test to verify it fails**
+
+  ```bash
+  npm run test -- HeroErrorBoundary
+  ```
+
+  Expected: FAIL with `Cannot find module '../components/UI/HeroErrorBoundary'`
+
+- [ ] **Step 3: Implement `HeroErrorBoundary.tsx`**
 
   Create `src/components/UI/HeroErrorBoundary.tsx`:
 
@@ -1271,7 +682,7 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   }
   ```
 
-- [ ] **Step 3: Run test + commit**
+- [ ] **Step 4: Run test to verify it passes + commit**
 
   ```bash
   npm run test -- HeroErrorBoundary
@@ -1283,32 +694,62 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 
 ---
 
-### Phase 8.2: Wrap `HeroOverlay` in boundary + RAF try/catch
+### Phase 8.2: Wrap `HeroOverlay` in boundary + RAF try/catch + toast
 
 **Depends on:** 8.1 committed.
+**Note:** No toast system exists in the codebase — zero matches for sonner/useToast. Install `sonner` first.
 **Files:**
+- Modify: `package.json` (via npm install)
+- Modify: `src/main.tsx` (add `<Toaster />`)
 - Modify: `src/App.tsx`
 - Modify: `src/components/hero/TheForge.tsx`
 - Modify: `src/components/hero/CombatCanvas.tsx`
 
-- [ ] **Step 1: Read `src/App.tsx` to confirm `<HeroOverlay />` location**
+- [ ] **Step 1: Install `sonner`**
 
-  Confirm `<HeroOverlay />` is inside `UIModeProvider`. `useUIMode()` must be called inside the provider.
+  ```bash
+  npm install sonner
+  ```
 
-- [ ] **Step 2: Add `HeroOverlayWithBoundary` wrapper to `App.tsx`**
+  Expected output: `added 1 package` (sonner has no peer deps). Confirm: `npm run build` should succeed with no new TS errors.
 
-  Add imports:
+- [ ] **Step 2: Add `<Toaster />` to `src/main.tsx`**
+
+  Read `src/main.tsx`. Add to imports:
   ```tsx
+  import { Toaster } from 'sonner'
+  ```
+
+  Add `<Toaster position="bottom-center" richColors />` inside the `<React.StrictMode>` block alongside the existing root:
+  ```tsx
+  <React.StrictMode>
+    <App />
+    <Toaster position="bottom-center" richColors />
+  </React.StrictMode>
+  ```
+
+- [ ] **Step 3: Read `src/App.tsx` to confirm `<HeroOverlay />` location**
+
+  Confirm `<HeroOverlay />` is inside `UIModeProvider` (so `useUIMode()` can be called inside the provider).
+
+- [ ] **Step 4: Add `HeroOverlayWithBoundary` wrapper to `App.tsx`**
+
+  Add imports to `src/App.tsx`:
+  ```tsx
+  import { toast } from 'sonner'
   import { HeroErrorBoundary } from './components/UI/HeroErrorBoundary'
   import { useUIMode } from './context/UIModeContext'
   ```
 
-  Add before the default export:
+  Add before the default export (not as a named export):
   ```tsx
   function HeroOverlayWithBoundary() {
     const { setUIMode } = useUIMode()
     return (
-      <HeroErrorBoundary onFallback={() => setUIMode('focus')}>
+      <HeroErrorBoundary onFallback={() => {
+        setUIMode('focus')
+        toast.error('Hero overlay crashed — switched to Focus Mode', { duration: 4000 })
+      }}>
         <HeroOverlay />
       </HeroErrorBoundary>
     )
@@ -1317,9 +758,9 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 
   Replace `<HeroOverlay />` with `<HeroOverlayWithBoundary />`.
 
-- [ ] **Step 3: Add RAF try/catch in `TheForge.tsx`**
+- [ ] **Step 5: Add RAF try/catch in `TheForge.tsx`**
 
-  Read `src/components/hero/TheForge.tsx`. Find the `tick()` function inside the animation useEffect. Wrap the draw body:
+  Read `src/components/hero/TheForge.tsx`. Find the `tick()` function inside the animation useEffect. Wrap the draw body so RAF errors propagate to the error boundary:
 
   ```ts
   function tick() {
@@ -1333,9 +774,9 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   }
   ```
 
-- [ ] **Step 4: Add RAF try/catch in `CombatCanvas.tsx`**
+- [ ] **Step 6: Add RAF try/catch in `CombatCanvas.tsx`**
 
-  Apply the same pattern to the `step()` function in `CombatCanvas.tsx`:
+  Read `src/components/hero/CombatCanvas.tsx`. Find the `step()` function. Apply the same pattern:
 
   ```ts
   function step(ts: number) {
@@ -1361,15 +802,15 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   }
   ```
 
-- [ ] **Step 5: Run full tests + commit**
+- [ ] **Step 7: Run full tests + commit**
 
   ```bash
   npm run test
-  git add src/App.tsx src/components/hero/TheForge.tsx src/components/hero/CombatCanvas.tsx
-  git commit -m "feat(ui): wrap HeroOverlay in HeroErrorBoundary, add RAF error rethrow for canvas fallback"
+  git add src/main.tsx src/App.tsx src/components/hero/TheForge.tsx src/components/hero/CombatCanvas.tsx
+  git commit -m "feat(ui): wrap HeroOverlay in HeroErrorBoundary with sonner toast, add RAF error rethrow for canvas fallback"
   ```
 
-**Acceptance:** Forced throw in RAF → overlay collapses → `uiMode` snaps to `'focus'`; Blueprint/Logger remain interactive; `'professional'` mode never used.
+**Acceptance:** Forced throw in RAF → overlay collapses → `uiMode` snaps to `'focus'` → sonner toast "Hero overlay crashed — switched to Focus Mode" appears at bottom-center; Blueprint/Logger remain interactive; `'professional'` mode never used.
 
 ---
 
@@ -1377,41 +818,42 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 
 **Depends on:** 5.1 committed (prestige wiring live).
 **Files:**
-- Read: `src/components/SessionBlueprint.tsx`
-- Possibly modify: `src/components/SessionBlueprint.tsx`
+- Read: `src/pages/HomePage.tsx` (or wherever PrestigeBadge is rendered)
+- Possibly modify: same file
 
-- [ ] **Step 1: Confirm wiring in `SessionBlueprint.tsx`**
+- [ ] **Step 1: Confirm wiring**
 
   ```bash
-  grep -n "PrestigeBadge\|completedAscensions" src/components/SessionBlueprint.tsx
+  grep -n "PrestigeBadge\|completedAscensions" src/components/SessionBlueprint.tsx src/pages/HomePage.tsx 2>/dev/null
   ```
 
-  Expected: `PrestigeBadge` rendered with `completedAscensions` prop from `HomePage`. If missing, proceed to Step 2.
+  Expected: `PrestigeBadge` rendered with `completedAscensions` from a `useLiveQuery` hook. If present — no code change needed, jump to Step 4.
 
-- [ ] **Step 2: If `PrestigeBadge` is missing from `SessionBlueprint.tsx`**
+- [ ] **Step 2: If `PrestigeBadge` is missing or lacks live data, add it**
 
-  Add to imports:
+  Add to imports in the relevant file:
   ```tsx
-  import { PrestigeBadge } from './PrestigeBadge'
+  import { PrestigeBadge } from '../components/PrestigeBadge'
   ```
 
-  Add to props interface:
+  Ensure `completedAscensions` comes from `useLiveQuery`:
   ```tsx
-  completedAscensions?: number
+  const settings = useLiveQuery(() => db.settings.get(APP_SETTINGS_ID))
+  const completedAscensions = settings?.completedAscensions ?? 0
   ```
 
-  Add in header JSX (next to user name or session label):
+  Add in header JSX:
   ```tsx
-  <PrestigeBadge ascensions={completedAscensions ?? 0} />
+  <PrestigeBadge ascensions={completedAscensions} />
   ```
 
-- [ ] **Step 3: Confirm reactivity (no code needed if already using `useLiveQuery`)**
+- [ ] **Step 3: Confirm reactivity**
 
-  `onboardingRecord` in `HomePage.tsx` comes from `useLiveQuery`. When `ascend()` or `forgeMasterwork()` calls `db.settings.update(APP_SETTINGS_ID, { completedAscensions: n+1 })`, Dexie fires a reactive update. `useLiveQuery` re-runs, `onboardingRecord.completedAscensions` increments, and `SessionBlueprint` re-renders with the new badge. No page refresh needed.
+  `useLiveQuery` re-runs whenever `db.settings.update(APP_SETTINGS_ID, { completedAscensions: n+1 })` fires (called by `ascend()` and `forgeMasterwork()`). No additional code needed if already wired.
 
 - [ ] **Step 4: Write or update `PrestigeBadge` test**
 
-  Add to `src/test/PrestigeBadge.test.tsx` (create if missing):
+  Create/update `src/test/PrestigeBadge.test.tsx`:
 
   ```tsx
   // @vitest-environment jsdom
@@ -1437,12 +879,12 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
   })
   ```
 
-- [ ] **Step 5: Run tests + commit if changes made**
+- [ ] **Step 5: Run tests + commit if any files changed**
 
   ```bash
   npm run test -- PrestigeBadge
-  # If SessionBlueprint was modified:
-  git add src/components/SessionBlueprint.tsx src/test/PrestigeBadge.test.tsx
+  # Only commit if Step 2 made changes:
+  git add src/pages/HomePage.tsx src/test/PrestigeBadge.test.tsx
   git commit -m "feat(hero): verify + wire completedAscensions Roman numeral badge via useLiveQuery"
   ```
 
@@ -1458,8 +900,8 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 - [ ] Embeddings seed in batches of 5; console shows "Processed batch X of 60".
 - [ ] Clicking "Forge Masterwork" calls `forgeMasterwork()` (was previously broken).
 - [ ] 2s golden radial flash covers full screen on both prestige paths.
-- [ ] TheForge renders when `track.active === 'hypertrophy'` (was previously missing).
-- [ ] Hero overlay survives forced canvas error → snaps to `uiMode = 'focus'`.
+- [ ] TheForge renders when `track.active !== 'power'` (was previously missing entirely).
+- [ ] Hero overlay survives forced canvas error → snaps to `uiMode = 'focus'` + sonner toast.
 - [ ] `completedAscensions` badge updates without page refresh via `useLiveQuery`.
 - [ ] No `Co-authored-by: Claude` trailer in any commit.
 - [ ] Zero inline comments added to any file.
@@ -1470,17 +912,18 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 
 | Risk | Mitigation |
 |---|---|
-| `UIMode` has no `'professional'` | Use `setUIMode('focus')` in Phase 8.2 |
-| `MasterworkModal.onPrestige` was never called | Phase 5.1 adds `forgeMasterwork()` import directly into modal |
-| TheForge not rendered in HeroOverlay | Phase 5.2 adds it; `TheForge.tsx` file confirmed to exist |
-| `exercises.json` wrapped format breaks Phase 4.7 | Phase 4.7 overwrites it entirely with plain array via `mergeExercises.ts` |
-| `@xenova/transformers` progress_callback API may vary | Wrap in try/catch in worker; if it throws, worker sends no progress (graceful) |
+| No toast system in codebase | Phase 8.2 Step 1 installs `sonner` before touching App.tsx |
+| `UIMode` has no `'professional'` | Use `setUIMode('focus')` — confirmed `'focus' \| 'hero'` |
+| `MasterworkModal.handlePrestige` never called `forgeMasterwork()` | Phase 5.1 Step 3 adds the import + call — confirmed missing |
+| `TheForge` not imported in `HeroOverlay` | Phase 5.2 Step 2 adds import — confirmed missing from imports |
+| `motion` not imported in `HeroOverlay` | Phase 5.2 Step 2 adds `motion` to framer-motion import — currently only `AnimatePresence` |
+| `SummitModal`/`MasterworkModal` rendered with no props | Phase 5.1 Step 5 adds `onAscend` and `onPrestige` — confirmed zero props at lines 66–67 |
+| `@xenova/transformers` progress_callback API may vary | Worker sends no progress if it throws — graceful degradation |
 | RAF errors don't reach React error boundary natively | `try/catch` + rethrow pattern in Phase 8.2 resolves this |
-| `mergeExercises` test needs raw files on disk | Run test only after Phases 4.1–4.5 are done |
-| Both prestige modals at 1.0 simultaneously | Each is independently dismissed; flash fires for whichever button is pressed first |
+| Both prestige modals active simultaneously | Each is independently dismissed; flash fires for whichever button is pressed first |
 | `ExerciseCard` used in `ActiveLogger` without `matchScore` | `matchScore` is optional — no prop → no badge rendered (no regression) |
 | Stitch MCP unavailable | Stop and fix connectivity; never skip Stitch for [STITCH UI] tasks |
-| Phase 5.3 (Brain Initializing) appears separately in TODO | Confirmed integrated into Phase 3.3; checking off Phase 3.3 closes Phase 5.3 |
+| Phase 5.3 (Brain Initializing) appears separately in TODO | Integrated into Phase 3.3; closing 3.3 closes 5.3 |
 
 ---
 
@@ -1488,21 +931,15 @@ Needed so `NLPSearchBar` can show "Brain Initializing…" while the 22MB model d
 
 | Step | Task | State |
 |---|---|---|
-| 1–11 | P0 → Phase 6.4 combat | ~~DONE~~ |
-| 12–16 | 4.1–4.5 — 5 raw JSON files (parallel) | ~~DONE~~ |
-| 17 | 4.6 — mergeExercises utility | ~~DONE~~ |
-| **18** | **4.7 — execute merge + delete raw** | **← NEXT** |
-| 19 | 4.8 — chunked seedEmbeddings | seedEmbeddings.ts confirmed sequential; needs full replace |
-| 20 | 1.0 — embeddingWorker progress callback | embeddingWorker.ts confirmed bare pipeline; needs full replace |
-| 21 | 5.1 — Prestige wiring + PrestigeFlash [STITCH UI] | HeroOverlay passes NO onPrestige/onAscend to either modal; Phase 5.1 adds both |
-| 22 | 5.2 — ObsidianStairs→TheForge cross-fade [STITCH UI] | HeroOverlay has no else branch for hypertrophy; Phase 5.2 adds it |
-| 23 | 3.1 — NLPSearchBar scaffold [STITCH UI] |  |
-| 24 | 3.2 — useDebouncedValue |  |
-| 25 | 3.3 — exerciseSearchService + full NLPSearchBar [STITCH UI] (closes Phase 5.3) |  |
-| 26 | 3.5 — ExerciseCard confidence badge [STITCH UI] |  |
-| 27 | 8.1 — HeroErrorBoundary |  |
-| 28 | 8.2 — Wrap overlay + RAF safety |  |
-| 29 | 7.1 — Verify completedAscensions badge |  |
+| 1–21 | All combat, data prep, merge, seed, embeddingWorker, useDebouncedValue | ~~DONE~~ |
+| 22 | 3.1 — NLPSearchBar scaffold | ~~DONE~~ `c19352a` |
+| 23 | 3.3 — exerciseSearchService + full NLPSearchBar [STITCH UI] | ~~DONE~~ `174f504` |
+| 24 | 3.5 — ExerciseCard confidence badge [STITCH UI] | ~~DONE~~ (this session) |
+| **24‖** | **5.1 — Prestige wiring + PrestigeFlash [STITCH UI]** | **← NEXT (parallel, unblocked)** |
+| **24‖** | **5.2 — ObsidianStairs→TheForge cross-fade [STITCH UI]** | **← NEXT (parallel, unblocked)** |
+| **24‖** | **8.1 — HeroErrorBoundary** | **← NEXT (parallel, unblocked)** |
+| 25 | 8.2 — Wrap overlay + RAF safety + toast (needs 8.1) | — |
+| 26 | 7.1 — Verify completedAscensions badge (needs 5.1) | — |
 
 Check the corresponding `TODO.md` checkbox in the same commit as each implementation.
 
@@ -1510,6 +947,17 @@ Check the corresponding `TODO.md` checkbox in the same commit as each implementa
 
 ## 6. Exact next task
 
-> **NEXT: Phase 4.7 — Execute merge script, verify 300-entry plain array, delete `src/data/raw/`, run tests, commit.**
-> `mergeExercises.ts` is now committed. Run `npx tsx src/utils/mergeExercises.ts`, verify `exercises.json` is a plain 300-entry array, delete raw dir, run full tests.
-> Depends on: 4.6 committed (✓).
+> **STATUS:** 3.3 (`174f504`) committed — Phase 5.3 closed with it. **Four tasks are now unblocked and fully independent — run in parallel:**
+>
+> **3.5 [STITCH UI]** — Generate 2 Stitch variants for the ExerciseCard confidence badge. Pick one. Add optional `matchScore?: number` prop to `ExerciseCardProps` in `src/components/ExerciseCard.tsx`. Render green/amber/red pill after the tier badge when `matchScore !== undefined`. Run tests. Commit `feat(search): optional matchScore confidence badge on ExerciseCard`. **Check the Phase 1 TODO checkbox in the same commit.**
+>
+> **5.1 [STITCH UI]** — Generate 2 Stitch variants for PrestigeFlash. Pick one. Create `src/components/hero/PrestigeFlash.tsx`. Add `forgeMasterwork()` import+call to `MasterworkModal.handlePrestige` (currently missing). Add `onAscend` prop to `SummitModal` (currently no props). Wire both modals + flash in `HeroOverlay`. Commit `feat(hero): wire forgeMasterwork to MasterworkModal + 2s PrestigeFlash on ascend/forge`. **Check the Phase 5 TODO checkbox.**
+>
+> **5.2 [STITCH UI]** — Generate 2 Stitch variants for cross-fade. Pick one. Add `TheForge` + `motion` imports to `HeroOverlay` (both currently missing). Replace line 59 single-branch with `AnimatePresence mode="wait"` wrapping both `ObsidianStairs` and `TheForge` (500ms opacity). Commit `feat(hero): 500ms cross-fade between ObsidianStairs and TheForge on track switch`. **Check the Phase 5 TODO checkbox.**
+>
+> **8.1** — Create `src/components/UI/HeroErrorBoundary.tsx` + `src/test/HeroErrorBoundary.test.tsx`. Class component catches, renders null, calls `onFallback`. TDD: write test first, verify fail, implement, verify pass. Commit `feat(ui): HeroErrorBoundary class component calls onFallback on canvas crash`. **Check Phase 4 first TODO checkbox.**
+>
+> **After all four committed:**
+> - Run **8.2** (install `sonner` → add `<Toaster />` to `main.tsx` → wrap `HeroOverlay` in `App.tsx` → RAF try/catch in `TheForge` + `CombatCanvas`). **Check Phase 4 second TODO checkbox.**
+> - Run **7.1** (verify `completedAscensions` in `SessionBlueprint.tsx` line 758 uses `useLiveQuery`; add if missing). **Check Phase 5 last TODO checkbox.**
+> - Mark the Brain Initializing TODO checkbox (Phase 5 item 3) as done — it shipped in `174f504`.

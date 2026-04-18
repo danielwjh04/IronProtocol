@@ -22,6 +22,7 @@ export interface ExerciseData {
 interface ExerciseCardProps {
   exercise: ExerciseData
   onSelect: (exercise: ExerciseData) => void
+  matchScore?: number
 }
 
 function tierBadgeClasses(tier: ExerciseData['tier']): string {
@@ -35,7 +36,7 @@ function tierBadgeClasses(tier: ExerciseData['tier']): string {
   }
 }
 
-export default function ExerciseCard({ exercise, onSelect }: ExerciseCardProps) {
+export default function ExerciseCard({ exercise, onSelect, matchScore }: ExerciseCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const hasHistory = exercise.loggedSets.length > 0
 
@@ -69,6 +70,15 @@ export default function ExerciseCard({ exercise, onSelect }: ExerciseCardProps) 
             >
               {exercise.tier}
             </span>
+            {matchScore !== undefined && (
+              <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                matchScore >= 0.85 ? 'bg-emerald-500/15 text-emerald-400' :
+                matchScore >= 0.60 ? 'bg-amber-500/15 text-amber-400' :
+                                     'bg-rose-500/15 text-rose-400'
+              }`}>
+                {Math.round(matchScore * 100)}% Match
+              </span>
+            )}
           </div>
           <p className="mt-1 text-sm font-medium text-zinc-400">
             {exercise.goalText}
