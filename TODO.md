@@ -28,7 +28,7 @@
 - [x] Refactor the `HeavyBash` trigger so the `useSensoryFeedback` crunch sound and haptics occur at the *exact* frame the "Strike" connects on the canvas.
 
 ## Phase 4: Safety & Fault Tolerance (Incomplete)
-- [ ] Create `src/components/UI/HeroErrorBoundary.tsx` and wrap the entire Hero Overlay (Stairs/Forge) in it.
+- [x] Create `src/components/UI/HeroErrorBoundary.tsx` and wrap the entire Hero Overlay (Stairs/Forge) in it.
 - [ ] Implement a Graceful Fallback: If the Canvas fails to initialize or the WebGL context is lost, catch the error and auto-toggle the app back to "Professional Focus Mode" with a subtle toast notification.
 
 ## Phase 5: Redo & Refinement (The "New" Tasks)
