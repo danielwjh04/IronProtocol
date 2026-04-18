@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useHeroProgress } from '../../hooks/useHeroProgress'
+import { forgeMasterwork } from '../../services/heroMathService'
 
 interface MasterworkModalProps {
   onPrestige?: () => void
@@ -16,6 +17,7 @@ export function MasterworkModal({ onPrestige }: MasterworkModalProps) {
   const visible = progress >= 1.0 && !dismissed
 
   function handlePrestige() {
+    void forgeMasterwork()
     onPrestige?.()
     setDismissed(true)
   }

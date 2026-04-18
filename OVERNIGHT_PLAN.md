@@ -8,11 +8,11 @@
 
 **Tech Stack:** React 18, Framer Motion, Dexie v15, Vitest, TypeScript strict, sonner (to install). Named imports only. Spring physics for UI. No wildcards. No inline comments.
 
-**Generated:** 2026-04-18 (replan pass #22 — file-verified from disk)
+**Generated:** 2026-04-18 (replan pass #23 — file-verified from disk)
 
 ---
 
-## 0. Live-state snapshot (pass #22, 2026-04-18 — file-verified)
+## 0. Live-state snapshot (pass #23, 2026-04-18 — disk-verified)
 
 | Item | State | Commit |
 |---|---|---|
@@ -36,33 +36,35 @@
 | NLPSearchBar scaffold | **DONE** | `c19352a` |
 | exerciseSearchService + full NLPSearchBar (incl. Brain Initializing) | **DONE** | `174f504` |
 | ExerciseCard confidence badge | **DONE** | `0192b6c` |
-| **Phase 5.1 — Prestige wiring + PrestigeFlash** | **MISSING** | — |
+| **Phase 8.1 — HeroErrorBoundary class component** | **DONE** | `ad8a9c3` |
+| **Phase 5.1 — Prestige wiring + PrestigeFlash** | **DONE** | TBD |
 | **Phase 5.2 — ObsidianStairs→TheForge cross-fade** | **MISSING** | — |
-| **Phase 8.1 — HeroErrorBoundary** | **DONE** | `(next commit)` |
 | **Phase 8.2 — Wrap overlay + RAF safety + toast** | **MISSING** | — |
 | **Phase 7.1 — Verify completedAscensions badge** | **MISSING** | — |
 
-### Critical verified facts (pass #22 — file-verified from disk, 2026-04-18)
+### Critical verified facts (pass #23 — disk-verified, 2026-04-18)
 
 | Assumption | Reality |
 |---|---|
 | `HeroOverlay.tsx` imports `motion` from framer-motion | **No** — only `AnimatePresence`; Phase 5.2 adds `motion` |
 | `HeroOverlay.tsx` imports `TheForge` | **No** — Phase 5.2 adds the import |
-| `HeroOverlay.tsx` line 59 has ObsidianStairs single-branch | **Yes** — `{track.active === 'power' && <ObsidianStairs progress={track.power} />}` — no else; Phase 5.2 replaces it |
-| `HeroOverlay.tsx` lines 66-67 render modals with props | **No** — `<SummitModal />` and `<MasterworkModal />` with zero props; Phase 5.1 wires them |
+| `HeroOverlay.tsx` line ~59 has single-branch ObsidianStairs | **Yes** — `{track.active === 'power' && <ObsidianStairs progress={track.power} />}` — Phase 5.2 replaces it |
+| `HeroOverlay.tsx` lines 66-67 render modals with zero props | **Yes** — `<SummitModal />` and `<MasterworkModal />` with zero props; Phase 5.1 wires them |
 | `HeroOverlay.tsx` has `prestigeFlashActive` state | **No** — Phase 5.1 adds it |
 | `HeroOverlay.tsx` imports `PrestigeFlash` | **No** — Phase 5.1 adds it |
 | `MasterworkModal.tsx` has `onPrestige?: () => void` prop | **Yes** — prop exists; `handlePrestige` calls `onPrestige?.()` + `setDismissed(true)` |
 | `MasterworkModal.tsx` calls `forgeMasterwork()` | **No** — `forgeMasterwork` is NOT imported; Phase 5.1 adds import + call |
 | `SummitModal.tsx` accepts `onAscend` prop | **No** — zero props; `handleAscend` calls `ascend()` internally only; Phase 5.1 adds `onAscend` |
-| `App.tsx` has `HeroOverlay` inside `<UIModeProvider>` | **Yes** — line 79 wraps; `useUIMode()` callable inside the wrapper; Phase 8.2 wraps `HeroOverlay` in boundary inside provider |
-| `App.tsx` imports sonner | **No** — zero toast imports; Phase 8.2 installs + adds `<Toaster />` |
-| `src/components/UI/` directory exists | **No** — Phase 8.1 creates it |
+| `HeroErrorBoundary.tsx` exists in `src/components/UI/` | **Yes** — DONE (commit `ad8a9c3`): class component, `onFallback` called in `componentDidCatch`, renders null when caught |
+| `App.tsx` has `HeroOverlay` at line 97 inside `<UIModeProvider>` | **Yes** — line 97 renders `<HeroOverlay />`; `useUIMode()` callable inside provider |
+| `App.tsx` imports HeroErrorBoundary or sonner | **No** — Phase 8.2 adds both |
+| `sonner` in package.json | **No** — Phase 8.2 Step 1 installs it |
 | `PrestigeFlash.tsx` exists | **No** — Phase 5.1 creates it |
 | `UIMode` is `'focus' \| 'hero'` | **Confirmed** — use `setUIMode('focus')` not `'professional'` |
 | `forgeMasterwork` and `ascend` exported from `heroMathService` | **Confirmed** |
-| `AnimatePresence` already imported in `HeroOverlay` | **Confirmed** — line 2 |
-| `PrestigeBadge` rendered in `SessionBlueprint.tsx` line 758 with `completedAscensions` | **Confirmed** — Phase 7.1 verifies `useLiveQuery` reactivity |
+| `AnimatePresence` already imported in `HeroOverlay` | **Confirmed** |
+| `PrestigeBadge.test.tsx` exists at `src/test/PrestigeBadge.test.tsx` | **Yes** — file exists with tests for 0, 1, and 4 ascensions |
+| `completedAscensions` flows from `useLiveQuery` in `HomePage.tsx` → prop to `SessionBlueprint` → prop to `PrestigeBadge` at line 758 | **Confirmed** — `HomePage.tsx` calls `useLiveQuery` at lines 224/229/246 and passes `completedAscensions` as prop at line 603 |
 
 ---
 
@@ -87,34 +89,31 @@ For every task marked **[STITCH UI]**:
 
 ```
 5.1 (unblocked — independent)
-5.2 (unblocked — independent)
-8.1 (unblocked — independent)
+8.2 (unblocked — 8.1 is DONE)
 
-5.1 → 7.1
-8.1 → 8.2
+5.1 → 5.2  (both touch HeroOverlay.tsx; commit 5.1 before starting 5.2)
+5.1 → 7.1  (prestige wiring must be live before verifying badge reactivity)
 ```
 
-**Parallelisable now:** 5.1, 5.2, 8.1 are all unblocked.
-**Critical path:** 8.1 → 8.2 (sonner install must precede wrap)
+**Parallelisable now:** 5.1 and 8.2 are both unblocked — run in parallel.
+**Sequential after:** 5.2 and 7.1 both wait for 5.1 commit.
 
 ---
 
 ## 2. File structure
 
-| File | Action | Responsible phase |
+| File | Action | Phase |
 |---|---|---|
 | `src/components/hero/PrestigeFlash.tsx` | **Create** | 5.1 |
-| `src/components/hero/MasterworkModal.tsx` | **Modify** — add `forgeMasterwork()` call | 5.1 |
+| `src/components/hero/MasterworkModal.tsx` | **Modify** — add `forgeMasterwork()` import + call | 5.1 |
 | `src/components/hero/SummitModal.tsx` | **Modify** — add `onAscend` prop | 5.1 |
-| `src/components/hero/HeroOverlay.tsx` | **Modify** — wire flash + cross-fade (phases 5.1 and 5.2 each touch it; do 5.1 first, commit, then 5.2) | 5.1, 5.2 |
-| `src/components/UI/HeroErrorBoundary.tsx` | **Create** | 8.1 |
-| `src/test/HeroErrorBoundary.test.tsx` | **Create** | 8.1 |
+| `src/components/hero/HeroOverlay.tsx` | **Modify** — wire flash (5.1), then cross-fade (5.2); commit between | 5.1, 5.2 |
 | `src/main.tsx` | **Modify** — add `<Toaster />` | 8.2 |
-| `src/App.tsx` | **Modify** — wrap `HeroOverlay` in boundary | 8.2 |
+| `src/App.tsx` | **Modify** — wrap `HeroOverlay` in `HeroOverlayWithBoundary` | 8.2 |
 | `src/components/hero/TheForge.tsx` | **Modify** — RAF try/catch | 8.2 |
 | `src/components/hero/CombatCanvas.tsx` | **Modify** — RAF try/catch | 8.2 |
-| `src/test/PrestigeBadge.test.tsx` | **Create/update** | 7.1 |
-| `src/pages/HomePage.tsx` | **Possibly modify** — wire `useLiveQuery` if missing | 7.1 |
+| `src/pages/HomePage.tsx` | **Possibly modify** — ensure `completedAscensions` sourced from `useLiveQuery` | 7.1 |
+| `src/test/PrestigeBadge.test.tsx` | **Already exists** — run; update if coverage is insufficient | 7.1 |
 
 ---
 
@@ -124,7 +123,9 @@ For every task marked **[STITCH UI]**:
 
 ### Phase 5.1: Prestige wiring + 2s particle flash [STITCH UI]
 
-**Depends on:** Nothing — unblocked.
+**Depends on:** Nothing — unblocked. **Run in parallel with 8.2.**
+
+**TODO.md item:** Phase 5, item 1 — "Redo the connection between `MasterworkModal` and `SummitModal` to the `heroMathService.prestige()` call. Ensure the 'Prestige' effect triggers a 2-second full-screen particle 'Flash' to celebrate the reset."
 
 **Files:**
 - Create: `src/components/hero/PrestigeFlash.tsx`
@@ -141,10 +142,10 @@ For every task marked **[STITCH UI]**:
   - **Prompt A:** "Full-screen prestige celebration flash overlay, 2-second animation, radial golden burst from center, dark RPG game feel, white-to-gold gradient dissolving outward, particles optional, pointer-events none"
   - **Prompt B:** "Full-screen ascension flash effect, 2 seconds, radial white core expanding to amber-orange ring then fading to black, RPG game aesthetic, fixed overlay on top of all content"
 
-  _Selected variant ID:_ **[fill in during execution]**
-  _Reasoning:_ **[fill in during execution]**
+  _Selected variant ID:_ **1a7ae2d04b664202bcaa12a1d9e9d065** (Prompt A — "Prestige Celebration Overlay")
+  _Reasoning:_ Variant A is a pure pointer-events-none radial flash without RPG text overlays; better for a 2s auto-dismiss non-blocking flash. Variant B added "ASCENDED" typography that would feel intrusive.
 
-- [ ] **Step 2: Implement `PrestigeFlash.tsx`** (match selected variant's colors/timing)
+- [x] **Step 2: Implement `PrestigeFlash.tsx`** (match selected variant's colors/timing)
 
   Create `src/components/hero/PrestigeFlash.tsx`:
 
@@ -186,16 +187,16 @@ For every task marked **[STITCH UI]**:
   }
   ```
 
-- [ ] **Step 3: Wire `forgeMasterwork()` into `MasterworkModal.tsx`**
+- [x] **Step 3: Wire `forgeMasterwork()` into `MasterworkModal.tsx`**
 
-  `forgeMasterwork` is NOT currently imported. `handlePrestige` only calls `onPrestige?.()` + `setDismissed(true)`.
+  Read `src/components/hero/MasterworkModal.tsx` first.
 
-  Add to imports at top of `src/components/hero/MasterworkModal.tsx`:
+  Add to the import block at the top:
   ```tsx
   import { forgeMasterwork } from '../../services/heroMathService'
   ```
 
-  Replace `handlePrestige` function:
+  Replace `handlePrestige` (currently calls `onPrestige?.()` + `setDismissed(true)` only):
   ```tsx
   function handlePrestige() {
     void forgeMasterwork()
@@ -204,15 +205,19 @@ For every task marked **[STITCH UI]**:
   }
   ```
 
-- [ ] **Step 4: Add `onAscend` prop to `SummitModal.tsx`**
+- [x] **Step 4: Add `onAscend` prop to `SummitModal.tsx`**
 
-  `SummitModal` currently has zero props. Add before `export function SummitModal`:
+  Read `src/components/hero/SummitModal.tsx` first.
 
+  Add before `export function SummitModal`:
   ```tsx
   interface SummitModalProps {
     onAscend?: () => void
   }
+  ```
 
+  Change the function signature from `export function SummitModal()` to:
+  ```tsx
   export function SummitModal({ onAscend }: SummitModalProps) {
   ```
 
@@ -225,15 +230,11 @@ For every task marked **[STITCH UI]**:
   }
   ```
 
-- [ ] **Step 5: Wire flash + updated modals into `HeroOverlay.tsx`**
+- [x] **Step 5: Wire flash + updated modals into `HeroOverlay.tsx`**
 
-  Add to the framer-motion import line (currently `import { AnimatePresence } from 'framer-motion'`):
-  ```tsx
-  import { AnimatePresence } from 'framer-motion'
-  ```
-  *(no change needed — `PrestigeFlash` handles its own `motion` import)*
+  Read `src/components/hero/HeroOverlay.tsx` first.
 
-  Add import below other hero imports:
+  Add import below the other hero component imports:
   ```tsx
   import { PrestigeFlash } from './PrestigeFlash'
   ```
@@ -243,14 +244,19 @@ For every task marked **[STITCH UI]**:
   const [prestigeFlashActive, setPrestigeFlashActive] = useState(false)
   ```
 
-  Replace lines 66-67 (currently `<SummitModal />` and `<MasterworkModal />` with zero props):
+  Ensure `useState` is in the React import (it should already be). If `useState` is not currently imported, add it:
+  ```tsx
+  import { useState } from 'react'
+  ```
+
+  Replace lines rendering `<SummitModal />` and `<MasterworkModal />` with zero props:
   ```tsx
   <SummitModal onAscend={() => setPrestigeFlashActive(true)} />
   <MasterworkModal onPrestige={() => setPrestigeFlashActive(true)} />
   <PrestigeFlash active={prestigeFlashActive} onDone={() => setPrestigeFlashActive(false)} />
   ```
 
-- [ ] **Step 6: Run full tests + commit**
+- [x] **Step 6: Run full tests + commit**
 
   ```bash
   npm run test
@@ -258,13 +264,15 @@ For every task marked **[STITCH UI]**:
   git commit -m "feat(hero): wire forgeMasterwork to MasterworkModal + 2s PrestigeFlash on ascend/forge"
   ```
 
-**Acceptance:** Clicking "Forge Masterwork" now calls `forgeMasterwork()` (was broken); clicking ascend in `SummitModal` now fires `onAscend`; 2s radial golden flash covers full screen on both paths; flash auto-dismisses after 2s; `PrestigeFlash` uses `pointer-events: none`; `'professional'` mode never referenced.
+**Acceptance:** Clicking "Forge Masterwork" now calls `forgeMasterwork()` (was broken — no import); clicking ascend in `SummitModal` fires `onAscend`; 2s radial golden flash covers full screen on both paths; flash auto-dismisses after 2s; `PrestigeFlash` uses `pointer-events: none`; `'professional'` mode never referenced.
 
 ---
 
 ### Phase 5.2: ObsidianStairs → TheForge 500ms cross-fade [STITCH UI]
 
-**Depends on:** Nothing — unblocked. **Execute after 5.1 commit** (both touch `HeroOverlay.tsx`).
+**Depends on:** 5.1 committed. **Both touch `HeroOverlay.tsx` — never start before 5.1 commits.**
+
+**TODO.md item:** Phase 5, item 2 — "Ensure the transition between the 'Obsidian Stairs' and 'The Forge' is smooth. Add a 500ms CSS cross-fade when the user switches their Primary Goal in settings."
 
 **Files:**
 - Modify: `src/components/hero/HeroOverlay.tsx`
@@ -283,7 +291,9 @@ For every task marked **[STITCH UI]**:
 
 - [ ] **Step 2: Add `motion` + `TheForge` imports and AnimatePresence cross-fade to `HeroOverlay.tsx`**
 
-  Update the framer-motion import (add `motion`):
+  Read `src/components/hero/HeroOverlay.tsx` first (it now includes the 5.1 changes).
+
+  Update the framer-motion import to add `motion` (currently only `AnimatePresence`):
   ```tsx
   import { AnimatePresence, motion } from 'framer-motion'
   ```
@@ -293,7 +303,7 @@ For every task marked **[STITCH UI]**:
   import { TheForge } from './TheForge'
   ```
 
-  Find line 59: `{track.active === 'power' && <ObsidianStairs progress={track.power} />}`
+  Find the line: `{track.active === 'power' && <ObsidianStairs progress={track.power} />}`
 
   Replace it with:
   ```tsx
@@ -330,101 +340,15 @@ For every task marked **[STITCH UI]**:
   git commit -m "feat(hero): 500ms cross-fade between ObsidianStairs and TheForge on track switch"
   ```
 
-**Acceptance:** `TheForge` renders when `track.active !== 'power'` (was missing entirely); `ObsidianStairs` renders when `track.active === 'power'`; switching Primary Goal cross-fades over 500ms; both backgrounds never visible simultaneously.
-
----
-
-### Phase 8.1: `HeroErrorBoundary.tsx`
-
-**Depends on:** Nothing — unblocked (can run in parallel with 5.1 and 5.2).
-
-**Files:**
-- Create: `src/components/UI/HeroErrorBoundary.tsx`
-- Create: `src/test/HeroErrorBoundary.test.tsx`
-
-- [ ] **Step 1: Write failing test**
-
-  Create `src/test/HeroErrorBoundary.test.tsx`:
-
-  ```tsx
-  // @vitest-environment jsdom
-  import React from 'react'
-  import { render, screen } from '@testing-library/react'
-  import { describe, it, expect, vi } from 'vitest'
-  import { HeroErrorBoundary } from '../components/UI/HeroErrorBoundary'
-
-  const Boom = () => { throw new Error('canvas crash') }
-
-  describe('HeroErrorBoundary', () => {
-    it('renders nothing and calls onFallback when child throws', () => {
-      const onFallback = vi.fn()
-      const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      const { container } = render(
-        <HeroErrorBoundary onFallback={onFallback}><Boom /></HeroErrorBoundary>
-      )
-      expect(container.firstChild).toBeNull()
-      expect(onFallback).toHaveBeenCalledOnce()
-      spy.mockRestore()
-    })
-
-    it('renders children when no error', () => {
-      render(<HeroErrorBoundary onFallback={vi.fn()}><span>ok</span></HeroErrorBoundary>)
-      expect(screen.getByText('ok')).toBeTruthy()
-    })
-  })
-  ```
-
-- [ ] **Step 2: Run test to verify it fails**
-
-  ```bash
-  npm run test -- HeroErrorBoundary
-  ```
-
-  Expected: FAIL with `Cannot find module '../components/UI/HeroErrorBoundary'`
-
-- [ ] **Step 3: Implement `HeroErrorBoundary.tsx`**
-
-  Create `src/components/UI/HeroErrorBoundary.tsx`:
-
-  ```tsx
-  import { Component, type ErrorInfo, type ReactNode } from 'react'
-
-  interface Props {
-    children: ReactNode
-    onFallback: () => void
-  }
-
-  interface State { caught: boolean }
-
-  export class HeroErrorBoundary extends Component<Props, State> {
-    state: State = { caught: false }
-
-    static getDerivedStateFromError(): State { return { caught: true } }
-
-    componentDidCatch(_error: Error, _info: ErrorInfo) { this.props.onFallback() }
-
-    render() {
-      if (this.state.caught) return null
-      return this.props.children
-    }
-  }
-  ```
-
-- [ ] **Step 4: Run test to verify it passes + commit**
-
-  ```bash
-  npm run test -- HeroErrorBoundary
-  git add src/components/UI/HeroErrorBoundary.tsx src/test/HeroErrorBoundary.test.tsx
-  git commit -m "feat(ui): HeroErrorBoundary class component calls onFallback on canvas crash"
-  ```
-
-**Acceptance:** Child throw → renders null + calls `onFallback` once; healthy children render normally.
+**Acceptance:** `TheForge` renders when `track.active !== 'power'` (was missing entirely — no import, no branch); `ObsidianStairs` renders when `track.active === 'power'`; switching Primary Goal cross-fades over 500ms; both backgrounds never visible simultaneously.
 
 ---
 
 ### Phase 8.2: Wrap `HeroOverlay` in boundary + RAF try/catch + toast
 
-**Depends on:** 8.1 committed.
+**Depends on:** 8.1 DONE (committed `ad8a9c3`). **Unblocked — run in parallel with 5.1.**
+
+**TODO.md item:** Phase 4, item 2 — "If the Canvas fails to initialize or the WebGL context is lost, catch the error and auto-toggle the app back to 'Professional Focus Mode' with a subtle toast notification." (Note: UIMode has no 'professional' — use `'focus'`.)
 
 **Files:**
 - Modify: `package.json` (via npm install)
@@ -449,7 +373,7 @@ For every task marked **[STITCH UI]**:
 
 - [ ] **Step 2: Add `<Toaster />` to `src/main.tsx`**
 
-  Read `src/main.tsx` first. Add to imports:
+  Read `src/main.tsx` first. Add import:
   ```tsx
   import { Toaster } from 'sonner'
   ```
@@ -464,14 +388,14 @@ For every task marked **[STITCH UI]**:
 
 - [ ] **Step 3: Add `HeroOverlayWithBoundary` wrapper to `App.tsx`**
 
-  Add imports to `src/App.tsx`:
+  Read `src/App.tsx` first. Add imports:
   ```tsx
   import { toast } from 'sonner'
   import { HeroErrorBoundary } from './components/UI/HeroErrorBoundary'
   import { useUIMode } from './context/UIModeContext'
   ```
 
-  Add this function before the default export (not as a named export):
+  Add this function before the default export (not a named export):
   ```tsx
   function HeroOverlayWithBoundary() {
     const { setUIMode } = useUIMode()
@@ -486,11 +410,11 @@ For every task marked **[STITCH UI]**:
   }
   ```
 
-  Replace `<HeroOverlay />` (currently at line 97) with `<HeroOverlayWithBoundary />`.
+  Replace `<HeroOverlay />` (line 97) with `<HeroOverlayWithBoundary />`.
 
 - [ ] **Step 4: Add RAF try/catch in `TheForge.tsx`**
 
-  Read `src/components/hero/TheForge.tsx`. Find the `tick()` function inside the animation `useEffect`. Wrap the draw body:
+  Read `src/components/hero/TheForge.tsx`. Find the `tick()` function inside the animation `useEffect`. Wrap the draw body (keep all existing draw code unchanged inside the try block):
 
   ```ts
   function tick() {
@@ -506,7 +430,7 @@ For every task marked **[STITCH UI]**:
 
 - [ ] **Step 5: Add RAF try/catch in `CombatCanvas.tsx`**
 
-  Read `src/components/hero/CombatCanvas.tsx`. Find the `step(ts: number)` function. Wrap the draw body:
+  Read `src/components/hero/CombatCanvas.tsx`. Find the `step(ts: number)` function. Wrap the draw body (keep all existing logic unchanged inside the try block):
 
   ```ts
   function step(ts: number) {
@@ -546,73 +470,58 @@ For every task marked **[STITCH UI]**:
 
 ### Phase 7.1: Verify `completedAscensions` Roman numeral badge updates in real-time
 
-**Depends on:** 5.1 committed (prestige wiring live so `ascend()` / `forgeMasterwork()` actually fire now).
+**Depends on:** 5.1 committed (prestige wiring live so `ascend()` / `forgeMasterwork()` actually fire).
+
+**TODO.md item:** Phase 5, item 5 — "Verify that `completedAscensions` correctly updates the Roman Numeral badge in the `HomePage` header in real-time without a page refresh."
 
 **Files:**
-- Read: `src/components/SessionBlueprint.tsx` (confirmed line 758 has `PrestigeBadge`)
-- Possibly modify: `src/pages/HomePage.tsx`
-- Create/update: `src/test/PrestigeBadge.test.tsx`
+- Read: `src/pages/HomePage.tsx` — verify `completedAscensions` comes from `useLiveQuery`
+- Read: `src/components/SessionBlueprint.tsx` — confirm PrestigeBadge at line 758 receives live value
+- Possibly modify: `src/pages/HomePage.tsx` — fix if not reactive
+- Test: `src/test/PrestigeBadge.test.tsx` (already exists — run, do not recreate)
 
-- [ ] **Step 1: Confirm wiring in SessionBlueprint**
+- [ ] **Step 1: Confirm reactivity chain in `HomePage.tsx`**
 
   ```bash
-  grep -n "PrestigeBadge\|completedAscensions\|useLiveQuery" src/components/SessionBlueprint.tsx
+  grep -n "completedAscensions\|useLiveQuery" src/pages/HomePage.tsx
   ```
 
-  Expected: `PrestigeBadge` at line 758, `completedAscensions` sourced from a `useLiveQuery` hook. If `useLiveQuery` is present — no code change needed in `SessionBlueprint.tsx`.
+  Expected: `completedAscensions` destructured from a `useLiveQuery` result. If it is — no code change needed.
 
 - [ ] **Step 2: If `completedAscensions` is NOT from `useLiveQuery`, fix it**
 
-  If `completedAscensions` is a static value rather than from `useLiveQuery`, update the relevant query in `SessionBlueprint.tsx`:
+  Only apply if Step 1 shows `completedAscensions` is static or from a non-reactive source.
 
+  Read `src/pages/HomePage.tsx`. Find the settings query. Ensure it uses:
   ```tsx
   const settings = useLiveQuery(() => db.settings.get(APP_SETTINGS_ID))
   const completedAscensions = settings?.completedAscensions ?? 0
   ```
 
-  And ensure `PrestigeBadge` receives it:
+  Then confirm the prop is passed down to `SessionBlueprint` or wherever `PrestigeBadge` is used:
   ```tsx
-  <PrestigeBadge ascensions={completedAscensions} />
+  <SessionBlueprint completedAscensions={completedAscensions} ... />
   ```
 
-- [ ] **Step 3: Write or update `PrestigeBadge` test**
-
-  Create `src/test/PrestigeBadge.test.tsx`:
-
-  ```tsx
-  // @vitest-environment jsdom
-  import { render, screen } from '@testing-library/react'
-  import { describe, it, expect } from 'vitest'
-  import { PrestigeBadge } from '../components/PrestigeBadge'
-
-  describe('PrestigeBadge', () => {
-    it('renders nothing at 0 ascensions', () => {
-      const { container } = render(<PrestigeBadge ascensions={0} />)
-      expect(container.firstChild).toBeNull()
-    })
-
-    it('renders Roman numeral I at 1 ascension', () => {
-      render(<PrestigeBadge ascensions={1} />)
-      expect(screen.getByText('I')).toBeTruthy()
-    })
-
-    it('renders IV at 4 ascensions', () => {
-      render(<PrestigeBadge ascensions={4} />)
-      expect(screen.getByText('IV')).toBeTruthy()
-    })
-  })
-  ```
-
-- [ ] **Step 4: Run tests + commit (only if files changed)**
+- [ ] **Step 3: Run existing `PrestigeBadge.test.tsx`**
 
   ```bash
   npm run test -- PrestigeBadge
-  # Commit only if Step 2 made changes:
-  git add src/components/SessionBlueprint.tsx src/test/PrestigeBadge.test.tsx
-  git commit -m "feat(hero): verify completedAscensions Roman numeral badge via useLiveQuery"
   ```
 
-**Acceptance:** `PrestigeBadge` renders with value from `useLiveQuery`; after prestige fires, badge increments without page refresh; 0 ascensions → no badge rendered.
+  Expected: all 3 tests pass (0 ascensions → null, 1 → "I", 4 → "IV"). If any fail, fix `PrestigeBadge.tsx` logic.
+
+- [ ] **Step 4: Commit (only if Step 2 made file changes)**
+
+  If no files were changed (Step 1 confirmed reactivity already), skip commit — just mark TODO done.
+
+  If files changed:
+  ```bash
+  git add src/pages/HomePage.tsx
+  git commit -m "feat(hero): ensure completedAscensions Roman numeral badge reactive via useLiveQuery"
+  ```
+
+**Acceptance:** After prestige fires, `PrestigeBadge` increments without page refresh; 0 ascensions → badge hidden; `useLiveQuery` drives the value through the prop chain.
 
 ---
 
@@ -624,7 +533,7 @@ For every task marked **[STITCH UI]**:
 - [ ] 2s golden radial flash covers full screen on both prestige paths (`SummitModal` ascend and `MasterworkModal` forge).
 - [ ] `TheForge` renders when `track.active !== 'power'` (was previously missing entirely — no import, no branch).
 - [ ] Switching Primary Goal cross-fades ObsidianStairs ↔ TheForge over 500ms.
-- [ ] Hero overlay survives forced canvas error → snaps to `uiMode = 'focus'` + sonner toast.
+- [ ] Hero overlay survives forced canvas error → snaps to `uiMode = 'focus'` + sonner toast bottom-center 4s.
 - [ ] `completedAscensions` badge updates without page refresh via `useLiveQuery`.
 - [ ] No `Co-authored-by: Claude` trailer in any commit.
 - [ ] Zero inline comments added to any file.
@@ -635,16 +544,17 @@ For every task marked **[STITCH UI]**:
 
 | Risk | Mitigation |
 |---|---|
-| No toast system in codebase | Phase 8.2 Step 1 installs `sonner` before touching App.tsx |
+| sonner not in codebase | Phase 8.2 Step 1 installs before touching App.tsx |
 | `UIMode` has no `'professional'` value | Use `setUIMode('focus')` — confirmed `'focus' \| 'hero'` |
-| `MasterworkModal.handlePrestige` never called `forgeMasterwork()` | Phase 5.1 Step 3 adds import + call — confirmed missing |
-| `TheForge` not imported in `HeroOverlay` | Phase 5.2 Step 2 adds import — confirmed missing |
+| `MasterworkModal.handlePrestige` never called `forgeMasterwork()` | Phase 5.1 Step 3 adds import + call — disk-confirmed missing |
+| `TheForge` not imported in `HeroOverlay` | Phase 5.2 Step 2 adds import — disk-confirmed missing |
 | `motion` not imported in `HeroOverlay` | Phase 5.2 Step 2 adds `motion` to framer-motion import — currently only `AnimatePresence` |
-| `SummitModal` / `MasterworkModal` rendered with no props | Phase 5.1 Step 5 adds `onAscend` and `onPrestige` — confirmed zero props |
+| `SummitModal` / `MasterworkModal` rendered with no props | Phase 5.1 Step 5 adds `onAscend` and `onPrestige` — disk-confirmed zero props |
 | RAF errors don't reach React error boundary natively | `try/catch` + rethrow pattern in Phase 8.2 Steps 4-5 resolves this |
-| 5.1 and 5.2 both touch `HeroOverlay.tsx` | Execute sequentially: commit 5.1 first, then apply 5.2 on top |
+| 5.1 and 5.2 both touch `HeroOverlay.tsx` | Enforced sequential: commit 5.1 first, then apply 5.2 on top |
 | Stitch MCP unavailable | Stop and fix connectivity; never skip Stitch for [STITCH UI] tasks |
-| `db.settings` key for APP_SETTINGS_ID may differ | Phase 7.1 Step 1 reads actual grep output before any code change |
+| `completedAscensions` in `HomePage.tsx` may not be from `useLiveQuery` | Phase 7.1 Step 1 greps actual file before any code change |
+| `useState` may not be imported in `HeroOverlay.tsx` after 5.1 | Phase 5.1 Step 5 checks and adds if missing |
 
 ---
 
@@ -652,12 +562,11 @@ For every task marked **[STITCH UI]**:
 
 | Step | Task | State |
 |---|---|---|
-| 1–24 | All combat, data, NLP, search, badge | ~~DONE~~ |
-| **25‖** | **5.1 — Prestige wiring + PrestigeFlash [STITCH UI]** | **← NEXT (unblocked)** |
-| **25‖** | **8.1 — HeroErrorBoundary (TDD)** | **DONE** |
-| 26 | 5.2 — ObsidianStairs→TheForge cross-fade [STITCH UI] (after 5.1 commits to avoid merge on HeroOverlay.tsx) | — |
-| 27 | 8.2 — Wrap overlay + RAF safety + toast (needs 8.1) | — |
-| 28 | 7.1 — Verify completedAscensions badge (needs 5.1) | — |
+| 1–24 | All combat, data, NLP, search, badge, HeroErrorBoundary | ~~DONE~~ |
+| ~~25‖~~ | ~~5.1 — Prestige wiring + PrestigeFlash [STITCH UI]~~ | ~~DONE~~ |
+| **25‖** | **8.2 — Wrap overlay + RAF safety + toast** | **← NEXT (unblocked)** |
+| **26** | **5.2 — ObsidianStairs→TheForge cross-fade [STITCH UI]** | **← NEXT (5.1 committed)** |
+| 27 | 7.1 — Verify completedAscensions badge (after 5.1 commits) | — |
 
 Check the corresponding `TODO.md` checkbox in the same commit as each implementation.
 
@@ -665,15 +574,24 @@ Check the corresponding `TODO.md` checkbox in the same commit as each implementa
 
 ## 7. Exact next task
 
-> **Three tasks are unblocked and ready to execute — 5.1 and 8.1 run in parallel first, then 5.2:**
+> **Two tasks are unblocked and ready to run in parallel now:**
 >
 > **5.1 [STITCH UI] ← START NOW**
-> Generate 2 Stitch variants for PrestigeFlash (Prompts A/B above). Pick one. Create `src/components/hero/PrestigeFlash.tsx`. Add `forgeMasterwork()` import + call to `MasterworkModal.handlePrestige` (currently NOT imported). Add `onAscend` prop to `SummitModal` (currently zero props). Wire both modals + flash in `HeroOverlay`: add `PrestigeFlash` import + `prestigeFlashActive` state + prop callbacks on lines 66-67. Run `npm run test`. Commit `feat(hero): wire forgeMasterwork to MasterworkModal + 2s PrestigeFlash on ascend/forge`. Check Phase 5 TODO item 1.
+> 1. Generate 2 Stitch variants for PrestigeFlash (Prompts A/B in Phase 5.1 Step 1). Pick one and record variant ID + reasoning.
+> 2. Create `src/components/hero/PrestigeFlash.tsx` (2s radial golden flash, pointer-events none, auto-dismisses via setTimeout).
+> 3. Read `src/components/hero/MasterworkModal.tsx`. Add `import { forgeMasterwork } from '../../services/heroMathService'` and call `void forgeMasterwork()` inside `handlePrestige` before `onPrestige?.()`.
+> 4. Read `src/components/hero/SummitModal.tsx`. Add `SummitModalProps` interface with `onAscend?: () => void`. Wire into `handleAscend` after `ascend()`.
+> 5. Read `src/components/hero/HeroOverlay.tsx`. Add `PrestigeFlash` import, `prestigeFlashActive` state, and pass `onAscend`/`onPrestige` callbacks to modals on lines 66-67. Add `<PrestigeFlash>` after modals.
+> 6. `npm run test` → PASS. Commit `feat(hero): wire forgeMasterwork to MasterworkModal + 2s PrestigeFlash on ascend/forge`. Check Phase 5 TODO item 1.
 >
-> **8.1 ← START NOW (parallel)**
-> Write test in `src/test/HeroErrorBoundary.test.tsx` first. Run it, confirm FAIL. Create `src/components/UI/HeroErrorBoundary.tsx` (class component, renders null on catch, calls `onFallback`). Run test, confirm PASS. Commit `feat(ui): HeroErrorBoundary class component calls onFallback on canvas crash`. Check Phase 4 TODO item 1.
+> **8.2 ← START NOW (parallel with 5.1)**
+> 1. `npm install sonner` → `npm run build` (verify zero TS errors).
+> 2. Read `src/main.tsx`. Add `import { Toaster } from 'sonner'`. Add `<Toaster position="bottom-center" richColors />` inside StrictMode block.
+> 3. Read `src/App.tsx`. Add `toast`/`HeroErrorBoundary`/`useUIMode` imports. Add `HeroOverlayWithBoundary` function before default export. Replace `<HeroOverlay />` at line 97 with `<HeroOverlayWithBoundary />`.
+> 4. Read `src/components/hero/TheForge.tsx`. Wrap `tick()` draw body in try/catch that cancels RAF and rethrows.
+> 5. Read `src/components/hero/CombatCanvas.tsx`. Wrap `step()` draw body in try/catch that cancels RAF and rethrows.
+> 6. `npm run test` → PASS. Commit `feat(ui): wrap HeroOverlay in HeroErrorBoundary with sonner toast, add RAF error rethrow for canvas fallback`. Check Phase 4 TODO item 2.
 >
-> **After 5.1 and 8.1 commit:**
-> - **5.2 [STITCH UI]** — Generate 2 Stitch variants. Add `motion` to framer-motion import in `HeroOverlay.tsx`. Add `TheForge` import. Replace line 59 single-branch with `AnimatePresence mode="wait"` wrapping both `ObsidianStairs` (key="stairs") and `TheForge` (key="forge"), each in a `motion.div` with 500ms opacity. Commit `feat(hero): 500ms cross-fade between ObsidianStairs and TheForge on track switch`. Check Phase 5 TODO item 2.
-> - **8.2** — Install `sonner`. Add `<Toaster />` to `main.tsx`. Add `HeroOverlayWithBoundary` wrapper in `App.tsx`. Add RAF try/catch to `TheForge.tsx` and `CombatCanvas.tsx`. Commit. Check Phase 4 TODO item 2.
-> - **7.1** — Grep `SessionBlueprint.tsx` for `useLiveQuery` + `completedAscensions`. Fix if not reactive. Write/update `PrestigeBadge.test.tsx`. Commit if changes made. Check Phase 5 TODO item 5.
+> **After 5.1 commits:**
+> - **5.2 [STITCH UI]** — Generate 2 Stitch variants. Read `HeroOverlay.tsx`. Add `motion` to framer-motion import. Add `TheForge` import. Replace single-branch ObsidianStairs with `AnimatePresence mode="wait"` wrapping both `ObsidianStairs` (key="stairs") and `TheForge` (key="forge"), each in `motion.div` with 500ms opacity. `npm run test` → PASS. Commit. Check Phase 5 TODO item 2.
+> - **7.1** — `grep -n "completedAscensions\|useLiveQuery" src/pages/HomePage.tsx`. If reactive — run `npm run test -- PrestigeBadge` (file already exists), confirm pass, check TODO. If not reactive — fix HomePage then run tests. Commit only if code changed. Check Phase 5 TODO item 5.

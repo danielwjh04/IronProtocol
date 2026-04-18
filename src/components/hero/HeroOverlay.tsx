@@ -11,6 +11,7 @@ import { DamageNumber } from './DamageNumber'
 import { ImpactStars } from './ImpactStars'
 import { MasterworkModal } from './MasterworkModal'
 import { ObsidianStairs } from './ObsidianStairs'
+import { PrestigeFlash } from './PrestigeFlash'
 import { SummitModal } from './SummitModal'
 
 interface BurstState {
@@ -29,6 +30,7 @@ export function HeroOverlay() {
   const [burst, setBurst] = useState<BurstState | null>(null)
   const [damageNumbers, setDamageNumbers] = useState<Array<{ id: string; value: number; intensity: number }>>([])
   const lastBurstId = useRef<string | null>(null)
+  const [prestigeFlashActive, setPrestigeFlashActive] = useState(false)
 
   useEffect(() => {
     if (pendingBash && lastBurstId.current !== pendingBash.id) {
@@ -63,8 +65,9 @@ export function HeroOverlay() {
           if (intensity > 0.7) heavyDouble()
         }}
       />
-      <SummitModal />
-      <MasterworkModal />
+      <SummitModal onAscend={() => setPrestigeFlashActive(true)} />
+      <MasterworkModal onPrestige={() => setPrestigeFlashActive(true)} />
+      <PrestigeFlash active={prestigeFlashActive} onDone={() => setPrestigeFlashActive(false)} />
       <ComboCounter count={comboCount} />
       <AnimatePresence>
         {damageNumbers.map(d => <DamageNumber key={d.id} {...d} />)}

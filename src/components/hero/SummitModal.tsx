@@ -6,7 +6,11 @@ import { ascend } from '../../services/heroMathService'
 const springIn  = { type: 'spring', stiffness: 300, damping: 24 } as const
 const springOut = { duration: 0.18 } as const
 
-export function SummitModal() {
+interface SummitModalProps {
+  onAscend?: () => void
+}
+
+export function SummitModal({ onAscend }: SummitModalProps) {
   const track = useTrackProgress()
   const [dismissed, setDismissed] = useState(false)
 
@@ -15,6 +19,7 @@ export function SummitModal() {
   function handleAscend() {
     setDismissed(true)
     ascend()
+    onAscend?.()
   }
 
   return (
