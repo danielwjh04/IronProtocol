@@ -29,7 +29,7 @@
 
 ## Phase 4: Safety & Fault Tolerance (Incomplete)
 - [x] Create `src/components/UI/HeroErrorBoundary.tsx` and wrap the entire Hero Overlay (Stairs/Forge) in it.
-- [ ] Implement a Graceful Fallback: If the Canvas fails to initialize or the WebGL context is lost, catch the error and auto-toggle the app back to "Professional Focus Mode" with a subtle toast notification.
+- [x] Implement a Graceful Fallback: If the Canvas fails to initialize or the WebGL context is lost, catch the error and auto-toggle the app back to "Professional Focus Mode" with a subtle toast notification.
 
 ## Phase 5: Redo & Refinement (The "New" Tasks)
 - [x] [STITCH UI] Redo the connection between `MasterworkModal` (Hypertrophy) and `SummitModal` (Power) to the `heroMathService.prestige()` call. Ensure the "Prestige" effect triggers a 2-second full-screen particle "Flash" to celebrate the reset.
