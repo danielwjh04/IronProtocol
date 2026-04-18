@@ -33,6 +33,6 @@
 
 ## Phase 5: Redo & Refinement (The "New" Tasks)
 - [x] [STITCH UI] Redo the connection between `MasterworkModal` (Hypertrophy) and `SummitModal` (Power) to the `heroMathService.prestige()` call. Ensure the "Prestige" effect triggers a 2-second full-screen particle "Flash" to celebrate the reset.
-- [ ] [STITCH UI] Ensure the transition between the "Obsidian Stairs" and "The Forge" is smooth. Add a 500ms CSS cross-fade when the user switches their Primary Goal in settings.
+- [x] [STITCH UI] Ensure the transition between the "Obsidian Stairs" and "The Forge" is smooth. Add a 500ms CSS cross-fade when the user switches their Primary Goal in settings.
 - [x] [STITCH UI] Add a "Brain Initializing..." loading state to the `NLPSearchBar` that only shows while the 22MB vector model is downloading for the first time via the worker.
 - [ ] Verify that `completedAscensions` correctly updates the Roman Numeral badge in the `HomePage` header in real-time without a page refresh.
