@@ -43,8 +43,6 @@ export default function HomePage({ db }: Props) {
   } = view
 
   const {
-    onTrainingGoalChange,
-    onTimeAvailableChange,
     onResumeDraft,
     onDiscardDraft,
     onUpdatePlanFromBlueprint,
@@ -147,8 +145,6 @@ export default function HomePage({ db }: Props) {
       trainingGoal={trainingGoal}
       timeAvailable={timeAvailable}
       primaryActionLabel={primaryActionLabel}
-      onTrainingGoalChange={onTrainingGoalChange}
-      onTimeAvailableChange={onTimeAvailableChange}
       onUpdatePlan={onUpdatePlanFromBlueprint}
       onStartWorkout={onStartWorkout}
     />

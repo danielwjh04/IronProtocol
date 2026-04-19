@@ -69,8 +69,6 @@ export interface HomePageView {
 
 export interface HomePageActions {
   onRoutineSelect: (routineType: CanonicalRoutineType) => void
-  onTrainingGoalChange: (goal: TrainingGoal) => void
-  onTimeAvailableChange: (minutes: number) => void
   onChooseDefaultRoutine: () => void
   onResumeDraft: () => void
   onDiscardDraft: () => void
@@ -109,7 +107,7 @@ export function useHomePageController(
 
   const [routineType, setRoutineType] = useState<CanonicalRoutineType>('PPL')
   const [trainingGoal, setTrainingGoal] = useState<TrainingGoal>('Hypertrophy')
-  const [timeAvailable, setTimeAvailable] = useState(45)
+  const [timeAvailable] = useState(60)
   const [plannerRefreshTick, setPlannerRefreshTick] = useState(0)
   const [hasHydratedRoutine, setHasHydratedRoutine] = useState(false)
   const [plan, setPlan] = useState<PlannedWorkout | null>(null)
@@ -454,8 +452,6 @@ export function useHomePageController(
     },
     actions: {
       onRoutineSelect,
-      onTrainingGoalChange: setTrainingGoal,
-      onTimeAvailableChange: setTimeAvailable,
       onChooseDefaultRoutine,
       onResumeDraft,
       onDiscardDraft,

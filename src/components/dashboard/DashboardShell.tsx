@@ -1,7 +1,7 @@
 import HeaderBar from './HeaderBar'
 import HeroCard from './HeroCard'
 import ExerciseList from './ExerciseList'
-import AdjustStrip from './AdjustStrip'
+import ExerciseSwapSheet from './ExerciseSwapSheet'
 import { useSessionBlueprintController } from '../../hooks/useSessionBlueprintController'
 import type { CanonicalRoutineType, PlannedWorkout } from '../../planner/autoPlanner'
 import type { IronProtocolDB } from '../../db/schema'
@@ -20,8 +20,6 @@ interface DashboardShellProps {
   trainingGoal: TrainingGoal
   timeAvailable: number
   primaryActionLabel: string
-  onTrainingGoalChange: (goal: TrainingGoal) => void
-  onTimeAvailableChange: (minutes: number) => void
   onUpdatePlan: (plan: PlannedWorkout) => void
   onStartWorkout: () => void
 }
@@ -38,8 +36,6 @@ export default function DashboardShell({
   trainingGoal,
   timeAvailable,
   primaryActionLabel,
-  onTrainingGoalChange,
-  onTimeAvailableChange,
   onUpdatePlan,
   onStartWorkout,
 }: DashboardShellProps) {
@@ -50,8 +46,6 @@ export default function DashboardShell({
     routineType,
     trainingGoal,
     timeAvailable,
-    onTrainingGoalChange,
-    onTimeAvailableChange,
     onUpdatePlan,
   })
 
@@ -83,14 +77,15 @@ export default function DashboardShell({
         }}
       />
 
-      <AdjustStrip
-        trainingGoal={view.localTrainingGoal}
-        workoutLengthMinutes={view.workoutLengthMinutes}
-        trimmedExercises={view.trimmedExercises}
-        onTrainingGoalToggle={actions.onTrainingGoalToggle}
-        onWorkoutLengthChange={actions.onWorkoutLengthChange}
+      <ExerciseSwapSheet
+        open={view.isSwapDrawerOpen}
+        target={view.swapTarget}
+        candidates={view.swapCandidates}
+        isLoading={view.isSwapLoading}
+        isPending={view.isSwapPending}
+        onClose={actions.onCloseSwapDrawer}
+        onSelect={actions.onSwap}
       />
-
     </main>
   )
 }
