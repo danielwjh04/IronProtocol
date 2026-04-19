@@ -1,7 +1,5 @@
 import { motion, type Variants } from 'framer-motion'
 import { type CSSProperties, useMemo, useState } from 'react'
-import { generateWorkoutBlueprint } from '../services/aiPlannerService'
-import { persistMacrocycle } from '../services/macrocyclePersistence'
 import {
   APP_SETTINGS_ID,
   type IronProtocolDB,
@@ -320,9 +318,6 @@ export default function IdentitySplash({ db }: Props) {
         v11PromptContract,
         hasCompletedOnboarding: false,
       })
-
-      const generatedMacrocycle = await generateWorkoutBlueprint(v11PromptContract)
-      await persistMacrocycle(generatedMacrocycle, db)
 
       const updates = await db.settings.update(APP_SETTINGS_ID, {
         hasCompletedOnboarding: true,

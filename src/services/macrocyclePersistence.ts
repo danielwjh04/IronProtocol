@@ -8,7 +8,7 @@ import {
   type Workout,
   type WorkoutSet,
 } from '../db/schema'
-import { canonicalizeExerciseName, type AIGeneratedMacrocycle } from './aiPlannerService'
+import { canonicalizeExerciseName, type AIGeneratedMacrocycle } from './macrocycleTypes'
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000
 const DEFAULT_ROUTINE_TYPE = 'PPL'

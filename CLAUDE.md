@@ -22,6 +22,14 @@ Flow: Blueprint -> Review -> Ignition -> ActiveLogger
 2. Read raw files only when I explicitly say "read raw files".
 3. Do not auto-run /graphify unless I explicitly request it.
 
+## Design System (STRICT)
+- All colors, spacing, fonts come from src/design/designSystem.ts. No raw hex in JSX/CSS outside that file and src/index.css.
+- Every text node uses exactly one of .text-display / .text-body / .text-label. No ad-hoc sizes/weights/line-heights.
+- Spacing uses the 9-step scale (0/4/8/12/16/24/32/48/64 px). Tailwind arbitrary values like mt-[13px] are banned.
+- Accent color is goal-driven: swaps via [data-goal-theme] when trainingGoal changes. Never hardcode an accent — always `var(--color-accent-primary)`.
+- Legacy tokens (navy, electric, pink, Barlow) are DEPRECATED. New components MUST use design-system tokens. Migrate legacy usages opportunistically during redesign.
+- Combat skin (pixel fonts, black surfaces): apply `className="combat-skin"` ONLY on WorkoutIgnition, ActiveLogger per-set combat flashes, and the future WorkoutComplete celebration. Never on planning/history/settings screens.
+
 ## Swarm (Ruflo)
 - Activation: Trigger `ruflo` for architectural pivots between Lab and Gantry.
 - Security: Summon agents to audit Dexie.js persistence against Information Security storage standards.

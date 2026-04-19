@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach, afterEach } from 'vitest'
 import { v4 as uuidv4 } from 'uuid'
 import { APP_SETTINGS_ID, IronProtocolDB } from '../db/schema'
 import { runPlannerPreflightAudit } from '../planner/autoPlanner'
-import type { AIGeneratedMacrocycle } from '../services/aiPlannerService'
+import type { AIGeneratedMacrocycle } from '../services/macrocycleTypes'
 import { MACROCYCLE_WORKOUT_NOTE_PREFIX, persistMacrocycle } from '../services/macrocyclePersistence'
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000

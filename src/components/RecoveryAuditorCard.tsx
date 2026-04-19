@@ -1,5 +1,11 @@
 import { motion } from 'framer-motion'
-import type { AuditResult } from '../services/recoveryAuditorService'
+
+export interface AuditResult {
+  severity: 'low' | 'medium' | 'high'
+  missionBrief: string
+  sessionAdjustments: { detail: string }[]
+  arcRecommendation?: { action: string; rationale: string } | null
+}
 
 interface Props {
   auditResult: AuditResult | null

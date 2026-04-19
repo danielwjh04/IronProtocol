@@ -2,8 +2,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-import RecoveryAuditorCard from '../components/RecoveryAuditorCard'
-import type { AuditResult } from '../services/recoveryAuditorService'
+import RecoveryAuditorCard, { type AuditResult } from '../components/RecoveryAuditorCard'
 
 afterEach(cleanup)
 
@@ -16,7 +15,7 @@ const LOW_RESULT: AuditResult = {
 const HIGH_RESULT: AuditResult = {
   severity: 'high',
   missionBrief: 'Critical fatigue.',
-  sessionAdjustments: [{ type: 'rest-day', detail: 'Full rest.' }],
+  sessionAdjustments: [{ detail: 'Full rest.' }],
   arcRecommendation: { action: 'insert-deload', rationale: '3-session accumulation.' },
 }
 

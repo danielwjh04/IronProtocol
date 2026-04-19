@@ -1,24 +1,19 @@
-import { Fragment } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import type { PlannedWorkout, PlannedExercise } from '../planner/autoPlanner'
 import {
   TEMP_SESSION_ID,
-  APP_SETTINGS_ID,
   type ExerciseTier,
   type IronProtocolDB,
   type TempSessionCompletedSet,
   type TempSession,
-  type ReadonlyExercise,
-  type V11AppSettingsSchema,
 } from '../db/schema'
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 import { PersonalBestsService } from '../services/personalBestsService'
 import { publish } from '../events/setCommitEvents'
 import FeaturePulse from './FeaturePulse'
 import FunctionalWhy from './FunctionalWhy'
-import SemanticSwapDrawer from './SemanticSwapDrawer'
 import RecoveryLogForm from './RecoveryLogForm'
 
 interface Props {
@@ -98,7 +93,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     ? Math.min(resumableDraft.currentSetInEx, Math.max(0, initialExercise.sets - 1))
     : 0
 
-  const [exercises, setExercises] = useState<readonly PlannedExercise[]>(initialExercises)
+  const exercises: readonly PlannedExercise[] = initialExercises
   const [currentExIndex, setCurrentExIndex] = useState(initialExIndex)
   const [currentSetInEx, setCurrentSetInEx] = useState(initialSetInEx) // 0-based within exercise
   const [weight,         setWeight]         = useState(resumableDraft?.weight ?? initialExercise.weight)
@@ -112,9 +107,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   const [completedSets,  setCompletedSets]  = useState<CompletedSet[]>(resumableDraft?.completedSets ?? [])
   const [showWhy,        setShowWhy]        = useState(false)
 
-  const [swapTarget,          setSwapTarget]          = useState<{ name: string; tier: ExerciseTier; muscleGroup: string } | null>(null)
-  const [exerciseDB,          setExerciseDB]          = useState<ReadonlyExercise[]>([])
-  const [v11Contract,         setV11Contract]         = useState<V11AppSettingsSchema | null>(null)
   const [showRecoveryForm,    setShowRecoveryForm]    = useState(false)
   const [completedWorkoutId,  setCompletedWorkoutId]  = useState<string | null>(null)
   const [commitError,         setCommitError]         = useState<string | null>(null)
@@ -155,12 +147,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
     setCommitError(null)
   }, [currentExIndex, currentSetInEx])
 
-  useEffect(() => {
-    db.exercises.toArray().then((exs) => setExerciseDB(exs)).catch(() => {})
-    db.settings.get(APP_SETTINGS_ID).then((s) => {
-      if (s?.v11PromptContract) setV11Contract(s.v11PromptContract)
-    }).catch(() => {})
-  }, [db])
 
   const currentEx      = exercises[currentExIndex]
   const displaySetNum  = currentSetInEx + 1
@@ -338,17 +324,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
               <h2 className={`${tierIntensityClass(currentEx.tier)} font-black text-white`}>
                 {currentEx.exerciseName}
               </h2>
-              <button
-                type="button"
-                onClick={() => setSwapTarget({
-                  name: currentEx.exerciseName,
-                  tier: currentEx.tier,
-                  muscleGroup: exerciseDB.find(e => e.id === currentEx.exerciseId)?.muscleGroup ?? '',
-                })}
-                className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#3B71FE]/60"
-              >
-                Swap
-              </button>
             </div>
             <p className="mt-2 text-sm text-zinc-300">Set {displaySetNum} of {currentEx.sets}</p>
           </div>
@@ -564,44 +539,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       >
         Cancel Workout
       </motion.button>
-
-      <AnimatePresence>
-        {swapTarget && (
-          <Fragment key={swapTarget.name}>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/60"
-              onClick={() => setSwapTarget(null)}
-            />
-            <SemanticSwapDrawer
-              exercise={swapTarget}
-              exerciseDB={exerciseDB}
-              v11Contract={v11Contract}
-              onSwapConfirmed={(newName) => {
-                const match = exerciseDB.find(e => e.name.toLowerCase() === newName.toLowerCase())
-                setExercises(prev =>
-                  prev.map((ex, i) =>
-                    i !== currentExIndex
-                      ? ex
-                      : {
-                          ...ex,
-                          exerciseName: newName,
-                          exerciseId: match?.id ?? ex.exerciseId,
-                          tier: (match?.tier ?? ex.tier) as ExerciseTier,
-                        }
-                  )
-                )
-                setWeight(0)
-                setReps(0)
-                setSwapTarget(null)
-              }}
-              onClose={() => setSwapTarget(null)}
-            />
-          </Fragment>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {showRecoveryForm && completedWorkoutId && (

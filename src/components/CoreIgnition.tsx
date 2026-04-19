@@ -1,9 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import RecoveryAuditorCard from './RecoveryAuditorCard'
-import { useRecoveryAudit } from '../hooks/useRecoveryAudit'
-import { APP_SETTINGS_ID } from '../db/schema'
-import type { RecoveryLog, Workout, V11AppSettingsSchema, IronProtocolDB } from '../db/schema'
+import type { IronProtocolDB } from '../db/schema'
 
 interface Props {
   /** Called once the 2.5 s boot sequence finishes */
@@ -45,28 +42,8 @@ function PulsingBarbell() {
   )
 }
 
-export default function CoreIgnition({ onComplete, db }: Props) {
+export default function CoreIgnition({ onComplete }: Props) {
   const [visibleLines, setVisibleLines] = useState<string[]>([])
-  const [recoveryLogs, setRecoveryLogs] = useState<RecoveryLog[]>([])
-  const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([])
-  const [v11Contract, setV11Contract] = useState<V11AppSettingsSchema | null>(null)
-
-  useEffect(() => {
-    if (!db) return
-    db.recoveryLogs.orderBy('loggedAt').reverse().limit(4).toArray()
-      .then(setRecoveryLogs).catch((err) => { console.error('[CoreIgnition]', err) })
-    db.workouts.orderBy('date').reverse().limit(4).toArray()
-      .then(setRecentWorkouts).catch((err) => { console.error('[CoreIgnition]', err) })
-    db.settings.get(APP_SETTINGS_ID).then((s) => {
-      if (s?.v11PromptContract) setV11Contract(s.v11PromptContract)
-    }).catch((err) => { console.error('[CoreIgnition]', err) })
-  }, [db])
-
-  const { auditResult, hasLogs, isLabAvailable: labAvailable } = useRecoveryAudit(
-    recoveryLogs,
-    recentWorkouts,
-    v11Contract ?? undefined,
-  )
 
   const onCompleteRef = useRef(onComplete)
   useEffect(() => {
@@ -155,19 +132,6 @@ export default function CoreIgnition({ onComplete, db }: Props) {
           )}
         </AnimatePresence>
       </div>
-
-      {/* ── Recovery audit card ───────────────────────────────────────────── */}
-      {hasLogs && (
-        <div className="mb-4">
-          <RecoveryAuditorCard
-            auditResult={auditResult}
-            isLabAvailable={labAvailable}
-            onArcReviewRequested={() => {
-              console.warn('[RecoveryAuditor] Arc review requested — not yet implemented')
-            }}
-          />
-        </div>
-      )}
     </motion.main>
   )
 }
