@@ -30,11 +30,11 @@ const ONBOARDING_QUOTES = [
 ] as const
 
 const ONBOARDING_LINES: Array<Omit<TerminalLine, 'atMs'>> = [
-  { id: 'o1', type: 'system', text: '> Architect core online. Entering adaptive synthesis loop...' },
-  { id: 'o2', type: 'data', text: '> Folding constraints into progression-safe macrocycle graph...' },
-  { id: 'o3', type: 'system', text: '> Resolving exercise substitutions for offline gantry continuity...' },
-  { id: 'o4', type: 'data', text: '> Locking week-to-week load pathways against available QoS...' },
-  { id: 'o5', type: 'success', text: '> Blueprint forge active. Awaiting final convergence signal.' },
+  { id: 'o1', type: 'system', text: '> Loading local exercise library...' },
+  { id: 'o2', type: 'data', text: '> Ordering lifts by muscle group and tier...' },
+  { id: 'o3', type: 'system', text: '> Trimming to session budget...' },
+  { id: 'o4', type: 'data', text: '> Locking per-session load progression...' },
+  { id: 'o5', type: 'success', text: '> Blueprint ready.' },
 ]
 
 function buildPlanningLines(plan: PlannedWorkout): TerminalLine[] {
@@ -44,16 +44,16 @@ function buildPlanningLines(plan: PlannedWorkout): TerminalLine[] {
   const leadExercise = plan.exercises[0]
 
   return [
-    { id: 'l1', atMs: 0 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: '> Initializing IronProtocol engine...' },
+    { id: 'l1', atMs: 0 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: '> Loading routine...' },
     { id: 'l2', atMs: 1 * PLANNING_LINE_INTERVAL_MS, type: 'data', text: `> Routine loaded: ${plan.routineType} · Session ${plan.sessionIndex + 1}` },
-    { id: 'l3', atMs: 2 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: `> QoS scan complete — ${plan.exercises.length} exercises selected` },
+    { id: 'l3', atMs: 2 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: `> Selecting tier-matched exercises — ${plan.exercises.length} selected` },
     { id: 'l4', atMs: 3 * PLANNING_LINE_INTERVAL_MS, type: 'data', text: `> Tier composition: T1×${t1Count}  T2×${t2Count}  T3×${t3Count}` },
-    { id: 'l5', atMs: 4 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: '> Computing progressive overload delta...' },
+    { id: 'l5', atMs: 4 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: '> Applying per-lift progression delta...' },
     { id: 'l6', atMs: 5 * PLANNING_LINE_INTERVAL_MS, type: 'data', text: leadExercise
         ? `> Lead lift: ${leadExercise.exerciseName} — ${leadExercise.weight}kg × ${leadExercise.reps} (${leadExercise.sets} sets)`
         : '> Lead lift: Bodyweight circuit' },
-    { id: 'l7', atMs: 6 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: `> Est. session duration: ${Math.round(plan.estimatedMinutes)} min` },
-    { id: 'l8', atMs: 7 * PLANNING_LINE_INTERVAL_MS, type: 'success', text: '> Blueprint ready. Zero friction mode: ON.' },
+    { id: 'l7', atMs: 6 * PLANNING_LINE_INTERVAL_MS, type: 'system', text: `> Trimming to budget: ${Math.round(plan.estimatedMinutes)} min` },
+    { id: 'l8', atMs: 7 * PLANNING_LINE_INTERVAL_MS, type: 'success', text: '> Blueprint ready.' },
   ]
 }
 

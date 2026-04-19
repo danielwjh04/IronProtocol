@@ -76,11 +76,11 @@ export interface RecoveryLog {
   id: string
   workoutId: string
   loggedAt: number
-  sleepHours: number
   sleepQuality: 1 | 2 | 3 | 4 | 5
-  stressLevel: 1 | 2 | 3 | 4 | 5
   overallFatigue: 1 | 2 | 3 | 4 | 5
   soreness: Partial<Record<MuscleGroup, 1 | 2 | 3 | 4 | 5>>
+  sleepHours?: number
+  stressLevel?: 1 | 2 | 3 | 4 | 5
 }
 
 export type RoutineGoal = 'Hypertrophy' | 'Power'

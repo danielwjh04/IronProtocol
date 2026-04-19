@@ -2,17 +2,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { getFunctionalInfo } from '../data/functionalMapping'
 
+interface AnatomyGlyphProps {
+  anatomyKey: string
+  formGuard: boolean
+}
+
 interface Props {
   exerciseName: string
 }
 
-function AnatomyPlaceholder({
-  anatomyKey,
-  formGuard,
-}: {
-  anatomyKey: string
-  formGuard: boolean
-}) {
+function AnatomyGlyph({ anatomyKey, formGuard }: AnatomyGlyphProps) {
   const accentColor = formGuard ? '#FF89D6' : '#3B71FE'
   const accentOpacity = formGuard ? '0.75' : '0.5'
 
@@ -66,53 +65,6 @@ function AnatomyPlaceholder({
   )
 }
 
-// ── Anatomy Video Player ───────────────────────────────────────────────────
-// Tries to load the .mp4 from public/assets/exercises. 
-// If it fails (e.g., video not generated yet), it falls back to the SVG.
-function AnatomyVideo({
-  anatomyKey,
-  formGuard,
-}: {
-  anatomyKey: string
-  formGuard: boolean
-}) {
-  const [failedSource, setFailedSource] = useState<string | null>(null)
-
-  const videoSrc = `/assets/exercises/${anatomyKey}-${formGuard ? 'mistake' : 'correct'}.webm`
-
-  const videoError = failedSource === videoSrc
-
-  if (videoError) {
-    return <AnatomyPlaceholder anatomyKey={anatomyKey} formGuard={formGuard} />
-  }
-
-  return (
-    <div className={`relative flex h-32 w-32 overflow-hidden rounded-full border-2 transition-colors duration-500 ${formGuard ? 'border-pink bg-pink/10' : 'border-[#0A0E1A]/15 bg-[#0A0E1A]/6'}`}>
-      <video
-        key={videoSrc} // Forces video to reload when src changes
-        src={videoSrc}
-        autoPlay
-        loop
-        muted
-        playsInline // Crucial for iOS so it doesn't open full-screen
-        onError={() => setFailedSource(videoSrc)}
-        className="h-full w-full object-cover"
-        aria-label={`${formGuard ? 'Mistake' : 'Correct'} execution for ${anatomyKey}`}
-      />
-    </div>
-  )
-}
-
-/**
- * FunctionalWhy — Educational Mode panel with Form Guard toggle.
- *
- * Normal mode  → correct execution cue, Electric Blue accent.
- * Form Guard   → common-mistake view, Soft Pink (#FF89D6) error pulse.
- *
- * Rendered inside AnimatePresence in ActiveLogger so it enters/exits with a
- * smooth height-based slide. The `layout` prop on sibling sections ensures
- * the inputs below are pushed down without a jump.
- */
 export default function FunctionalWhy({ exerciseName }: Props) {
   const info = getFunctionalInfo(exerciseName)
   const [formGuard, setFormGuard] = useState(false)
@@ -165,7 +117,7 @@ export default function FunctionalWhy({ exerciseName }: Props) {
         </div>
 
         <div className="flex flex-col items-center gap-4">
-          <AnatomyVideo
+          <AnatomyGlyph
             anatomyKey={info?.anatomyKey ?? exerciseName.toLowerCase().replace(/\s+/g, '-')}
             formGuard={formGuard}
           />

@@ -173,13 +173,15 @@ describe('ActiveLogger', () => {
     })
 
     const onDone = vi.fn()
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true)
 
     render(<ActiveLogger plan={BENCH_PLAN} db={db} onDone={onDone} />, { wrapper: Wrapper })
 
     fireEvent.click(screen.getByRole('button', { name: /cancel workout/i }))
 
-    expect(confirmSpy).toHaveBeenCalledWith('Are you sure? This will delete your current progress.')
+    const dialog = await screen.findByRole('alertdialog')
+    expect(dialog).toHaveTextContent(/abandon this workout/i)
+
+    fireEvent.click(screen.getByRole('button', { name: /^abandon$/i }))
 
     await waitFor(async () => {
       const draft = await db.tempSessions.get(TEMP_SESSION_ID)
@@ -187,8 +189,6 @@ describe('ActiveLogger', () => {
     })
 
     expect(onDone).toHaveBeenCalledTimes(1)
-
-    confirmSpy.mockRestore()
   })
 
   // ── Manual adjustment ─────────────────────────────────────────────────────

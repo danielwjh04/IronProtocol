@@ -41,9 +41,7 @@ function RatingTiles({ value, onChange }: { value: Rating; onChange: (r: Rating)
 }
 
 export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props) {
-  const [sleepHours, setSleepHours] = useState(7)
   const [sleepQuality, setSleepQuality] = useState<Rating>(3)
-  const [stressLevel, setStressLevel] = useState<Rating>(2)
   const [overallFatigue, setOverallFatigue] = useState<Rating>(2)
   const [soreness, setSoreness] = useState<Partial<Record<MuscleGroup, Rating>>>({})
   const [saving, setSaving] = useState(false)
@@ -67,9 +65,7 @@ export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props
         id: uuidv4(),
         workoutId,
         loggedAt: Date.now(),
-        sleepHours,
         sleepQuality,
-        stressLevel,
         overallFatigue,
         soreness,
       }
@@ -93,26 +89,13 @@ export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props
       </p>
 
       <div className="mb-4">
-        <p className="mb-2 text-xs text-zinc-400">Sleep last night</p>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-[#0A0E1A] px-3 py-1.5">
-            <button type="button" onClick={() => setSleepHours((h) => Math.max(0, h - 1))} className="text-zinc-400">−</button>
-            <span className="w-8 text-center text-sm font-bold text-[#3B71FE]">{sleepHours}h</span>
-            <button type="button" onClick={() => setSleepHours((h) => Math.min(12, h + 1))} className="text-zinc-400">+</button>
-          </div>
-          <RatingTiles value={sleepQuality} onChange={setSleepQuality} />
-        </div>
+        <p className="mb-2 text-xs text-zinc-400">Sleep quality</p>
+        <RatingTiles value={sleepQuality} onChange={setSleepQuality} />
       </div>
 
-      <div className="mb-4 flex gap-6">
-        <div>
-          <p className="mb-2 text-xs text-zinc-400">Stress</p>
-          <RatingTiles value={stressLevel} onChange={setStressLevel} />
-        </div>
-        <div>
-          <p className="mb-2 text-xs text-zinc-400">Fatigue</p>
-          <RatingTiles value={overallFatigue} onChange={setOverallFatigue} />
-        </div>
+      <div className="mb-4">
+        <p className="mb-2 text-xs text-zinc-400">Overall fatigue</p>
+        <RatingTiles value={overallFatigue} onChange={setOverallFatigue} />
       </div>
 
       <div className="mb-5">

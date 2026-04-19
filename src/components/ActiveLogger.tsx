@@ -12,9 +12,9 @@ import {
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 import { PersonalBestsService } from '../services/personalBestsService'
 import { publish } from '../events/setCommitEvents'
-import FeaturePulse from './FeaturePulse'
 import FunctionalWhy from './FunctionalWhy'
 import RecoveryLogForm from './RecoveryLogForm'
+import ConfirmDialog from './UI/ConfirmDialog'
 
 interface Props {
   plan: PlannedWorkout
@@ -22,10 +22,6 @@ interface Props {
   initialDraft?: TempSession | null
   onDone?: () => void
   onCancel?: () => void
-  onboardingTour?: {
-    showProgressionPulse: boolean
-    onProgressionPulseCleared: () => void
-  }
 }
 
 type CompletedSet = TempSessionCompletedSet
@@ -49,7 +45,7 @@ function tierIntensityClass(tier: ExerciseTier): string {
   return 'text-lg'
 }
 
-export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel, onboardingTour }: Props) {
+export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel }: Props) {
   const initialExercises: readonly PlannedExercise[] = plan.exercises.length > 0
     ? plan.exercises
     : [{
@@ -110,6 +106,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   const [showRecoveryForm,    setShowRecoveryForm]    = useState(false)
   const [completedWorkoutId,  setCompletedWorkoutId]  = useState<string | null>(null)
   const [commitError,         setCommitError]         = useState<string | null>(null)
+  const [showCancelConfirm,   setShowCancelConfirm]   = useState(false)
 
   const weightInputRef = useRef<HTMLInputElement>(null)
 
@@ -154,7 +151,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   const timerCircumference = 2 * Math.PI * timerRadius
   const timerProgress = restSecondsLeft / restSeconds
   const timerOffset = timerCircumference * (1 - timerProgress)
-  const showProgressionPulse = onboardingTour?.showProgressionPulse ?? false
 
   async function persistDraft(nextState: {
     currentExIndex: number
@@ -293,11 +289,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
   }
 
   async function handleCancelWorkout(): Promise<void> {
-    const confirmed = window.confirm('Are you sure? This will delete your current progress.')
-    if (!confirmed) {
-      return
-    }
-
     try {
       await db.tempSessions.delete(TEMP_SESSION_ID)
     } catch (error) {
@@ -385,17 +376,6 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
                     <p className={`${tierIntensityClass(exercise.tier)} font-black text-zinc-100`}>{exercise.exerciseName}</p>
                     <p className="relative mt-1 text-xs font-bold text-zinc-300">
                       {exercise.progressionGoal} · {nextSetGuidance}
-                      {isCurrent && showProgressionPulse && onboardingTour && (
-                        <FeaturePulse
-                          title="The Math"
-                          pulseAriaLabel="Reveal double progression law"
-                          message="No more guessing. We only increase weight if you hit Max Reps on every set. Otherwise, we push your volume (Reps)."
-                          isVisible
-                          isCleared={false}
-                          onClear={onboardingTour.onProgressionPulseCleared}
-                          className="absolute -right-2 -top-2"
-                        />
-                      )}
                     </p>
 
                     {exerciseCompletedSets.length > 0 && (
@@ -532,13 +512,25 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel,
       <motion.button
         whileTap={{ scale: 0.95 }}
         type="button"
-        onClick={() => {
-          void handleCancelWorkout()
-        }}
+        onClick={() => setShowCancelConfirm(true)}
         className="h-12 w-full cursor-pointer rounded-3xl border border-[#3B71FE]/20 bg-transparent px-5 text-sm font-bold uppercase tracking-[0.1em] text-zinc-300 transition-colors hover:border-[#3B71FE]/40 hover:bg-[#3B71FE]/5 hover:text-zinc-100 active:bg-[#3B71FE]/10"
       >
         Cancel Workout
       </motion.button>
+
+      <ConfirmDialog
+        open={showCancelConfirm}
+        title="Abandon this workout?"
+        message="Logged sets are kept in history; the session ends."
+        confirmLabel="Abandon"
+        cancelLabel="Cancel"
+        destructive
+        onCancel={() => setShowCancelConfirm(false)}
+        onConfirm={() => {
+          setShowCancelConfirm(false)
+          void handleCancelWorkout()
+        }}
+      />
 
       <AnimatePresence>
         {showRecoveryForm && completedWorkoutId && (

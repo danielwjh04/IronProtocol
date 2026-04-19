@@ -15,31 +15,16 @@ describe('WorkoutIgnition', () => {
     vi.useRealTimers()
   })
 
-  it('runs 3 → 2 → 1 countdown and completes only after final delay', async () => {
+  it('opens with WORKOUT. and completes only after the final delay', async () => {
     const onComplete = vi.fn()
 
     render(<WorkoutIgnition onComplete={onComplete} />)
 
-    expect(screen.getByText('LOAD')).toBeInTheDocument()
-    expect(screen.getByText('3')).toBeInTheDocument()
+    expect(screen.getByText('WORKOUT.')).toBeInTheDocument()
+    expect(onComplete).not.toHaveBeenCalled()
 
     await act(async () => {
       vi.advanceTimersByTime(999)
-    })
-    expect(screen.getByText('LOAD')).toBeInTheDocument()
-    expect(onComplete).not.toHaveBeenCalled()
-
-    await act(async () => {
-      vi.advanceTimersByTime(1)
-    })
-
-    await act(async () => {
-      vi.advanceTimersByTime(1000)
-    })
-    expect(onComplete).not.toHaveBeenCalled()
-
-    await act(async () => {
-      vi.advanceTimersByTime(1319)
     })
     expect(onComplete).not.toHaveBeenCalled()
 
@@ -49,7 +34,7 @@ describe('WorkoutIgnition', () => {
     expect(onComplete).toHaveBeenCalledTimes(1)
   })
 
-  it('fires haptics on each step and a final heavy pulse', async () => {
+  it('fires a tick on each phase and a final heavy pulse', async () => {
     const onComplete = vi.fn()
     const vibrateSpy = vi.fn().mockReturnValue(true)
 
@@ -61,12 +46,12 @@ describe('WorkoutIgnition', () => {
     render(<WorkoutIgnition onComplete={onComplete} />)
 
     await act(async () => {
-      vi.advanceTimersByTime(3320)
+      vi.advanceTimersByTime(1200)
     })
 
     expect(vibrateSpy).toHaveBeenCalledWith(70)
     expect(vibrateSpy).toHaveBeenCalledWith(120)
-    expect(vibrateSpy.mock.calls.filter(([duration]) => duration === 70)).toHaveLength(3)
+    expect(vibrateSpy.mock.calls.filter(([duration]) => duration === 70)).toHaveLength(2)
     expect(onComplete).toHaveBeenCalledTimes(1)
   })
 })
