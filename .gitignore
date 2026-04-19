@@ -25,6 +25,16 @@ supabase/.env.test
 .claude/
 .claudeignore
 
+# Dev artifacts (not needed for app runtime)
+graphify-out/
+docs/
+raw/
+CLAUDE.md
+GEMINI.md
+OVERNIGHT_PLAN.md
+TODO.md
+init.md
+
 # Git worktrees
 .worktrees/
 
