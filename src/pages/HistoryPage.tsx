@@ -1,81 +1,165 @@
-import { liveQuery } from 'dexie'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { useState } from 'react'
 import type { IronProtocolDB, Workout } from '../db/schema'
+import WorkoutDetailSheet from '../components/history/WorkoutDetailSheet'
 
 interface Props {
   db: IronProtocolDB
 }
 
+interface RichRow {
+  workout:      Workout
+  setCount:     number
+  totalVolume:  number
+  topLift:      { name: string; weight: number; reps: number } | null
+}
+
+const DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  weekday: 'short',
+  month:   'short',
+  day:     'numeric',
+}
+
+function formatShortDate(ts: number): string {
+  return new Intl.DateTimeFormat('en-US', DATE_FORMAT).format(new Date(ts))
+}
+
+function estimate1RM(weight: number, reps: number): number {
+  return weight * (1 + reps / 30)
+}
+
 export default function HistoryPage({ db }: Props) {
-  const [workouts, setWorkouts] = useState<Workout[] | null>(null)
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null)
 
-  useEffect(() => {
-    const subscription = liveQuery(async () => (
-      db.workouts.orderBy('date').reverse().toArray()
-    )).subscribe({
-      next: setWorkouts,
-      error: () => setWorkouts([]),
-    })
-
-    return () => {
-      subscription.unsubscribe()
+  const rows = useLiveQuery(async (): Promise<RichRow[]> => {
+    const workouts = await db.workouts.orderBy('date').reverse().toArray()
+    const result: RichRow[] = []
+    for (const workout of workouts) {
+      const sets = await db.sets.where('workoutId').equals(workout.id).toArray()
+      let totalVolume = 0
+      let top: RichRow['topLift'] = null
+      let topScore = 0
+      const exerciseNameCache = new Map<string, string>()
+      for (const s of sets) {
+        totalVolume += s.weight * s.reps
+        const score = estimate1RM(s.weight, s.reps)
+        if (score > topScore) {
+          topScore = score
+          let name = exerciseNameCache.get(s.exerciseId)
+          if (!name) {
+            const exercise = await db.exercises.get(s.exerciseId)
+            name = exercise?.name ?? 'Unknown lift'
+            exerciseNameCache.set(s.exerciseId, name)
+          }
+          top = { name, weight: s.weight, reps: s.reps }
+        }
+      }
+      result.push({
+        workout,
+        setCount:    sets.length,
+        totalVolume: Math.round(totalVolume),
+        topLift:     top,
+      })
     }
+    return result
   }, [db])
 
-  const formatDate = (timestamp: number) =>
-    new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(new Date(timestamp))
-
-  async function handleDeleteWorkout(workout: Workout): Promise<void> {
-    await db.transaction('rw', db.workouts, db.sets, async () => {
-      await db.sets.where('workoutId').equals(workout.id).delete()
-      await db.workouts.delete(workout.id)
-    })
-  }
-
   return (
-    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0A0A] px-4 pb-28 pt-5 text-zinc-100">
-      <motion.header whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-300">Session History</p>
-        <h1 className="mt-3 text-3xl font-black tracking-tight text-zinc-100">Logged Workouts</h1>
-      </motion.header>
+    <main
+      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-28 pt-16"
+      style={{ backgroundColor: 'var(--color-surface-base)' }}
+    >
+      <header>
+        <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
+          Session History
+        </p>
+        <h1 className="text-display mt-2" style={{ color: 'var(--color-text-primary)' }}>
+          Logged Workouts
+        </h1>
+      </header>
 
-      {workouts !== null && workouts.length === 0 && (
-        <motion.p whileTap={{ scale: 0.95 }} className="rounded-3xl border border-zinc-800 bg-[#171717] py-12 text-center text-zinc-400">No workouts found</motion.p>
+      {rows !== undefined && rows.length === 0 && (
+        <motion.p
+          whileTap={{ scale: 0.98 }}
+          className="rounded-3xl border py-12 text-center text-body"
+          style={{
+            backgroundColor: 'var(--color-surface-raised)',
+            borderColor:     'var(--color-border-subtle)',
+            color:           'var(--color-text-secondary)',
+          }}
+        >
+          No workouts found
+        </motion.p>
       )}
 
-      {workouts !== null && workouts.length > 0 && (
+      {rows !== undefined && rows.length > 0 && (
         <ul className="flex flex-col gap-3">
-          {workouts.map(workout => (
+          {rows.map(({ workout, setCount, totalVolume, topLift }) => (
             <motion.li
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.98 }}
               key={workout.id}
-              className="rounded-3xl border border-zinc-800 bg-[#171717] p-4"
+              className="rounded-3xl border p-4 cursor-pointer"
+              style={{
+                backgroundColor: 'var(--color-surface-raised)',
+                borderColor:     'var(--color-border-subtle)',
+              }}
+              onClick={() => setSelectedWorkout(workout)}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-lg font-black text-white">{formatDate(workout.date)}</p>
-                  <p className="mt-1 text-sm font-bold text-zinc-300">
-                    {workout.routineType} • Session {workout.sessionIndex + 1}
+                  <p className="text-body" style={{ color: 'var(--color-text-primary)' }}>
+                    {formatShortDate(workout.date)}
+                  </p>
+                  <p className="text-label mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
+                    {workout.routineType} · Day {workout.sessionIndex + 1}
                   </p>
                 </div>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                  onClick={() => void handleDeleteWorkout(workout)}
-                  className="cursor-pointer rounded-2xl border border-[#FF6B00]/40 bg-[#2a1a10] px-3 py-2 text-xs font-bold text-[#FF6B00] transition-all hover:bg-[#352215] active:scale-[0.98] active:bg-[#24180f]"
+                <span
+                  className="rounded-full border px-2 py-0.5 text-label"
+                  style={{
+                    borderColor: 'var(--color-accent-primary)',
+                    color:       'var(--color-accent-primary)',
+                  }}
                 >
-                  Delete
-                </motion.button>
+                  {setCount} sets
+                </span>
+              </div>
+
+              <div
+                className="mt-3 flex items-center justify-between gap-3 border-t pt-3"
+                style={{ borderColor: 'var(--color-border-subtle)' }}
+              >
+                <div>
+                  <p className="text-label" style={{ color: 'var(--color-text-secondary)' }}>
+                    Total volume
+                  </p>
+                  <p className="text-body" style={{ color: 'var(--color-text-primary)' }}>
+                    {totalVolume.toLocaleString()} kg
+                  </p>
+                </div>
+                {topLift && (
+                  <div className="text-right">
+                    <p className="text-label" style={{ color: 'var(--color-text-secondary)' }}>
+                      Top lift
+                    </p>
+                    <p className="text-body" style={{ color: 'var(--color-text-primary)' }}>
+                      {topLift.name} {topLift.weight}×{topLift.reps}
+                    </p>
+                  </div>
+                )}
               </div>
             </motion.li>
           ))}
         </ul>
       )}
+
+      <WorkoutDetailSheet
+        workout={selectedWorkout}
+        db={db}
+        onClose={() => setSelectedWorkout(null)}
+        onDeleted={() => setSelectedWorkout(null)}
+      />
     </main>
   )
 }
