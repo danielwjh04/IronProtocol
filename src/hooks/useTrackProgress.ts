@@ -22,7 +22,7 @@ export function useTrackProgress(): TrackProgress {
       hypertrophy: computeTrackProgress(workouts, active, 'hypertrophy', Date.now(), closedAt),
       active,
     }
-  }, [], { power: 0, hypertrophy: 0, active: 'power' })
+  }, [])
 
   return result ?? { power: 0, hypertrophy: 0, active: 'power' }
 }
