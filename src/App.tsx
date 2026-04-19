@@ -1,9 +1,7 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import CalibrateBaselinesCard from './components/CalibrateBaselinesCard'
 import CoreIgnition from './components/CoreIgnition'
-import DataOwnershipCard from './components/DataOwnershipCard'
 import NavDropdown from './components/NavDropdown'
 import { HeroErrorBoundary } from './components/UI/HeroErrorBoundary'
 import { HeroOverlay } from './components/hero/HeroOverlay'
@@ -12,6 +10,7 @@ import { db } from './db/db'
 import HistoryPage from './pages/HistoryPage'
 import HomePage from './pages/HomePage'
 import RoutinesPage from './pages/RoutinesPage'
+import SettingsPage from './pages/SettingsPage'
 
 type RoutePath = '/' | '/history' | '/routines' | '/settings'
 
@@ -69,31 +68,7 @@ export default function App() {
     }
 
     if (route === '/settings') {
-      return (
-        <main
-          className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-20 pt-16"
-          style={{ backgroundColor: 'var(--color-surface-base)' }}
-        >
-          <motion.section
-            whileTap={{ scale: 0.98 }}
-            className="rounded-3xl border p-6"
-            style={{
-              backgroundColor: 'var(--color-surface-raised)',
-              borderColor: 'var(--color-border-subtle)',
-            }}
-          >
-            <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
-              Settings
-            </p>
-            <h1 className="text-display mt-3" style={{ color: 'var(--color-text-primary)' }}>
-              Routine Preferences
-            </h1>
-          </motion.section>
-
-          <CalibrateBaselinesCard db={db} />
-          <DataOwnershipCard db={db} />
-        </main>
-      )
+      return <SettingsPage db={db} />
     }
 
     return <HomePage db={db} />
