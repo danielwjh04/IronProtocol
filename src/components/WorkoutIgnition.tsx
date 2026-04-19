@@ -5,9 +5,11 @@ interface Props {
   onComplete: () => void
 }
 
-const PHASES = ['WORKOUT.', 'BEGIN.'] as const
-const PHASE_DURATION_MS = 400
-const EXIT_DELAY_MS = 200
+const PHASES = [
+  { text: 'WORKOUT.', durationMs: 500 },
+  { text: 'BEGIN.',   durationMs: 900 },
+] as const
+const EXIT_DELAY_MS = 360
 const TICK_VIBRATION_MS = 70
 const FINAL_VIBRATION_MS = 120
 
@@ -30,33 +32,37 @@ export default function WorkoutIgnition({ onComplete }: Props) {
 
     vibrate(TICK_VIBRATION_MS)
 
+    let elapsed = 0
     for (let index = 1; index < PHASES.length; index += 1) {
+      elapsed += PHASES[index - 1].durationMs
+      const firedAt = elapsed
       timers.push(
         setTimeout(() => {
           setPhaseIndex(index)
           vibrate(TICK_VIBRATION_MS)
-        }, index * PHASE_DURATION_MS),
+        }, firedAt),
       )
     }
 
+    const totalDuration = PHASES.reduce((sum, phase) => sum + phase.durationMs, 0) + EXIT_DELAY_MS
     timers.push(
       setTimeout(() => {
         vibrate(FINAL_VIBRATION_MS)
         onCompleteRef.current()
-      }, (PHASES.length * PHASE_DURATION_MS) + EXIT_DELAY_MS),
+      }, totalDuration),
     )
 
     return () => timers.forEach(clearTimeout)
   }, [])
 
-  const activePhase = PHASES[phaseIndex]
+  const activePhase = PHASES[phaseIndex].text
 
   return (
     <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, filter: 'blur(8px)' }}
-      transition={{ duration: 0.24, ease: 'easeInOut' }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
       className="combat-skin fixed inset-0 z-[85] flex items-center justify-center"
       style={{ backgroundColor: 'var(--color-surface-base)' }}
       aria-label="workout ignition"
@@ -64,16 +70,20 @@ export default function WorkoutIgnition({ onComplete }: Props) {
       <motion.section
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 28 }}
         className="relative mx-auto flex w-full max-w-[430px] flex-col items-center px-6"
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.p
             key={activePhase}
-            initial={{ opacity: 0, y: 14, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
-            transition={{ type: 'spring', stiffness: 340, damping: 30 }}
+            initial={{ opacity: 0, y: 16, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 1.04 }}
+            transition={{
+              opacity: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+              y:       { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
+              scale:   { duration: 0.5,  ease: [0.22, 1, 0.36, 1] },
+            }}
             className="text-display text-center"
             style={{
               color: 'var(--color-text-primary)',

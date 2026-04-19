@@ -75,16 +75,13 @@ body,
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 20% -10%, rgba(59, 113, 254, 0.13), transparent 50%),
-    radial-gradient(circle at 90% 120%, rgba(124, 58, 254, 0.07), transparent 44%),
-    var(--surface-bg);
-  color: #fafafa;
+  background: var(--color-surface-base);
+  color: var(--color-text-primary);
 }
 
 #root {
-  display: flex;
-  justify-content: center;
+  width: 100%;
+  min-height: 100svh;
 }
 
 button,
@@ -94,56 +91,58 @@ textarea {
   font: inherit;
 }
 
-/* ── Range Slider (Electric Navy) ─────────────────────────────────────────── */
+/* ── Range Slider (Design System) ─────────────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  background: transparent;
   cursor: pointer;
   width: 100%;
+  height: 8px;
+  border-radius: 999px;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  height: 6px;
-  background: #1E253A;
-  border-radius: 10px;
+  height: 8px;
+  background: transparent;
+  border-radius: 999px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: #3B71FE;
-  margin-top: -7px;
-  box-shadow: 0 0 10px rgba(59, 113, 254, 0.4);
+  background: var(--color-accent-primary);
+  margin-top: -8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: transform 0.2s ease;
+  border: 2px solid var(--color-surface-base);
 }
 
 input[type="range"]:active::-webkit-slider-thumb {
-  transform: scale(1.2);
+  transform: scale(1.15);
 }
 
 input[type="range"]::-moz-range-track {
-  height: 6px;
-  background: #1E253A;
-  border-radius: 10px;
+  height: 8px;
+  background: transparent;
+  border-radius: 999px;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border: none;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: #3B71FE;
-  box-shadow: 0 0 10px rgba(59, 113, 254, 0.4);
+  background: var(--color-accent-primary);
+  border: 2px solid var(--color-surface-base);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: transform 0.2s ease;
 }
 
 input[type="range"]:active::-moz-range-thumb {
-  transform: scale(1.2);
+  transform: scale(1.15);
 }
 
 

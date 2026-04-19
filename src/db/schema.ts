@@ -86,6 +86,24 @@ export interface RecoveryLog {
 export type RoutineGoal = 'Hypertrophy' | 'Power'
 export type RoutineDaysPerWeek = 3 | 4 | 5
 
+export type TargetLift = 'Bench Press' | 'Back Squat' | 'Deadlift' | 'Overhead Press'
+
+export type GoalAim =
+  | 'lift-pr'
+  | 'jump'
+  | 'run'
+  | 'stamina'
+  | 'fat-loss'
+  | 'mobility'
+  | 'general'
+
+export interface ParsedGoal {
+  rawText: string
+  aim: GoalAim
+  targetLifts: TargetLift[]
+  matchedKeywords: string[]
+}
+
 export interface Routine {
   id: string
   name: string
@@ -94,6 +112,9 @@ export interface Routine {
   cycleLengthWeeks: number
   createdAt: number
   isActive: 0 | 1
+  goalText?: string
+  parsedGoal?: ParsedGoal
+  timeAvailableMinutes?: number
 }
 
 export type PurposeChip = 'strength' | 'hypertrophy' | 'fat-loss' | 'endurance' | 'health'

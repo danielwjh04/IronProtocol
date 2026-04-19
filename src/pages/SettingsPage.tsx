@@ -21,7 +21,6 @@ export default function SettingsPage({ db }: Props) {
   const settings = useLiveQuery(() => db.settings.get(APP_SETTINGS_ID), [db])
   const contract = settings?.v11PromptContract ?? createDefaultV11PromptContract()
 
-  const timeCap    = contract.logisticalConstraints.hardSessionLimitMinutes ?? 60
   const equipment  = contract.equipmentAvailability ?? 'commercial-gym'
 
   async function handleEquipmentChange(next: V11EquipmentAvailability) {
@@ -64,77 +63,47 @@ export default function SettingsPage({ db }: Props) {
           Planner Defaults
         </p>
         <h2 className="text-display mt-2" style={{ color: 'var(--color-text-primary)' }}>
-          How sessions are shaped
+          Equipment
         </h2>
 
-        <div className="mt-5 flex flex-col gap-4">
-          <div
-            className="flex items-center justify-between rounded-2xl border px-4 py-3"
-            style={{
-              borderColor:     'var(--color-border-subtle)',
-              backgroundColor: 'var(--color-surface-base)',
-            }}
-          >
-            <div>
-              <p className="text-body" style={{ color: 'var(--color-text-primary)' }}>
-                Time Cap
-              </p>
-              <p className="text-label" style={{ color: 'var(--color-text-secondary)' }}>
-                Fixed budget per session
-              </p>
-            </div>
-            <span
-              className="text-display"
-              style={{ color: 'var(--color-accent-primary)' }}
-            >
-              {timeCap} min
-            </span>
-          </div>
-
-          <div>
-            <p className="text-body" style={{ color: 'var(--color-text-primary)' }}>
-              Equipment
-            </p>
-            <div className="mt-2 flex gap-2">
-              {EQUIPMENT_OPTIONS.map((option) => {
-                const isActive = equipment === option.value
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => void handleEquipmentChange(option.value)}
-                    aria-pressed={isActive}
-                    className="flex-1 rounded-2xl border px-4 py-3 text-left transition-colors"
-                    style={{
-                      borderColor: isActive
-                        ? 'var(--color-accent-primary)'
-                        : 'var(--color-border-subtle)',
-                      backgroundColor: isActive
-                        ? 'var(--color-accent-soft)'
-                        : 'var(--color-surface-base)',
-                    }}
-                  >
-                    <p
-                      className="text-body"
-                      style={{
-                        color: isActive
-                          ? 'var(--color-accent-primary)'
-                          : 'var(--color-text-primary)',
-                      }}
-                    >
-                      {option.label}
-                    </p>
-                    <p
-                      className="text-label mt-1"
-                      style={{ color: 'var(--color-text-secondary)' }}
-                    >
-                      {option.helper}
-                    </p>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+        <div className="mt-5 flex gap-2">
+          {EQUIPMENT_OPTIONS.map((option) => {
+            const isActive = equipment === option.value
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => void handleEquipmentChange(option.value)}
+                aria-pressed={isActive}
+                className="flex-1 rounded-2xl border px-4 py-3 text-left transition-colors"
+                style={{
+                  borderColor: isActive
+                    ? 'var(--color-accent-primary)'
+                    : 'var(--color-border-subtle)',
+                  backgroundColor: isActive
+                    ? 'var(--color-accent-soft)'
+                    : 'var(--color-surface-base)',
+                }}
+              >
+                <p
+                  className="text-body"
+                  style={{
+                    color: isActive
+                      ? 'var(--color-accent-primary)'
+                      : 'var(--color-text-primary)',
+                  }}
+                >
+                  {option.label}
+                </p>
+                <p
+                  className="text-label mt-1"
+                  style={{ color: 'var(--color-text-secondary)' }}
+                >
+                  {option.helper}
+                </p>
+              </button>
+            )
+          })}
         </div>
       </motion.section>
 

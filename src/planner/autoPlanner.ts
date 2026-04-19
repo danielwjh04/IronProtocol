@@ -1,6 +1,7 @@
-import type { Exercise, ExerciseTier, IronProtocolDB, Workout, WorkoutSet } from '../db/schema'
+import type { Exercise, ExerciseTier, IronProtocolDB, ParsedGoal, Workout, WorkoutSet } from '../db/schema'
 import { ensureIronExerciseLibrary } from '../db/seedExercises'
 import { getFunctionalInfo } from '../data/functionalMapping'
+import { isLowerBody, scoreForGoal, shouldEnduranceTilt } from '../data/goalAccessories'
 
 export interface PlannedExercise {
   readonly exerciseId: string
@@ -25,6 +26,7 @@ export interface GenerateWorkoutParams {
   timeAvailable: number
   routineType: string
   sessionIndex?: number
+  parsedGoal?: ParsedGoal
 }
 
 type TrainingGoal = GenerateWorkoutParams['trainingGoal']
@@ -275,6 +277,8 @@ interface RoutineInputSnapshot {
   // Optional: inject 1-2 T3 exercises for the listed muscle groups into the blueprint,
   // regardless of the session's base tags. Ignored if the exercises are already present.
   additionalFocusParts?: string[]
+  // Optional: per-routine outcome goal that biases exercise ordering and prescriptions.
+  parsedGoal?: ParsedGoal
 }
 
 // ── Empty Pool Defense ─────────────────────────────────────────────────────────
@@ -318,12 +322,16 @@ function normalizeExerciseName(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
-function applyGoalPrescription(exercise: PlannedExercise, trainingGoal: TrainingGoal): PlannedExercise {
+function applyGoalPrescription(
+  exercise: PlannedExercise,
+  trainingGoal: TrainingGoal,
+  enduranceTilt = false,
+): PlannedExercise {
   const prescribed = GOAL_TIER_PRESCRIPTIONS[trainingGoal][exercise.tier]
   return {
     ...exercise,
     sets: prescribed.sets,
-    reps: prescribed.reps,
+    reps: enduranceTilt ? prescribed.reps + 3 : prescribed.reps,
   }
 }
 
@@ -700,6 +708,33 @@ function detectSessionIndex(totalWorkoutsForRoutine: number, cycleLength: number
   return cycleLength > 0 ? (totalWorkoutsForRoutine % cycleLength) : 0
 }
 
+function pickLowerBodySessionIndex(
+  routineType: CanonicalRoutineType,
+  exercises: Exercise[],
+  cycleLength: number,
+  fallbackSessionIndex: number,
+): number {
+  if (cycleLength <= 0) return fallbackSessionIndex
+
+  let bestIndex = fallbackSessionIndex
+  let bestScore = -1
+
+  for (let i = 0; i < cycleLength; i += 1) {
+    const blueprint = getBlueprint(routineType, i)
+    const sessionExercises = getBlueprintExercises(blueprint, exercises)
+    const lowerBodyCount = sessionExercises.filter((ex) =>
+      isLowerBody({ exerciseName: ex.name, muscleGroup: ex.muscleGroup, tags: ex.tags }),
+    ).length
+
+    if (lowerBodyCount > bestScore) {
+      bestScore = lowerBodyCount
+      bestIndex = i
+    }
+  }
+
+  return bestIndex
+}
+
 function tierCapForTime(timeAvailable: number): ExerciseTier {
   if (timeAvailable < 30) {
     return 1
@@ -857,21 +892,31 @@ export function planRoutineWorkoutPure({
   sets,
   baselines,
   additionalFocusParts,
+  parsedGoal,
 }: RoutineInputSnapshot): PlannedWorkout {
   // 120m is the QoS ceiling — inputs above this produce identical output to 120m.
   const effectiveTime = Math.min(timeAvailable, 120)
   const resolvedBaselines = baselines ?? new Map<string, number>()
+  const enduranceTilt = shouldEnduranceTilt(parsedGoal)
   const canonicalRoutineType = normalizeRoutineType(routineType)
   const template = ROUTINE_TEMPLATES[canonicalRoutineType]
   const detectedSessionIndex = detectSessionIndex(workoutsForRoutine.length, template.cycleLength)
-  const sessionIndex = Number.isInteger(requestedSessionIndex) && (requestedSessionIndex ?? 0) >= 0
+  const naturalSessionIndex = Number.isInteger(requestedSessionIndex) && (requestedSessionIndex ?? 0) >= 0
     ? (template.cycleLength > 0 ? (requestedSessionIndex as number) % template.cycleLength : 0)
     : detectedSessionIndex
+
+  const shouldBiasLowerBody =
+    (parsedGoal?.aim === 'run' || parsedGoal?.aim === 'jump')
+    && !Number.isInteger(requestedSessionIndex)
+
+  const sessionIndex = shouldBiasLowerBody
+    ? pickLowerBodySessionIndex(canonicalRoutineType, exercises, template.cycleLength, naturalSessionIndex)
+    : naturalSessionIndex
   const blueprint = getBlueprint(canonicalRoutineType, sessionIndex)
 
   const sessionExercises = getBlueprintExercises(blueprint, exercises)
   if (sessionExercises.length === 0) {
-    const fallbackExercises = GPP_EXERCISES.map((exercise) => applyGoalPrescription(exercise, trainingGoal))
+    const fallbackExercises = GPP_EXERCISES.map((exercise) => applyGoalPrescription(exercise, trainingGoal, enduranceTilt))
     return {
       exercises: fallbackExercises,
       estimatedMinutes: calcEstimatedMinutes(fallbackExercises, trainingGoal),
@@ -889,14 +934,22 @@ export function planRoutineWorkoutPure({
     : []
   const setsByExercise = mapRecentSetsByExercise(recentSessionSets)
 
+  const scoreSourceExercise = (ex: Exercise): number =>
+    scoreForGoal({ exerciseName: ex.name, muscleGroup: ex.muscleGroup, tags: ex.tags }, parsedGoal)
+
   const progressed = dedupePlannedById(
     sessionExercises
+      .slice()
+      .sort((a, b) =>
+        (scoreSourceExercise(b) - scoreSourceExercise(a))
+        || (a.tier - b.tier)
+        || a.name.localeCompare(b.name),
+      )
       .map((exercise) => {
         const userBaseline = resolvedBaselines.get(exercise.name.toLowerCase())
         const historicalPlan = planExerciseFromHistory(exercise, setsByExercise.get(exercise.id) ?? [], userBaseline)
-        return applyGoalPrescription(historicalPlan, trainingGoal)
-      })
-      .sort((a, b) => (a.tier - b.tier) || a.exerciseName.localeCompare(b.exerciseName)),
+        return applyGoalPrescription(historicalPlan, trainingGoal, enduranceTilt)
+      }),
   )
 
   const tierCap = tierCapForTime(effectiveTime)
@@ -924,7 +977,7 @@ export function planRoutineWorkoutPure({
         const userBaseline = resolvedBaselines.get(candidate.name.toLowerCase())
         // Always treat injected focus exercises as cold-start for clean baseline reps.
         const injectedExercise = planExerciseFromHistory(candidate, [], userBaseline)
-        injections.push(applyGoalPrescription(injectedExercise, trainingGoal))
+        injections.push(applyGoalPrescription(injectedExercise, trainingGoal, enduranceTilt))
         includedIds.add(candidate.id)
       }
     }
@@ -942,12 +995,17 @@ export function planRoutineWorkoutPure({
   ) {
     const expansionCandidates = dedupePlannedById(
       buildVolumeExpansionCandidates(exercises, sessionExercises, blueprint.rule)
+        .slice()
+        .sort((a, b) =>
+          (scoreSourceExercise(b) - scoreSourceExercise(a))
+          || (a.tier - b.tier)
+          || a.name.localeCompare(b.name),
+        )
         .map((exercise) => {
           const userBaseline = resolvedBaselines.get(exercise.name.toLowerCase())
           const historicalPlan = planExerciseFromHistory(exercise, setsByExercise.get(exercise.id) ?? [], userBaseline)
-          return applyGoalPrescription(historicalPlan, trainingGoal)
-        })
-        .sort((a, b) => (a.tier - b.tier) || a.exerciseName.localeCompare(b.exerciseName)),
+          return applyGoalPrescription(historicalPlan, trainingGoal, enduranceTilt)
+        }),
     )
 
     finalExercises = expandForTimeBudget(finalExercises, expansionCandidates, trainingGoal, effectiveTime)
@@ -1036,6 +1094,7 @@ export async function generateWorkout({
   sessionIndex,
   trainingGoal,
   timeAvailable,
+  parsedGoal,
 }: GenerateWorkoutParams): Promise<PlannedWorkout> {
   const canonicalRoutineType = normalizeRoutineType(routineType)
   const existingExercises = await db.exercises.toArray()
@@ -1077,5 +1136,6 @@ export async function generateWorkout({
     workoutsForRoutine,
     sets,
     baselines: baselinesMap,
+    parsedGoal,
   })
 }

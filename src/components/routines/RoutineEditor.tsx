@@ -3,10 +3,12 @@ import { useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import type {
   IronProtocolDB,
+  ParsedGoal,
   Routine,
   RoutineDaysPerWeek,
   RoutineGoal,
 } from '../../db/schema'
+import { describeParsedGoal, parseGoalText } from '../../planner/goalParser'
 
 interface RoutineEditorProps {
   db: IronProtocolDB
@@ -23,7 +25,26 @@ const GOAL_OPTIONS: { value: RoutineGoal; label: string }[] = [
 
 const DAYS_OPTIONS: RoutineDaysPerWeek[] = [3, 4, 5]
 
-function autoSuggestName(goal: RoutineGoal, days: RoutineDaysPerWeek): string {
+function autoSuggestName(
+  goal: RoutineGoal,
+  days: RoutineDaysPerWeek,
+  parsed?: ParsedGoal,
+): string {
+  if (!parsed || parsed.aim === 'general') {
+    return `${goal} ${days}×/week`
+  }
+  if (parsed.aim === 'lift-pr' && parsed.targetLifts.length === 1) {
+    return `${parsed.targetLifts[0]} Builder`
+  }
+  if (parsed.aim === 'lift-pr' && parsed.targetLifts.length > 1) {
+    const head = parsed.targetLifts[0].split(' ')[0]
+    return `${head} & Co. Builder`
+  }
+  if (parsed.aim === 'jump') return 'Vertical Jump Builder'
+  if (parsed.aim === 'run') return 'Endurance Foundation'
+  if (parsed.aim === 'stamina') return 'Stamina Block'
+  if (parsed.aim === 'fat-loss') return 'Cut Phase'
+  if (parsed.aim === 'mobility') return 'Mobility Block'
   return `${goal} ${days}×/week`
 }
 
@@ -42,16 +63,26 @@ export default function RoutineEditor({
   const [cycleLengthWeeks, setCycleLengthWeeks] = useState(
     initial?.cycleLengthWeeks ?? 12,
   )
+  const [timeAvailableMinutes, setTimeAvailableMinutes] = useState<number>(
+    initial?.timeAvailableMinutes ?? 60,
+  )
+  const [goalText, setGoalText] = useState(initial?.goalText ?? '')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const parsed = useMemo<ParsedGoal | undefined>(
+    () => (goalText.trim().length > 0 ? parseGoalText(goalText) : undefined),
+    [goalText],
+  )
+  const parsedHint = useMemo(() => describeParsedGoal(parsed), [parsed])
 
   const resolvedName = useMemo(() => {
     const trimmed = nameInput.trim()
     if (trimmed.length > 0) {
       return trimmed
     }
-    return autoSuggestName(goal, daysPerWeek)
-  }, [nameInput, goal, daysPerWeek])
+    return autoSuggestName(goal, daysPerWeek, parsed)
+  }, [nameInput, goal, daysPerWeek, parsed])
 
   async function handleSave(): Promise<void> {
     if (saving) {
@@ -62,6 +93,7 @@ export default function RoutineEditor({
     setError(null)
     try {
       const id = initial?.id ?? uuidv4()
+      const trimmedGoalText = goalText.trim()
       const record: Routine = {
         id,
         name: resolvedName,
@@ -70,6 +102,10 @@ export default function RoutineEditor({
         cycleLengthWeeks,
         createdAt: initial?.createdAt ?? Date.now(),
         isActive: 1,
+        timeAvailableMinutes,
+        ...(trimmedGoalText.length > 0
+          ? { goalText: trimmedGoalText, parsedGoal: parseGoalText(trimmedGoalText) }
+          : {}),
       }
 
       await db.transaction('rw', db.routines, async () => {
@@ -140,7 +176,7 @@ export default function RoutineEditor({
                 type="text"
                 value={nameInput}
                 onChange={(event) => setNameInput(event.target.value)}
-                placeholder={autoSuggestName(goal, daysPerWeek)}
+                placeholder={autoSuggestName(goal, daysPerWeek, parsed)}
                 className="rounded-2xl border px-4 py-3 text-body"
                 style={{
                   backgroundColor: 'var(--color-surface-base)',
@@ -186,6 +222,36 @@ export default function RoutineEditor({
               </div>
             </div>
 
+            <label className="mb-4 flex flex-col gap-2">
+              <span
+                className="text-label"
+                style={{ color: 'var(--color-accent-primary)' }}
+              >
+                Your Goal{' '}
+                <span style={{ color: 'var(--color-text-muted)' }}>(optional)</span>
+              </span>
+              <textarea
+                value={goalText}
+                onChange={(event) => setGoalText(event.target.value)}
+                placeholder="e.g. raise my bench 1RM to 225 lb · improve vertical jump · run a 6-min mile"
+                rows={2}
+                className="resize-none rounded-2xl border px-4 py-3 text-body"
+                style={{
+                  backgroundColor: 'var(--color-surface-base)',
+                  borderColor: 'var(--color-border-subtle)',
+                  color: 'var(--color-text-primary)',
+                }}
+              />
+              {parsedHint && (
+                <p
+                  className="text-label"
+                  style={{ color: 'var(--color-text-secondary)' }}
+                >
+                  {parsedHint}
+                </p>
+              )}
+            </label>
+
             <div className="mb-4 flex flex-col gap-2">
               <span
                 className="text-label"
@@ -219,6 +285,44 @@ export default function RoutineEditor({
                     </motion.button>
                   )
                 })}
+              </div>
+            </div>
+
+            <div className="mb-4 flex flex-col gap-2">
+              <div className="flex items-end justify-between">
+                <span
+                  className="text-label"
+                  style={{ color: 'var(--color-accent-primary)' }}
+                >
+                  Time Cap Per Session
+                </span>
+                <span
+                  className="text-body"
+                  style={{ color: 'var(--color-accent-primary)' }}
+                >
+                  {timeAvailableMinutes} min
+                </span>
+              </div>
+              <input
+                type="range"
+                min={30}
+                max={120}
+                step={5}
+                value={timeAvailableMinutes}
+                onChange={(event) => setTimeAvailableMinutes(Number(event.target.value))}
+                aria-label="Time cap in minutes"
+                className="h-2 w-full cursor-pointer appearance-none rounded-full focus:outline-none"
+                style={{
+                  background: `linear-gradient(to right, var(--color-accent-primary) 0%, var(--color-accent-primary) ${((timeAvailableMinutes - 30) / 90) * 100}%, var(--color-border-subtle) ${((timeAvailableMinutes - 30) / 90) * 100}%, var(--color-border-subtle) 100%)`,
+                }}
+              />
+              <div className="flex justify-between">
+                <span className="text-label" style={{ color: 'var(--color-text-muted)' }}>
+                  30 min
+                </span>
+                <span className="text-label" style={{ color: 'var(--color-text-muted)' }}>
+                  120 min
+                </span>
               </div>
             </div>
 

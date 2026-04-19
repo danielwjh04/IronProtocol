@@ -24,18 +24,32 @@ type Rating = (typeof RATING_OPTIONS)[number]
 
 function RatingTiles({ value, onChange }: { value: Rating; onChange: (r: Rating) => void }) {
   return (
-    <div className="flex gap-1.5">
-      {RATING_OPTIONS.map((n) => (
-        <button
-          key={n}
-          type="button"
-          onClick={() => onChange(n as Rating)}
-          className={`flex h-8 w-8 items-center justify-center rounded-md text-xs font-bold transition-colors
-            ${n <= value ? 'bg-[#3B71FE] text-white' : 'bg-[#1e2a45] text-zinc-500'}`}
-        >
-          {n}
-        </button>
-      ))}
+    <div className="flex gap-2">
+      {RATING_OPTIONS.map((n) => {
+        const active = n <= value
+        return (
+          <motion.button
+            key={n}
+            type="button"
+            whileTap={{ scale: 0.92 }}
+            onClick={() => onChange(n as Rating)}
+            className="text-label flex h-10 w-10 items-center justify-center rounded-2xl border transition-colors"
+            style={{
+              backgroundColor: active
+                ? 'var(--color-accent-primary)'
+                : 'var(--color-surface-base)',
+              borderColor: active
+                ? 'var(--color-accent-primary)'
+                : 'var(--color-border-subtle)',
+              color: active
+                ? 'var(--color-accent-on)'
+                : 'var(--color-text-secondary)',
+            }}
+          >
+            {n}
+          </motion.button>
+        )
+      })}
     </div>
   )
 }
@@ -82,36 +96,63 @@ export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-      className="rounded-3xl border border-white/10 bg-[#0D1626] p-5"
+      className="rounded-3xl border p-5"
+      style={{
+        backgroundColor: 'var(--color-surface-raised)',
+        borderColor:     'var(--color-border-subtle)',
+      }}
     >
-      <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3B71FE]">
+      <p
+        className="text-label mb-4 uppercase"
+        style={{ color: 'var(--color-accent-primary)' }}
+      >
         Post-Session Telemetry
       </p>
 
-      <div className="mb-4">
-        <p className="mb-2 text-xs text-zinc-400">Sleep quality</p>
+      <div className="mb-5">
+        <p className="text-label mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+          Sleep quality
+        </p>
         <RatingTiles value={sleepQuality} onChange={setSleepQuality} />
       </div>
 
-      <div className="mb-4">
-        <p className="mb-2 text-xs text-zinc-400">Overall fatigue</p>
+      <div className="mb-5">
+        <p className="text-label mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+          Overall fatigue
+        </p>
         <RatingTiles value={overallFatigue} onChange={setOverallFatigue} />
       </div>
 
-      <div className="mb-5">
-        <p className="mb-2 text-xs text-zinc-400">Soreness (tap affected)</p>
+      <div className="mb-6">
+        <p className="text-label mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+          Soreness (tap affected)
+        </p>
         <div className="flex flex-wrap gap-2">
-          {MUSCLE_GROUPS.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => toggleSoreness(key)}
-              className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-colors
-                ${soreness[key] ? 'border-[#3B71FE] text-[#3B71FE]' : 'border-white/10 text-zinc-500'}`}
-            >
-              {label}
-            </button>
-          ))}
+          {MUSCLE_GROUPS.map(({ key, label }) => {
+            const active = Boolean(soreness[key])
+            return (
+              <motion.button
+                key={key}
+                type="button"
+                whileTap={{ scale: 0.94 }}
+                onClick={() => toggleSoreness(key)}
+                className="text-label rounded-full border px-3 py-1.5 transition-colors"
+                style={{
+                  backgroundColor: active
+                    ? 'var(--color-accent-soft)'
+                    : 'var(--color-surface-base)',
+                  borderColor: active
+                    ? 'var(--color-accent-primary)'
+                    : 'var(--color-border-subtle)',
+                  color: active
+                    ? 'var(--color-accent-primary)'
+                    : 'var(--color-text-secondary)',
+                }}
+              >
+                {label}
+              </motion.button>
+            )
+          })}
         </div>
       </div>
 
@@ -120,12 +161,21 @@ export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props
         onClick={handleSubmit}
         disabled={saving}
         whileTap={{ scale: 0.97 }}
-        className="mb-3 w-full rounded-xl bg-[#3B71FE] py-3 text-sm font-black text-white disabled:opacity-50"
+        className="text-label mb-3 h-12 w-full rounded-2xl disabled:opacity-40"
+        style={{
+          backgroundColor: 'var(--color-accent-primary)',
+          color:           'var(--color-accent-on)',
+        }}
       >
-        Log Recovery Data
+        {saving ? 'Logging…' : 'Log Recovery Data'}
       </motion.button>
 
-      <button type="button" onClick={onSkip} className="w-full text-center text-xs text-zinc-600">
+      <button
+        type="button"
+        onClick={onSkip}
+        className="text-label w-full text-center"
+        style={{ color: 'var(--color-text-muted)' }}
+      >
         Skip — I'll log next time
       </button>
     </motion.div>

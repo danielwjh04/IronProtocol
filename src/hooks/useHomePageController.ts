@@ -107,7 +107,6 @@ export function useHomePageController(
 
   const [routineType, setRoutineType] = useState<CanonicalRoutineType>('PPL')
   const [trainingGoal, setTrainingGoal] = useState<TrainingGoal>('Hypertrophy')
-  const [timeAvailable] = useState(60)
   const [plannerRefreshTick, setPlannerRefreshTick] = useState(0)
   const [hasHydratedRoutine, setHasHydratedRoutine] = useState(false)
   const [plan, setPlan] = useState<PlannedWorkout | null>(null)
@@ -123,6 +122,7 @@ export function useHomePageController(
   const activeRoutine = useActiveRoutine(db)
 
   const latestLabPlanRef = useRef<PlannedWorkout | null>(null)
+  const timeAvailable = activeRoutine?.timeAvailableMinutes ?? 60
   const deferredTimeAvailable = useDeferredValue(timeAvailable)
 
   useEffect(() => {
@@ -206,7 +206,8 @@ export function useHomePageController(
     routineType,
     trainingGoal,
     timeAvailable: deferredTimeAvailable,
-  }), [db, routineType, trainingGoal, deferredTimeAvailable])
+    parsedGoal: activeRoutine?.parsedGoal,
+  }), [db, routineType, trainingGoal, deferredTimeAvailable, activeRoutine?.parsedGoal])
 
   useEffect(() => {
     let cancelled = false

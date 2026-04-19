@@ -6,9 +6,11 @@ import {
   TEMP_SESSION_ID,
   type ExerciseTier,
   type IronProtocolDB,
+  type ParsedGoal,
   type TempSessionCompletedSet,
   type TempSession,
 } from '../db/schema'
+import { scoreForGoal } from '../data/goalAccessories'
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 import { PersonalBestsService } from '../services/personalBestsService'
 import { publish } from '../events/setCommitEvents'
@@ -20,6 +22,7 @@ interface Props {
   plan: PlannedWorkout
   db: IronProtocolDB
   initialDraft?: TempSession | null
+  parsedGoal?: ParsedGoal
   onDone?: () => void
   onCancel?: () => void
 }
@@ -35,17 +38,7 @@ function isDatabaseClosedError(error: unknown): boolean {
     && (error as { name?: string }).name === 'DatabaseClosedError'
 }
 
-function tierIntensityClass(tier: ExerciseTier): string {
-  if (tier === 1) {
-    return 'text-2xl'
-  }
-  if (tier === 2) {
-    return 'text-xl'
-  }
-  return 'text-lg'
-}
-
-export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel }: Props) {
+export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDone, onCancel }: Props) {
   const initialExercises: readonly PlannedExercise[] = plan.exercises.length > 0
     ? plan.exercises
     : [{
@@ -102,11 +95,13 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
   )
   const [completedSets,  setCompletedSets]  = useState<CompletedSet[]>(resumableDraft?.completedSets ?? [])
   const [showWhy,        setShowWhy]        = useState(false)
+  const [expandedExercises, setExpandedExercises] = useState<Record<string, boolean>>({})
 
   const [showRecoveryForm,    setShowRecoveryForm]    = useState(false)
   const [completedWorkoutId,  setCompletedWorkoutId]  = useState<string | null>(null)
   const [commitError,         setCommitError]         = useState<string | null>(null)
   const [showCancelConfirm,   setShowCancelConfirm]   = useState(false)
+  const [isCommitting,        setIsCommitting]        = useState(false)
 
   const weightInputRef = useRef<HTMLInputElement>(null)
 
@@ -279,17 +274,43 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
   }
 
   async function handleCompleteSetClick() {
+    if (isCommitting) return
+    setIsCommitting(true)
     setCommitError(null)
     try {
       await handleCompleteSet()
     } catch (error) {
       console.error('Failed to commit set:', error)
       setCommitError('Failed to save set. Please try again.')
+    } finally {
+      setIsCommitting(false)
     }
   }
 
   async function handleCancelWorkout(): Promise<void> {
     try {
+      if (completedSets.length > 0) {
+        const workoutId = uuidv4()
+        await db.workouts.add({
+          id: workoutId,
+          date: Date.now(),
+          routineType: plan.routineType,
+          sessionIndex: plan.sessionIndex,
+          notes: 'Session abandoned early',
+        })
+        await Promise.all(
+          completedSets.map((s) =>
+            db.sets.add({
+              id: uuidv4(),
+              workoutId,
+              exerciseId: s.exerciseId,
+              weight:     s.weight,
+              reps:       s.reps,
+              orderIndex: s.orderIndex,
+            })
+          )
+        )
+      }
       await db.tempSessions.delete(TEMP_SESSION_ID)
     } catch (error) {
       if (!isDatabaseClosedError(error)) {
@@ -306,28 +327,56 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
   }
 
   return (
-    <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-[#0A0E1A] px-4 pb-28 pt-6 text-zinc-100">
-      <motion.header layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
+    <main
+      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-28 pt-6"
+      style={{
+        backgroundColor: 'var(--color-surface-base)',
+        color:           'var(--color-text-primary)',
+      }}
+    >
+      <motion.header
+        layout
+        whileTap={{ scale: 0.98 }}
+        className="rounded-3xl border p-5"
+        style={{
+          backgroundColor: 'var(--color-surface-raised)',
+          borderColor:     'var(--color-border-subtle)',
+        }}
+      >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-400/70">Active Session</p>
+            <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>Active Session</p>
             <div className="mt-3 flex items-center gap-2">
-              <h2 className={`${tierIntensityClass(currentEx.tier)} font-black text-white`}>
+              <h2 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
                 {currentEx.exerciseName}
               </h2>
+              {scoreForGoal(currentEx, parsedGoal) > 0 && (
+                <span
+                  className="text-label rounded-full px-2 py-0.5"
+                  style={{
+                    backgroundColor: 'var(--color-accent-primary)',
+                    color: 'var(--color-accent-on)',
+                  }}
+                >
+                  GOAL
+                </span>
+              )}
             </div>
-            <p className="mt-2 text-sm text-zinc-300">Set {displaySetNum} of {currentEx.sets}</p>
+            <p className="text-body mt-2" style={{ color: 'var(--color-text-secondary)' }}>
+              Set {displaySetNum} of {currentEx.sets}
+            </p>
           </div>
           <button
             type="button"
             onClick={() => setShowWhy(prev => !prev)}
             aria-pressed={showWhy}
             aria-label="Toggle exercise purpose"
-            className={`mt-3 shrink-0 rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] transition-colors ${
-              showWhy
-                ? 'border-zinc-50 bg-zinc-50 text-[#0A0E1A]'
-                : 'border-[#3B71FE]/40 bg-transparent text-blue-400/80 hover:border-[#3B71FE]/70 hover:text-blue-400'
-            }`}
+            className="text-label mt-3 shrink-0 rounded-full border px-3 py-1 transition-colors"
+            style={{
+              borderColor:     showWhy ? 'var(--color-accent-primary)' : 'var(--color-border-subtle)',
+              backgroundColor: showWhy ? 'var(--color-accent-primary)' : 'transparent',
+              color:           showWhy ? 'var(--color-accent-on)'      : 'var(--color-text-secondary)',
+            }}
           >
             WHY
           </button>
@@ -350,7 +399,15 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
         </AnimatePresence>
       </motion.header>
 
-      <motion.section layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
+      <motion.section
+        layout
+        whileTap={{ scale: 0.98 }}
+        className="rounded-3xl border p-4"
+        style={{
+          backgroundColor: 'var(--color-surface-raised)',
+          borderColor:     'var(--color-border-subtle)',
+        }}
+      >
         <ul className="flex flex-col gap-3">
           {exercises.map((exercise, index) => {
             const isCurrent = index === currentExIndex
@@ -358,43 +415,131 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
             const completedSetCount = exerciseCompletedSets.length
             const remainingSetCount = Math.max(exercise.sets - completedSetCount, 0)
             const nextSetNumber = Math.min(completedSetCount + 1, exercise.sets)
-            const nextSetGuidance = remainingSetCount > 0
-              ? `Next: Set ${nextSetNumber} of ${exercise.sets} (${remainingSetCount} left)`
-              : `Goal sets complete (${exercise.sets}/${exercise.sets})`
+            const subtitle = remainingSetCount > 0
+              ? `Set ${nextSetNumber}/${exercise.sets} · ${exercise.weight}kg × ${exercise.reps}`
+              : `Complete · ${exercise.sets} sets`
+
+            const isExpanded = Boolean(expandedExercises[exercise.exerciseId])
+            const hasCompletedSets = exerciseCompletedSets.length > 0
 
             return (
               <li
                 key={exercise.exerciseId}
-                className={`rounded-2xl border p-3 ${
-                  isCurrent
-                    ? 'border-[#3B71FE] bg-[#3B71FE]/10'
-                    : 'border-[#3B71FE]/15 bg-[#091020]'
-                }`}
+                className="rounded-2xl border p-3"
+                style={{
+                  borderColor:     isCurrent ? 'var(--color-accent-primary)' : 'var(--color-border-subtle)',
+                  backgroundColor: isCurrent ? 'var(--color-accent-soft)'    : 'var(--color-surface-base)',
+                }}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className={`${tierIntensityClass(exercise.tier)} font-black text-zinc-100`}>{exercise.exerciseName}</p>
-                    <p className="relative mt-1 text-xs font-bold text-zinc-300">
-                      {exercise.progressionGoal} · {nextSetGuidance}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-body font-bold" style={{ color: 'var(--color-text-primary)' }}>
+                        {exercise.exerciseName}
+                      </p>
+                      {scoreForGoal(exercise, parsedGoal) > 0 && (
+                        <span
+                          className="text-label rounded-full px-2 py-0.5"
+                          style={{
+                            backgroundColor: 'var(--color-accent-primary)',
+                            color: 'var(--color-accent-on)',
+                          }}
+                        >
+                          GOAL
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-label mt-1" style={{ color: 'var(--color-text-secondary)' }}>
+                      {subtitle}
                     </p>
+                  </div>
+                  <span
+                    className="text-label rounded-full border px-2 py-1"
+                    style={{
+                      borderColor: 'var(--color-border-subtle)',
+                      color:       'var(--color-text-secondary)',
+                    }}
+                  >
+                    T{exercise.tier}
+                  </span>
+                </div>
 
-                    {exerciseCompletedSets.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-2">
+                <AnimatePresence initial={false}>
+                  {hasCompletedSets && isExpanded && (
+                    <motion.div
+                      key="completed-sets"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-3 flex flex-wrap gap-2">
                         {exerciseCompletedSets.map((set, completedIndex) => (
                           <span
                             key={set.orderIndex}
-                            className="rounded-full border border-[#3B71FE]/30 bg-[#3B71FE]/10 px-3 py-1 text-[11px] font-black text-white"
+                            className="text-label rounded-full border px-3 py-1"
+                            style={{
+                              borderColor:     'var(--color-accent-primary)',
+                              backgroundColor: 'var(--color-accent-soft)',
+                              color:           'var(--color-accent-primary)',
+                            }}
                           >
                             S{completedIndex + 1}: {set.weight}kg × {set.reps}
                           </span>
                         ))}
                       </div>
-                    )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {hasCompletedSets && (
+                  <div className="mt-2 flex items-center justify-between">
+                    <span
+                      className="text-label"
+                      style={{ color: 'var(--color-text-muted)' }}
+                    >
+                      {completedSetCount} logged
+                    </span>
+                    <motion.button
+                      type="button"
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() =>
+                        setExpandedExercises((prev) => ({
+                          ...prev,
+                          [exercise.exerciseId]: !prev[exercise.exerciseId],
+                        }))
+                      }
+                      aria-expanded={isExpanded}
+                      aria-label={isExpanded ? 'Hide completed sets' : 'Show completed sets'}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border"
+                      style={{
+                        borderColor: isExpanded
+                          ? 'var(--color-accent-primary)'
+                          : 'var(--color-border-subtle)',
+                        color: isExpanded
+                          ? 'var(--color-accent-primary)'
+                          : 'var(--color-text-secondary)',
+                        backgroundColor: 'transparent',
+                      }}
+                    >
+                      <motion.svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+                      >
+                        <polyline points="3 5 7 9 11 5" />
+                      </motion.svg>
+                    </motion.button>
                   </div>
-                  <span className="rounded-full border border-[#3B71FE]/30 px-2 py-1 text-xs font-bold text-zinc-200">
-                    T{exercise.tier}
-                  </span>
-                </div>
+                )}
               </li>
             )
           })}
@@ -402,15 +547,22 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
       </motion.section>
 
       {phase === 'resting' && (
-        <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-5">
-          <div className="flex items-center justify-center">
+        <motion.section
+          whileTap={{ scale: 0.98 }}
+          className="rounded-3xl border p-5"
+          style={{
+            backgroundColor: 'var(--color-surface-raised)',
+            borderColor:     'var(--color-border-subtle)',
+          }}
+        >
+          <div className="flex items-center justify-center" style={{ color: 'var(--color-accent-primary)' }}>
             <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Rest timer">
               <circle
                 cx="60"
                 cy="60"
                 r={timerRadius}
                 fill="none"
-                stroke="rgba(59,113,254,0.15)"
+                stroke="var(--color-border-subtle)"
                 strokeWidth="10"
               />
               <circle
@@ -418,7 +570,7 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
                 cy="60"
                 r={timerRadius}
                 fill="none"
-                stroke="#3B71FE"
+                stroke="currentColor"
                 strokeWidth="10"
                 strokeLinecap="round"
                 strokeDasharray={timerCircumference}
@@ -431,30 +583,42 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
                 textAnchor="middle"
                 fontSize="26"
                 fontWeight="800"
-                fill="#fafafa"
+                fill="var(--color-text-primary)"
               >
                 {restSecondsLeft}s
               </text>
             </svg>
           </div>
-          <p className="mt-3 text-center text-sm font-semibold text-zinc-300">
+          <p className="text-body mt-3 text-center" style={{ color: 'var(--color-text-secondary)' }}>
             Recover now. Set {displaySetNum} begins at zero.
           </p>
           <motion.button
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.96 }}
             type="button"
             onClick={() => setPhase('active')}
-            className="mt-4 h-12 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-sm font-black uppercase tracking-[0.12em] text-white shadow-[0_6px_18px_-6px_rgba(59,113,254,0.55)] transition-colors hover:bg-[#5585ff] active:bg-[#2860ee]"
+            className="text-body mt-4 h-12 w-full cursor-pointer rounded-2xl font-bold"
+            style={{
+              backgroundColor: 'var(--color-accent-primary)',
+              color:           'var(--color-accent-on)',
+            }}
           >
             Start Next Set →
           </motion.button>
         </motion.section>
       )}
 
-      <motion.section layout whileTap={{ scale: 0.95 }} className="rounded-3xl border border-[#3B71FE]/15 bg-[#0D1626] p-4">
+      <motion.section
+        layout
+        whileTap={{ scale: 0.98 }}
+        className="rounded-3xl border p-4"
+        style={{
+          backgroundColor: 'var(--color-surface-raised)',
+          borderColor:     'var(--color-border-subtle)',
+        }}
+      >
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-2">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400/70">Weight (kg)</span>
+            <span className="text-label" style={{ color: 'var(--color-accent-primary)' }}>Weight (kg)</span>
             <input
               ref={weightInputRef}
               type="number"
@@ -464,11 +628,17 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
                 setWeight(newWeight)
                 void persistDraft({ currentExIndex, currentSetInEx, weight: newWeight, reps, phase, restSecondsLeft, completedSets })
               }}
-              className="w-full rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-4 py-3 text-center text-2xl font-black text-white focus:border-[#3B71FE] focus:outline-none"
+              className="text-body w-full rounded-2xl border px-4 py-3 text-center focus:outline-none"
+              style={{
+                backgroundColor: 'var(--color-surface-base)',
+                borderColor:     'var(--color-border-subtle)',
+                color:           'var(--color-text-primary)',
+                fontWeight:      700,
+              }}
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400/70">Reps</span>
+            <span className="text-label" style={{ color: 'var(--color-accent-primary)' }}>Reps</span>
             <input
               type="number"
               value={reps}
@@ -477,24 +647,31 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
                 setReps(newReps)
                 void persistDraft({ currentExIndex, currentSetInEx, weight, reps: newReps, phase, restSecondsLeft, completedSets })
               }}
-              className="w-full rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-4 py-3 text-center text-2xl font-black text-white focus:border-[#3B71FE] focus:outline-none"
+              className="text-body w-full rounded-2xl border px-4 py-3 text-center focus:outline-none"
+              style={{
+                backgroundColor: 'var(--color-surface-base)',
+                borderColor:     'var(--color-border-subtle)',
+                color:           'var(--color-text-primary)',
+                fontWeight:      700,
+              }}
             />
           </label>
         </div>
       </motion.section>
 
       <motion.button
-        whileTap={{ scale: 0.95 }}
+        whileTap={{ scale: 0.96 }}
         type="button"
         onClick={handleCompleteSetClick}
-        disabled={phase === 'resting'}
-        className={`h-16 w-full cursor-pointer rounded-3xl px-6 text-xl font-black text-white transition-colors ${
-          phase === 'resting'
-            ? 'cursor-not-allowed bg-[#3B71FE]/15 text-zinc-500'
-            : 'bg-[#3B71FE] shadow-[0_8px_24px_-8px_rgba(59,113,254,0.55)] hover:bg-[#5585ff] active:bg-[#2860ee]'
-        }`}
+        disabled={phase === 'resting' || isCommitting}
+        className="text-body h-14 w-full cursor-pointer rounded-2xl disabled:cursor-not-allowed disabled:opacity-40"
+        style={{
+          backgroundColor: 'var(--color-accent-primary)',
+          color:           'var(--color-accent-on)',
+          fontWeight:      700,
+        }}
       >
-        Complete Set
+        {isCommitting ? 'Logging…' : 'Complete Set'}
       </motion.button>
       <AnimatePresence>
         {commitError && (
@@ -502,7 +679,8 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="text-center text-sm font-semibold text-red-400"
+            className="text-body text-center"
+            style={{ color: 'var(--color-utility-danger)' }}
           >
             {commitError}
           </motion.p>
@@ -510,10 +688,15 @@ export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel 
       </AnimatePresence>
 
       <motion.button
-        whileTap={{ scale: 0.95 }}
+        whileTap={{ scale: 0.96 }}
         type="button"
         onClick={() => setShowCancelConfirm(true)}
-        className="h-12 w-full cursor-pointer rounded-3xl border border-[#3B71FE]/20 bg-transparent px-5 text-sm font-bold uppercase tracking-[0.1em] text-zinc-300 transition-colors hover:border-[#3B71FE]/40 hover:bg-[#3B71FE]/5 hover:text-zinc-100 active:bg-[#3B71FE]/10"
+        aria-label="Cancel workout"
+        className="text-label h-12 w-full cursor-pointer rounded-2xl border bg-transparent px-5 transition-colors"
+        style={{
+          borderColor: 'var(--color-border-subtle)',
+          color:       'var(--color-text-secondary)',
+        }}
       >
         Cancel Workout
       </motion.button>

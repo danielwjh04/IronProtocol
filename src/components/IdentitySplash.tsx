@@ -173,7 +173,8 @@ export default function IdentitySplash({ db }: Props) {
             initial={{ opacity: 0, y: 36 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * CHAR_DELAY, duration: 0.48, ease: [0.23, 1, 0.32, 1] }}
-            className="text-display text-white"
+            className="text-display"
+            style={{ color: 'var(--color-text-primary)' }}
           >
             {char}
           </motion.span>
@@ -184,7 +185,8 @@ export default function IdentitySplash({ db }: Props) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: POST_TITLE_DELAY + 0.1, duration: 0.4 }}
-        className="mt-6 text-center text-body text-zinc-400"
+        className="mt-6 text-center text-body"
+        style={{ color: 'var(--color-text-secondary)' }}
       >
         Offline-first gym tracker. Zero decision fatigue.
       </motion.p>
@@ -192,7 +194,12 @@ export default function IdentitySplash({ db }: Props) {
       {submitError && (
         <p
           role="alert"
-          className="mt-4 w-full rounded-2xl border border-red-500/40 bg-red-900/20 px-4 py-3 text-body text-red-300"
+          className="mt-4 w-full rounded-2xl border px-4 py-3 text-body"
+          style={{
+            borderColor:     'var(--color-utility-danger)',
+            backgroundColor: 'var(--color-surface-raised)',
+            color:           'var(--color-utility-danger)',
+          }}
         >
           {submitError}
         </p>
@@ -209,9 +216,9 @@ export default function IdentitySplash({ db }: Props) {
             <span className="text-label text-[var(--color-accent-primary)]">
               Step {step + 1} of {TOTAL_STEPS}
             </span>
-            <span className="text-label text-zinc-300">{STEP_LABELS[step]}</span>
+            <span className="text-label" style={{ color: 'var(--color-text-secondary)' }}>{STEP_LABELS[step]}</span>
           </div>
-          <div className="h-1.5 rounded-full bg-zinc-800">
+          <div className="h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-surface-overlay)' }}>
             <div
               className="h-full rounded-full bg-[var(--color-accent-primary)] transition-all duration-200"
               style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
@@ -238,7 +245,8 @@ export default function IdentitySplash({ db }: Props) {
                   onChange={(e) => setAgeYearsInput(e.target.value)}
                   placeholder="Years"
                   autoFocus
-                  className="w-full rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-base)] px-4 py-3 text-body text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--color-accent-primary)] focus:outline-none"
+                  className="w-full rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-base)] px-4 py-3 text-body focus:border-[var(--color-accent-primary)] focus:outline-none"
+                  style={{ color: 'var(--color-text-primary)' }}
                 />
               </label>
               <label className="flex flex-col gap-2">
@@ -250,7 +258,8 @@ export default function IdentitySplash({ db }: Props) {
                   value={bodyWeightKgInput}
                   onChange={(e) => setBodyWeightKgInput(e.target.value)}
                   placeholder="kg"
-                  className="w-full rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-base)] px-4 py-3 text-body text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--color-accent-primary)] focus:outline-none"
+                  className="w-full rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-base)] px-4 py-3 text-body focus:border-[var(--color-accent-primary)] focus:outline-none"
+                  style={{ color: 'var(--color-text-primary)' }}
                 />
               </label>
             </div>
@@ -269,7 +278,7 @@ export default function IdentitySplash({ db }: Props) {
                     className={`cursor-pointer rounded-2xl border px-3 py-3 text-label transition-all ${
                       equipmentAvailability === option.value
                         ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/15 text-[var(--color-accent-primary)]'
-                        : 'border-[var(--color-border-subtle)] bg-[var(--color-surface-base)] text-zinc-400'
+                        : 'border-[var(--color-border-subtle)] bg-[var(--color-surface-base)] text-[var(--color-text-secondary)]'
                     }`}
                   >
                     {option.label}
@@ -283,7 +292,13 @@ export default function IdentitySplash({ db }: Props) {
         </motion.div>
 
         {step < 2 && (
-          <p className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-base)]/70 px-3 py-2 text-label text-zinc-300">
+          <p
+            className="rounded-2xl border border-[var(--color-border-subtle)] px-3 py-2 text-label"
+            style={{
+              backgroundColor: 'var(--color-surface-base)',
+              color:           'var(--color-text-secondary)',
+            }}
+          >
             {currentStepError ?? 'Step ready. Continue.'}
           </p>
         )}
@@ -295,7 +310,8 @@ export default function IdentitySplash({ db }: Props) {
             type="button"
             onClick={goToPreviousStep}
             disabled={step === 0 || submitting}
-            className="h-12 flex-1 cursor-pointer rounded-3xl border border-[var(--color-border-subtle)] bg-transparent px-4 text-label text-zinc-300 hover:border-[var(--color-accent-primary)]/40 disabled:cursor-not-allowed disabled:text-zinc-600"
+            className="h-12 flex-1 cursor-pointer rounded-3xl border border-[var(--color-border-subtle)] bg-transparent px-4 text-label hover:border-[var(--color-accent-primary)]/40 disabled:cursor-not-allowed"
+            style={{ color: 'var(--color-text-secondary)' }}
           >
             Back
           </motion.button>
@@ -307,7 +323,8 @@ export default function IdentitySplash({ db }: Props) {
               type="button"
               onClick={goToNextStep}
               disabled={!isCurrentStepValid || submitting}
-              className="h-12 flex-[1.4] cursor-pointer rounded-3xl bg-[var(--color-accent-primary)] px-6 text-label text-white disabled:cursor-not-allowed disabled:bg-[var(--color-accent-primary)]/30 disabled:text-zinc-500"
+              className="h-12 flex-[1.4] cursor-pointer rounded-3xl bg-[var(--color-accent-primary)] px-6 text-label disabled:cursor-not-allowed disabled:opacity-40"
+              style={{ color: 'var(--color-accent-on)' }}
             >
               Next
             </motion.button>
@@ -320,7 +337,8 @@ export default function IdentitySplash({ db }: Props) {
               type="button"
               onClick={() => { void handleFinish() }}
               disabled={submitting}
-              className="h-12 flex-[1.4] cursor-pointer rounded-3xl bg-[var(--color-accent-primary)] px-6 text-label text-white disabled:cursor-not-allowed disabled:bg-[var(--color-accent-primary)]/30 disabled:text-zinc-500"
+              className="h-12 flex-[1.4] cursor-pointer rounded-3xl bg-[var(--color-accent-primary)] px-6 text-label disabled:cursor-not-allowed disabled:opacity-40"
+              style={{ color: 'var(--color-accent-on)' }}
             >
               {submitting ? 'Initializing…' : 'Enter Protocol'}
             </motion.button>

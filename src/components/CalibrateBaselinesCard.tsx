@@ -6,8 +6,6 @@ interface Props {
   db: IronProtocolDB
 }
 
-// The four T1 compound anchors that drive all progression math.
-// Keys are stored lowercased in the baselines table (PK = exerciseName).
 const T1_COMPOUNDS = [
   { key: 'back squat',      label: 'Squat',    hint: 'kg' },
   { key: 'bench press',     label: 'Bench',    hint: 'kg' },
@@ -29,8 +27,8 @@ export default function CalibrateBaselinesCard({ db }: Props) {
   const [weights, setWeights] = useState<WeightMap>(EMPTY_WEIGHTS)
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [focusKey, setFocusKey] = useState<CompoundKey | null>(null)
 
-  // Load any previously saved baselines on mount.
   useEffect(() => {
     async function load() {
       const rows = await db.baselines.toArray()
@@ -60,7 +58,6 @@ export default function CalibrateBaselinesCard({ db }: Props) {
       .filter(({ kg }) => Number.isFinite(kg) && kg > 0)
       .map(({ key, kg }) => ({ exerciseName: key, weight: kg }))
 
-    // Atomic put — replaces any existing entry for each compound.
     await db.baselines.bulkPut(rows)
 
     setSaving(false)
@@ -69,58 +66,90 @@ export default function CalibrateBaselinesCard({ db }: Props) {
 
   return (
     <motion.section
-      whileTap={{ scale: 0.98 }}
-      className="rounded-3xl border border-[#3B71FE]/20 bg-[#0D1626] p-6 shadow-[0_18px_38px_-24px_rgba(59,113,254,0.35)]"
+      whileTap={{ scale: 0.995 }}
+      className="rounded-3xl border p-5"
+      style={{
+        backgroundColor: 'var(--color-surface-raised)',
+        borderColor:     'var(--color-border-subtle)',
+      }}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#3B71FE]">
+          <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
             T1 Calibration
           </p>
-          <h2 className="mt-1 text-2xl font-black text-zinc-100">
-            Calibrate Baselines
+          <h2 className="text-display mt-2" style={{ color: 'var(--color-text-primary)' }}>
+            Baselines
           </h2>
         </div>
-        <span className="rounded-xl border border-[#3B71FE]/20 bg-[#091020] px-2 py-1 text-xs font-black uppercase tracking-widest text-zinc-400">
+        <span
+          className="text-label rounded-full border px-3 py-1"
+          style={{
+            borderColor: 'var(--color-border-subtle)',
+            color:       'var(--color-text-secondary)',
+          }}
+        >
           Day 1
         </span>
       </div>
 
-      <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-        Enter your current working weights. The planner ignores the 20 kg default and starts you at your real numbers.
+      <p className="text-body mt-3" style={{ color: 'var(--color-text-secondary)' }}>
+        Enter your current working weights. The planner starts you at your real numbers instead of the 20 kg default.
       </p>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
-        {T1_COMPOUNDS.map(({ key, label, hint }) => (
-          <label key={key} className="flex flex-col gap-1.5">
-            <span className="text-xs font-black uppercase tracking-[0.2em] text-zinc-400">
-              {label}
-            </span>
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                min={0}
-                step={2.5}
-                value={weights[key]}
-                onChange={(e) => handleChange(key, e.target.value)}
-                placeholder="—"
-                className="w-full rounded-2xl border border-[#3B71FE]/20 bg-[#091020] px-4 py-3 pr-10 text-center text-2xl font-black text-white placeholder-zinc-600 transition-colors focus:border-[#3B71FE] focus:outline-none focus:ring-1 focus:ring-[#3B71FE]/30"
-              />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-500">
-                {hint}
+        {T1_COMPOUNDS.map(({ key, label, hint }) => {
+          const isFocused = focusKey === key
+          return (
+            <label key={key} className="flex flex-col gap-2">
+              <span
+                className="text-label"
+                style={{ color: 'var(--color-text-secondary)' }}
+              >
+                {label}
               </span>
-            </div>
-          </label>
-        ))}
+              <div className="relative">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min={0}
+                  step={2.5}
+                  value={weights[key]}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                  onFocus={() => setFocusKey(key)}
+                  onBlur={() => setFocusKey(null)}
+                  placeholder="—"
+                  className="text-body w-full rounded-2xl border px-4 py-3 pr-10 text-center focus:outline-none"
+                  style={{
+                    backgroundColor: 'var(--color-surface-base)',
+                    borderColor: isFocused
+                      ? 'var(--color-accent-primary)'
+                      : 'var(--color-border-subtle)',
+                    color: 'var(--color-text-primary)',
+                  }}
+                />
+                <span
+                  className="text-label pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--color-text-muted)' }}
+                >
+                  {hint}
+                </span>
+              </div>
+            </label>
+          )
+        })}
       </div>
 
       <motion.button
-        whileTap={{ scale: 0.96 }}
+        whileTap={{ scale: 0.98 }}
         type="button"
         onClick={() => { void handleSave() }}
         disabled={saving}
-        className="mt-5 h-14 w-full cursor-pointer rounded-3xl bg-[#3B71FE] px-6 text-base font-black uppercase tracking-[0.12em] text-white shadow-[0_16px_30px_-18px_rgba(59,113,254,0.7)] transition-all hover:bg-[#5585ff] active:scale-[0.98] active:bg-[#2860ee] disabled:cursor-not-allowed disabled:bg-[#3B71FE]/20 disabled:text-zinc-600 disabled:shadow-none"
+        className="text-body mt-5 h-14 w-full rounded-2xl font-bold disabled:opacity-40"
+        style={{
+          backgroundColor: 'var(--color-accent-primary)',
+          color:           'var(--color-accent-on)',
+        }}
       >
         {saving ? 'Locking In…' : 'Lock In Baselines'}
       </motion.button>
@@ -133,7 +162,8 @@ export default function CalibrateBaselinesCard({ db }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.25 }}
-            className="mt-3 text-center text-sm font-semibold text-[#3B71FE]"
+            className="text-label mt-3 text-center"
+            style={{ color: 'var(--color-accent-primary)' }}
           >
             ✓ Baselines locked in — planner updated.
           </motion.p>

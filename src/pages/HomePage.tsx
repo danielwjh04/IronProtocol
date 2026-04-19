@@ -67,6 +67,7 @@ export default function HomePage({ db }: Props) {
         plan={loggerPlan}
         db={resolvedDb}
         initialDraft={activeDraft}
+        parsedGoal={activeRoutine?.parsedGoal}
         onDone={onWorkoutComplete}
         onCancel={onDiscardDraft}
       />

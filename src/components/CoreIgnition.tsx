@@ -4,12 +4,10 @@ import type { IronProtocolDB } from '../db/schema'
 import RecoveryAuditorCard from './RecoveryAuditorCard'
 
 interface Props {
-  /** Called once the 2.5 s boot sequence finishes */
   onComplete: () => void
   db?: IronProtocolDB
 }
 
-// Terminal log lines per vision.md § VII.1 — Core Ignition
 const BOOT_LINES = [
   { id: 'init',   delay: 0.1,  text: '> Initializing...'    },
   { id: 'vault',  delay: 0.75, text: '> Checking Vault...'  },
@@ -18,7 +16,6 @@ const BOOT_LINES = [
 
 const TOTAL_DURATION_MS = 2500
 
-/** Pulsing Electric-Blue barbell SVG — center-screen focal element */
 function PulsingBarbell() {
   return (
     <motion.svg
@@ -28,17 +25,18 @@ function PulsingBarbell() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="IronProtocol barbell"
-      animate={{ scale: [1, 1.05, 1], opacity: [0.7, 1, 0.7] }}
+      animate={{ scale: [1, 1.05, 1], opacity: [0.75, 1, 0.75] }}
       transition={{ duration: 1.6, ease: 'easeInOut', repeat: Infinity }}
+      style={{ color: 'var(--color-accent-primary)' }}
     >
-      <rect x="8"   y="8"  width="18" height="40" rx="5" fill="#3B71FE" opacity="0.9" />
-      <rect x="24"  y="16" width="10" height="24" rx="3" fill="#3B71FE" />
-      <rect x="34"  y="25" width="132" height="6"  rx="3" fill="#3B71FE" />
-      <rect x="166" y="16" width="10" height="24" rx="3" fill="#3B71FE" />
-      <rect x="174" y="8"  width="18" height="40" rx="5" fill="#3B71FE" opacity="0.9" />
+      <rect x="8"   y="8"  width="18" height="40" rx="5" fill="currentColor" opacity="0.9" />
+      <rect x="24"  y="16" width="10" height="24" rx="3" fill="currentColor" />
+      <rect x="34"  y="25" width="132" height="6"  rx="3" fill="currentColor" />
+      <rect x="166" y="16" width="10" height="24" rx="3" fill="currentColor" />
+      <rect x="174" y="8"  width="18" height="40" rx="5" fill="currentColor" opacity="0.9" />
 
-      <rect x="52"  y="22" width="6"  height="12" rx="2" fill="white" opacity="0.18" />
-      <rect x="142" y="22" width="6"  height="12" rx="2" fill="white" opacity="0.18" />
+      <rect x="52"  y="22" width="6"  height="12" rx="2" fill="#FFFFFF" opacity="0.18" />
+      <rect x="142" y="22" width="6"  height="12" rx="2" fill="#FFFFFF" opacity="0.18" />
     </motion.svg>
   )
 }
@@ -76,21 +74,26 @@ export default function CoreIgnition({ onComplete, db }: Props) {
       animate={{ opacity: 1 }}
       exit={{ scale: 3, opacity: 0, filter: 'blur(10px)' }}
       transition={{ duration: 0.4, ease: 'easeInOut' }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-10 bg-navy"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-8"
+      style={{ backgroundColor: 'var(--color-surface-base)' }}
       aria-label="Core Ignition — booting IronProtocol"
     >
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
-        <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric opacity-10 blur-[80px]" />
+        <div
+          className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 blur-3xl"
+          style={{ backgroundColor: 'var(--color-accent-primary)' }}
+        />
       </div>
 
       <motion.p
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.4 }}
-        className="font-display text-xs font-black uppercase tracking-[0.35em] text-electric/70"
+        className="text-label"
+        style={{ color: 'var(--color-accent-primary)' }}
       >
         IRONPROTOCOL
       </motion.p>
@@ -103,7 +106,7 @@ export default function CoreIgnition({ onComplete, db }: Props) {
         <PulsingBarbell />
       </motion.div>
 
-      <div className="flex min-h-[80px] w-full max-w-[320px] flex-col gap-2">
+      <div className="flex min-h-[80px] w-full max-w-[320px] flex-col gap-2 px-4">
         <AnimatePresence initial={false}>
           {BOOT_LINES.map(({ id, text }) =>
             visibleLines.includes(id) ? (
@@ -112,11 +115,12 @@ export default function CoreIgnition({ onComplete, db }: Props) {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className={`font-display text-sm font-semibold tracking-wide ${
-                  id === 'ready'
-                    ? 'text-electric'
-                    : 'text-electric/50'
-                }`}
+                className="text-label"
+                style={{
+                  color: id === 'ready'
+                    ? 'var(--color-accent-primary)'
+                    : 'var(--color-text-secondary)',
+                }}
               >
                 {text}
                 {id === 'ready' && (
