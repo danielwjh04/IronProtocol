@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import type { IronProtocolDB } from '../db/schema'
+import RecoveryAuditorCard from './RecoveryAuditorCard'
 
 interface Props {
   /** Called once the 2.5 s boot sequence finishes */
@@ -42,7 +43,7 @@ function PulsingBarbell() {
   )
 }
 
-export default function CoreIgnition({ onComplete }: Props) {
+export default function CoreIgnition({ onComplete, db }: Props) {
   const [visibleLines, setVisibleLines] = useState<string[]>([])
 
   const onCompleteRef = useRef(onComplete)
@@ -132,6 +133,12 @@ export default function CoreIgnition({ onComplete }: Props) {
           )}
         </AnimatePresence>
       </div>
+
+      {db && (
+        <div className="w-full max-w-[320px] px-4">
+          <RecoveryAuditorCard db={db} />
+        </div>
+      )}
     </motion.main>
   )
 }
