@@ -38,7 +38,7 @@ Every piece of data lives locally in IndexedDB. No account, no sync, no network 
 git clone https://github.com/danielwjh04/IronProtocol.git
 cd IronProtocol
 npm install
-npm run dev          # Vite dev server on :5173
+npm run dev   
 ```
 
 Other scripts:
@@ -63,8 +63,6 @@ On a fresh install, **IdentitySplash** walks you through:
 - Equipment availability (commercial gym / bodyweight only).
 - Any injury constraints.
 
-This seeds the V11 prompt contract that informs every future planning decision.
-
 ### 2. Create a routine
 
 Open **Routines** → *New Routine*. Configure:
@@ -88,9 +86,8 @@ From the dashboard:
 
 1. **Blueprint** — review the auto-generated exercise list. Reorder, swap, or remove anything via the swap drawer.
 2. **Review** lock — confirms the plan.
-3. **Ignition** — combat-skin transition screen.
-4. **ActiveLogger** — set-by-set execution with rest timers, per-set RPE, and substitution hotkeys.
-5. **Complete** — results persist to Dexie; recovery log prompt fires afterwards.
+3. **ActiveLogger** — set-by-set execution with rest timers, per-set RPE, and substitution hotkeys.
+4. **Complete** — results persist to Dexie; recovery log prompt fires afterwards.
 
 ### 5. Log recovery
 
@@ -108,17 +105,8 @@ After a workout, **RecoveryLogForm** captures sleep quality, fatigue, and sorene
 
 **Hero Mode is still in work.** The hero progression system (lifetime Hero Level, completed Ascensions, Power vs Hypertrophy tracks, Summit/Masterwork celebrations, Obsidian Stairs UI) is partially scaffolded but **not yet wired into the mainline session flow**. The hero overlay, Forge surface, and track-end modals exist in `src/components/hero/*` and the schema carries `lifetimeHeroLevel`, `completedAscensions`, `activeTrack`, `macrocycleClosedAt` — but the macrocycle-close trigger, XP awards, and celebration timings are still being tuned. Expect shape changes in upcoming streams.
 
----
-
-## 🔐 Git Push Guard
-
-IronProtocol blocks any push that includes a commit message trailer containing `Co-authored-by: Claude`. Activate the tracked hook once per clone:
-
-```bash
-git config core.hooksPath .githooks
-```
-
-If a push is blocked, rewrite the commit message to drop the trailer and push again.
+### App Design
+**Design is still evolving.** The current app UI is a working draft, not a final design language. Component layouts, typography scale, motion timings, and surface hierarchy are all subject to change as the app matures from MVP toward a polished v1. Expect visual churn across streams; the design system in src/design/designSystem.ts is the source of truth while things settle.
 
 ---
 
@@ -126,13 +114,3 @@ If a push is blocked, rewrite the commit message to drop the trailer and push ag
 
 Your data belongs to you. IronProtocol ships an export utility that generates a portable JSON backup of your entire workout history, baseline calibrations, recovery logs, and personal records. Import works symmetrically — move devices, restore backups, or fork your own analysis pipeline.
 
----
-
-## 🧭 Knowledge Graph
-
-The repo is indexed by [graphify](https://github.com/safishamsi/graphify). Outputs live in `graphify-out/`:
-
-- `graph.html` — interactive visualization, open in any browser.
-- `graph.json` — raw graph data.
-- `GRAPH_REPORT.md` — audit report with god nodes, communities, and surprising connections.
-- `obsidian/` — Obsidian vault with one note per concept.
