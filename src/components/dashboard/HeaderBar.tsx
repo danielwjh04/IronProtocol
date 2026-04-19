@@ -1,17 +1,13 @@
-import { Settings } from 'lucide-react'
-
 interface HeaderBarProps {
   sessionLabel: string
   sessionIndex: number
   cycleLength: number
-  onOpenSettings: () => void
 }
 
 export default function HeaderBar({
   sessionLabel,
   sessionIndex,
   cycleLength,
-  onOpenSettings,
 }: HeaderBarProps) {
   const position = cycleLength > 0
     ? `Day ${Math.min(sessionIndex + 1, cycleLength)}/${cycleLength}`
@@ -19,7 +15,7 @@ export default function HeaderBar({
 
   return (
     <header
-      className="sticky top-0 z-40 flex h-12 w-full items-center justify-between border-b px-4"
+      className="sticky top-0 z-40 flex h-12 w-full items-center justify-end border-b px-4 pr-4"
       style={{
         backgroundColor: 'var(--color-surface-base)',
         borderColor: 'var(--color-border-subtle)',
@@ -50,15 +46,6 @@ export default function HeaderBar({
           </>
         )}
       </div>
-      <button
-        type="button"
-        onClick={onOpenSettings}
-        aria-label="Open settings"
-        className="flex h-11 w-11 items-center justify-center rounded-full"
-        style={{ color: 'var(--color-text-primary)' }}
-      >
-        <Settings size={24} strokeWidth={1.75} aria-hidden />
-      </button>
     </header>
   )
 }

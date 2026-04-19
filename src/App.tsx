@@ -1,23 +1,25 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import BottomNav from './components/BottomNav'
 import CalibrateBaselinesCard from './components/CalibrateBaselinesCard'
 import CoreIgnition from './components/CoreIgnition'
 import DataOwnershipCard from './components/DataOwnershipCard'
+import NavDropdown from './components/NavDropdown'
 import { HeroErrorBoundary } from './components/UI/HeroErrorBoundary'
 import { HeroOverlay } from './components/hero/HeroOverlay'
-import { ModeToggleButton } from './components/hero/ModeToggleButton'
 import { UIModeProvider, useUIMode } from './context/UIModeContext'
 import { db } from './db/db'
 import HistoryPage from './pages/HistoryPage'
 import HomePage from './pages/HomePage'
 
-type RoutePath = '/' | '/history' | '/settings'
+type RoutePath = '/' | '/history' | '/routines' | '/settings'
 
 function resolveRoute(pathname: string): RoutePath {
   if (pathname === '/history') {
     return '/history'
+  }
+  if (pathname === '/routines') {
+    return '/routines'
   }
   if (pathname === '/settings') {
     return '/settings'
@@ -39,7 +41,6 @@ function HeroOverlayWithBoundary() {
 
 export default function App() {
   const [route, setRoute] = useState<RoutePath>(() => resolveRoute(window.location.pathname))
-  // Core Ignition: show the boot screen for ~2.5s on first load
   const [isIgniting, setIsIgniting] = useState(true)
 
   useEffect(() => {
@@ -62,22 +63,42 @@ export default function App() {
       return <HistoryPage db={db} />
     }
 
+    if (route === '/routines') {
+      return (
+        <main
+          className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-20 pt-16"
+          style={{ backgroundColor: 'var(--color-surface-base)' }}
+        >
+          <h1 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
+            Routines
+          </h1>
+          <p className="text-body" style={{ color: 'var(--color-text-secondary)' }}>
+            Create and manage training routines. Each routine holds goal, days per week, and cycle length.
+          </p>
+        </main>
+      )
+    }
+
     if (route === '/settings') {
       return (
-        <main className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 bg-navy px-4 pb-28 pt-5 text-zinc-100">
-          <motion.section whileTap={{ scale: 0.95 }} className="rounded-3xl border border-electric/20 bg-navy-card p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-electric/70">Settings</p>
-            <h1 className="mt-3 text-3xl font-black text-zinc-100">Routine Preferences</h1>
-            <p className="mt-3 text-sm text-zinc-200">
-              Production controls for offline readiness, export ownership, and portable safety backups.
+        <main
+          className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-20 pt-16"
+          style={{ backgroundColor: 'var(--color-surface-base)' }}
+        >
+          <motion.section
+            whileTap={{ scale: 0.98 }}
+            className="rounded-3xl border p-6"
+            style={{
+              backgroundColor: 'var(--color-surface-raised)',
+              borderColor: 'var(--color-border-subtle)',
+            }}
+          >
+            <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
+              Settings
             </p>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              className="mt-4 h-11 rounded-2xl border border-electric/20 bg-[#091020] px-4 text-sm font-bold text-zinc-100 transition-colors hover:border-electric/40 active:bg-[#091020]"
-            >
-              Local Mode Active
-            </motion.button>
+            <h1 className="text-display mt-3" style={{ color: 'var(--color-text-primary)' }}>
+              Routine Preferences
+            </h1>
           </motion.section>
 
           <CalibrateBaselinesCard db={db} />
@@ -91,7 +112,10 @@ export default function App() {
 
   return (
     <UIModeProvider>
-      <div className="relative min-h-svh bg-navy">
+      <div
+        className="relative min-h-svh"
+        style={{ backgroundColor: 'var(--color-surface-base)' }}
+      >
         <AnimatePresence>
           {isIgniting && (
             <CoreIgnition onComplete={() => setIsIgniting(false)} db={db} />
@@ -101,10 +125,7 @@ export default function App() {
         {!isIgniting && (
           <>
             {currentPage}
-            <BottomNav currentPath={route} onNavigate={handleNavigate} />
-            <div className="fixed right-4 top-4 z-50">
-              <ModeToggleButton />
-            </div>
+            <NavDropdown currentPath={route} onNavigate={handleNavigate} />
           </>
         )}
 

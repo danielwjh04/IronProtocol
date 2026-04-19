@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import HeaderBar from './HeaderBar'
 import HeroCard from './HeroCard'
 import ExerciseList from './ExerciseList'
 import AdjustStrip from './AdjustStrip'
-import SettingsDrawer from './SettingsDrawer'
 import { useSessionBlueprintController } from '../../hooks/useSessionBlueprintController'
 import type { CanonicalRoutineType, PlannedWorkout } from '../../planner/autoPlanner'
 import type { IronProtocolDB } from '../../db/schema'
@@ -22,13 +20,10 @@ interface DashboardShellProps {
   trainingGoal: TrainingGoal
   timeAvailable: number
   primaryActionLabel: string
-  userName: string | undefined
-  completedAscensions: number
   onTrainingGoalChange: (goal: TrainingGoal) => void
   onTimeAvailableChange: (minutes: number) => void
   onUpdatePlan: (plan: PlannedWorkout) => void
   onStartWorkout: () => void
-  onSelectRoutine: (routineType: CanonicalRoutineType) => void
 }
 
 export default function DashboardShell({
@@ -43,16 +38,11 @@ export default function DashboardShell({
   trainingGoal,
   timeAvailable,
   primaryActionLabel,
-  userName,
-  completedAscensions,
   onTrainingGoalChange,
   onTimeAvailableChange,
   onUpdatePlan,
   onStartWorkout,
-  onSelectRoutine,
 }: DashboardShellProps) {
-  const [settingsOpen, setSettingsOpen] = useState(false)
-
   const { view, actions } = useSessionBlueprintController({
     db,
     plan,
@@ -74,7 +64,6 @@ export default function DashboardShell({
         sessionLabel={sessionLabel}
         sessionIndex={sessionIndex}
         cycleLength={cycleLength}
-        onOpenSettings={() => setSettingsOpen(true)}
       />
 
       <HeroCard
@@ -100,20 +89,6 @@ export default function DashboardShell({
         trimmedExercises={view.trimmedExercises}
         onTrainingGoalToggle={actions.onTrainingGoalToggle}
         onWorkoutLengthChange={actions.onWorkoutLengthChange}
-      />
-
-      <SettingsDrawer
-        open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        userName={userName}
-        completedAscensions={completedAscensions}
-        routineType={routineType}
-        cycleLength={cycleLength}
-        sessionIndex={sessionIndex}
-        onSelectRoutine={(next) => {
-          onSelectRoutine(next)
-          setSettingsOpen(false)
-        }}
       />
 
     </main>
