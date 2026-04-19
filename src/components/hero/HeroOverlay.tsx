@@ -8,19 +8,11 @@ import { useTrackProgress } from '../../hooks/useTrackProgress'
 import { CombatCanvas } from './CombatCanvas'
 import { ComboCounter } from './ComboCounter'
 import { DamageNumber } from './DamageNumber'
-import { ImpactStars } from './ImpactStars'
 import { MasterworkModal } from './MasterworkModal'
 import { ObsidianStairs } from './ObsidianStairs'
 import { TheForge } from './TheForge'
 import { PrestigeFlash } from './PrestigeFlash'
 import { SummitModal } from './SummitModal'
-
-interface BurstState {
-  key:       string
-  x:         number
-  y:         number
-  intensity: number
-}
 
 export function HeroOverlay() {
   const { uiMode, pendingBash } = useUIMode()
@@ -28,7 +20,6 @@ export function HeroOverlay() {
   const track = useTrackProgress()
   const { comboCount } = useHitCombo()
   const { crunch, heavyDouble } = useSensoryFeedback()
-  const [burst, setBurst] = useState<BurstState | null>(null)
   const [damageNumbers, setDamageNumbers] = useState<Array<{ id: string; value: number; intensity: number }>>([])
   const lastBurstId = useRef<string | null>(null)
   const [prestigeFlashActive, setPrestigeFlashActive] = useState(false)
@@ -36,12 +27,6 @@ export function HeroOverlay() {
   useEffect(() => {
     if (pendingBash && lastBurstId.current !== pendingBash.id) {
       lastBurstId.current = pendingBash.id
-      setBurst({
-        key:       pendingBash.id,
-        x:         window.innerWidth / 2,
-        y:         window.innerHeight / 2,
-        intensity: pendingBash.intensity,
-      })
       const displayValue = pendingBash.tonnage
         ? Math.round(pendingBash.tonnage)
         : Math.round(pendingBash.intensity * 100)
@@ -50,10 +35,6 @@ export function HeroOverlay() {
       )
     }
   }, [pendingBash])
-
-  function handleBurstDone() {
-    setBurst(null)
-  }
 
   if (uiMode !== 'hero') return null
 
@@ -94,15 +75,6 @@ export function HeroOverlay() {
       <ComboCounter count={comboCount} />
       <AnimatePresence>
         {damageNumbers.map(d => <DamageNumber key={d.id} {...d} />)}
-        {burst && (
-          <ImpactStars
-            key={burst.key}
-            originX={burst.x}
-            originY={burst.y}
-            intensity={burst.intensity}
-            onDone={handleBurstDone}
-          />
-        )}
       </AnimatePresence>
     </>
   )
