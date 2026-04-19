@@ -83,6 +83,19 @@ export interface RecoveryLog {
   soreness: Partial<Record<MuscleGroup, 1 | 2 | 3 | 4 | 5>>
 }
 
+export type RoutineGoal = 'Hypertrophy' | 'Power'
+export type RoutineDaysPerWeek = 3 | 4 | 5
+
+export interface Routine {
+  id: string
+  name: string
+  goal: RoutineGoal
+  daysPerWeek: RoutineDaysPerWeek
+  cycleLengthWeeks: number
+  createdAt: number
+  isActive: 0 | 1
+}
+
 export type PurposeChip = 'strength' | 'hypertrophy' | 'fat-loss' | 'endurance' | 'health'
 
 export type HeroTrack = 'power' | 'hypertrophy'
@@ -289,6 +302,7 @@ export class IronProtocolDB extends Dexie {
   dailyTargets!: Dexie.Table<DailyTarget, string>
   personalBests!: Dexie.Table<PersonalBest, string>
   recoveryLogs!: Dexie.Table<RecoveryLog, string>
+  routines!: Dexie.Table<Routine, string>
 
   constructor() {
     super('IronProtocolDB')
@@ -601,6 +615,19 @@ export class IronProtocolDB extends Dexie {
             }
           })
       })
+
+    this.version(16).stores({
+      exercises:     'id, name, muscleGroup, tier, *tags',
+      workouts:      'id, date, routineType, sessionIndex',
+      sets:          'id, workoutId, exerciseId, orderIndex',
+      settings:      'id, preferredRoutineType',
+      tempSessions:  'id, updatedAt',
+      baselines:     'exerciseName',
+      dailyTargets:  'date',
+      personalBests: 'exerciseId',
+      recoveryLogs:  'id, workoutId, loggedAt',
+      routines:      'id, name, goal, isActive, createdAt',
+    })
 
     this.on('populate', (tx) => {
       void tx.table('settings').add({

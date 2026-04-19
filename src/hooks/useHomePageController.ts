@@ -13,8 +13,10 @@ import {
   TEMP_SESSION_ID,
   type AppSettings,
   type IronProtocolDB,
+  type Routine,
   type TempSession,
 } from '../db/schema'
+import { useActiveRoutine } from './useActiveRoutine'
 import {
   calcEstimatedMinutes,
   generateWorkout,
@@ -46,6 +48,7 @@ export interface HomePageView {
   onboardingRecord: AppSettings | null | undefined
   hasCompletedOnboarding: boolean
   routineSetupRequired: boolean
+  activeRoutine: Routine | null | undefined
   sessionPhase: SessionPhase
   plan: PlannedWorkout | null
   fullPlan: PlannedWorkout | null
@@ -119,8 +122,15 @@ export function useHomePageController(
   const [activePlan, setActivePlan] = useState<PlannedWorkout | null>(null)
   const [activeDraft, setActiveDraft] = useState<TempSession | null>(null)
 
+  const activeRoutine = useActiveRoutine(db)
+
   const latestLabPlanRef = useRef<PlannedWorkout | null>(null)
   const deferredTimeAvailable = useDeferredValue(timeAvailable)
+
+  useEffect(() => {
+    if (!activeRoutine) return
+    setTrainingGoal(activeRoutine.goal)
+  }, [activeRoutine])
 
   useEffect(() => {
     if (typeof document === 'undefined') return
@@ -292,7 +302,8 @@ export function useHomePageController(
   const cycleLength = selectedRoutine?.cycleLength ?? 1
   const detectedSessionIndex = plan?.sessionIndex ?? 0
   const hasCompletedOnboarding: boolean = onboardingRecord?.hasCompletedOnboarding === true
-  const routineSetupRequired = Boolean(plan && plan.routineType.trim().length === 0)
+  const routineSetupRequired = activeRoutine === null
+    || Boolean(plan && plan.routineType.trim().length === 0)
 
   const sessionLabel = useMemo(() => {
     if (!plan || routineSetupRequired) {
@@ -423,6 +434,7 @@ export function useHomePageController(
       onboardingRecord,
       hasCompletedOnboarding,
       routineSetupRequired,
+      activeRoutine,
       sessionPhase,
       plan,
       fullPlan,

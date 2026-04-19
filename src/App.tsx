@@ -11,6 +11,7 @@ import { UIModeProvider, useUIMode } from './context/UIModeContext'
 import { db } from './db/db'
 import HistoryPage from './pages/HistoryPage'
 import HomePage from './pages/HomePage'
+import RoutinesPage from './pages/RoutinesPage'
 
 type RoutePath = '/' | '/history' | '/routines' | '/settings'
 
@@ -64,19 +65,7 @@ export default function App() {
     }
 
     if (route === '/routines') {
-      return (
-        <main
-          className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-20 pt-16"
-          style={{ backgroundColor: 'var(--color-surface-base)' }}
-        >
-          <h1 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
-            Routines
-          </h1>
-          <p className="text-body" style={{ color: 'var(--color-text-secondary)' }}>
-            Create and manage training routines. Each routine holds goal, days per week, and cycle length.
-          </p>
-        </main>
-      )
+      return <RoutinesPage db={db} />
     }
 
     if (route === '/settings') {

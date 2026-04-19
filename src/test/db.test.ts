@@ -15,13 +15,13 @@ describe('IronProtocolDB — Happy Path', () => {
     await db.delete()
   })
 
-  it('opens at schema version 15', async () => {
+  it('opens at schema version 16', async () => {
     db = new IronProtocolDB()
     await db.open()
-    expect(db.verno).toBe(15)
+    expect(db.verno).toBe(16)
   })
 
-  it('exposes exercises, workouts, sets, settings, tempSessions, baselines, dailyTargets, personalBests, and recoveryLogs tables', async () => {
+  it('exposes exercises, workouts, sets, settings, tempSessions, baselines, dailyTargets, personalBests, recoveryLogs, and routines tables', async () => {
     db = new IronProtocolDB()
     await db.open()
     const tableNames = db.tables.map((t) => t.name)
@@ -34,6 +34,7 @@ describe('IronProtocolDB — Happy Path', () => {
     expect(tableNames).toContain('dailyTargets')
     expect(tableNames).toContain('personalBests')
     expect(tableNames).toContain('recoveryLogs')
+    expect(tableNames).toContain('routines')
   })
 
   it('creates default onboarding settings as not completed', async () => {
