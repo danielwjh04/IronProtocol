@@ -4,6 +4,13 @@ import { act, cleanup, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import WorkoutIgnition from '../components/WorkoutIgnition'
 
+// Phase durations must match WorkoutIgnition.tsx
+const PHASE_DURATIONS = [520, 480, 720]
+const EXIT_DELAY_MS = 300
+const TICK_VIBRATION_MS = 60
+const FINAL_VIBRATION_MS = 140
+const TOTAL_MS = PHASE_DURATIONS.reduce((a, b) => a + b, 0) + EXIT_DELAY_MS
+
 afterEach(() => cleanup())
 
 describe('WorkoutIgnition', () => {
@@ -15,16 +22,16 @@ describe('WorkoutIgnition', () => {
     vi.useRealTimers()
   })
 
-  it('opens with WORKOUT. and completes only after the final delay', async () => {
+  it('opens with READY and completes only after the final delay', async () => {
     const onComplete = vi.fn()
 
     render(<WorkoutIgnition onComplete={onComplete} />)
 
-    expect(screen.getByText('WORKOUT.')).toBeInTheDocument()
+    expect(screen.getByText('READY')).toBeInTheDocument()
     expect(onComplete).not.toHaveBeenCalled()
 
     await act(async () => {
-      vi.advanceTimersByTime(999)
+      vi.advanceTimersByTime(TOTAL_MS - 1)
     })
     expect(onComplete).not.toHaveBeenCalled()
 
@@ -46,12 +53,12 @@ describe('WorkoutIgnition', () => {
     render(<WorkoutIgnition onComplete={onComplete} />)
 
     await act(async () => {
-      vi.advanceTimersByTime(1200)
+      vi.advanceTimersByTime(TOTAL_MS)
     })
 
-    expect(vibrateSpy).toHaveBeenCalledWith(70)
-    expect(vibrateSpy).toHaveBeenCalledWith(120)
-    expect(vibrateSpy.mock.calls.filter(([duration]) => duration === 70)).toHaveLength(2)
+    expect(vibrateSpy).toHaveBeenCalledWith(TICK_VIBRATION_MS)
+    expect(vibrateSpy).toHaveBeenCalledWith(FINAL_VIBRATION_MS)
+    expect(vibrateSpy.mock.calls.filter(([duration]) => duration === TICK_VIBRATION_MS)).toHaveLength(2)
     expect(onComplete).toHaveBeenCalledTimes(1)
   })
 })

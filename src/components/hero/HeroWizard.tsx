@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import type { PlannedWorkout } from '../../planner/autoPlanner'
-import { PrestigeBadge } from '../PrestigeBadge'
 
 interface Props {
   plan:                 PlannedWorkout | null
@@ -93,7 +92,6 @@ export function HeroWizard({
           <span className="text-zinc-100">{(userName ?? 'CHALLENGER').toUpperCase().slice(0, 12)}</span>
         </div>
         <div className="flex items-center gap-2">
-          {completedAscensions > 0 && <PrestigeBadge ascensions={completedAscensions} />}
           <div
             className="flex items-center gap-1 border-2 border-current px-2 py-1"
             style={{ backgroundColor: '#000' }}

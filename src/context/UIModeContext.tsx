@@ -43,7 +43,9 @@ export function UIModeProvider({ children }: { children: ReactNode }) {
     setUIModeState(mode)
     try {
       localStorage.setItem(LS_KEY, mode)
-    } catch {}
+    } catch {
+      // localStorage may be unavailable (private mode / quota); persistence is best-effort
+    }
   }, [])
 
   const dispatchCombat = useCallback((intensity: number, tonnage?: number) => {
@@ -57,6 +59,7 @@ export function UIModeProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook co-located with provider by convention
 export function useUIMode(): UIModeContextValue {
   const ctx = useContext(UIModeContext)
   if (!ctx) throw new Error('useUIMode must be used within UIModeProvider')

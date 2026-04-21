@@ -4,14 +4,15 @@ interface DamageNumberProps {
   value: number
   id: string
   intensity: number
+  offsetX: number
 }
 
-export function DamageNumber({ value, id, intensity }: DamageNumberProps) {
+export function DamageNumber({ value, id, intensity, offsetX }: DamageNumberProps) {
   const isHeavy = intensity > 0.6
   return (
     <motion.span
       key={id}
-      initial={{ y: 0, opacity: 0, x: (Math.random() - 0.5) * 60 }}
+      initial={{ y: 0, opacity: 0, x: offsetX }}
       animate={{ y: -80, opacity: [0, 1, 1, 0] }}
       transition={{ duration: 0.9, ease: 'easeOut' }}
       className={`pointer-events-none absolute select-none font-black tabular-nums ${

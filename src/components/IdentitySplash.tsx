@@ -228,10 +228,10 @@ export default function IdentitySplash({ db }: Props) {
         </div>
         <span
           style={{
-            fontFamily: '"Geist Mono", "SF Mono", ui-monospace, monospace',
-            fontSize: 10,
-            fontWeight: 600,
-            letterSpacing: '0.38em',
+            fontFamily: 'inherit',
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.22em',
             color: 'var(--color-accent-primary)',
           }}
         >
@@ -262,21 +262,19 @@ export default function IdentitySplash({ db }: Props) {
       >
         <div className="flex items-baseline justify-between">
           <span
-            style={{
-              fontFamily: '"Geist Mono", "SF Mono", ui-monospace, monospace',
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: '0.14em',
-              color: 'var(--color-text-secondary)',
-            }}
-          >
-            STEP {String(step + 1).padStart(2, '0')} / {String(TOTAL_STEPS).padStart(2, '0')}
-          </span>
-          <span
+            className="text-label"
             style={{
               fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: '-0.01em',
+              color: 'var(--color-text-secondary)',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            Step {step + 1} of {TOTAL_STEPS}
+          </span>
+          <span
+            className="text-label"
+            style={{
+              fontSize: 13,
               color: 'var(--color-text-primary)',
             }}
           >
@@ -317,13 +315,12 @@ export default function IdentitySplash({ db }: Props) {
           className="relative mt-5 flex flex-col gap-1"
         >
           <span
+            className="text-label"
             style={{
-              fontFamily: '"Geist Mono", "SF Mono", ui-monospace, monospace',
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: '0.26em',
+              fontSize: 12,
               color: 'var(--color-text-muted)',
               textTransform: 'uppercase',
+              letterSpacing: '0.1em',
             }}
           >
             {STEP_KICKERS[step]}
@@ -366,82 +363,199 @@ export default function IdentitySplash({ db }: Props) {
           className="relative mt-4"
         >
           {step === 0 && (
-            <div className="grid grid-cols-2 gap-2.5">
-              <NumericField
-                label="Age"
-                unit="yrs"
-                value={ageYearsInput}
-                onChange={setAgeYearsInput}
-                placeholder="—"
-                autoFocus
-                inputMode="numeric"
-                step={1}
-                width={64}
-              />
-              <NumericField
-                label="Body weight"
-                unit="kg"
-                value={bodyWeightKgInput}
-                onChange={setBodyWeightKgInput}
-                placeholder="—"
-                inputMode="decimal"
-                step={0.1}
-                width={78}
-              />
-            </div>
+            <motion.section
+              className="rounded-3xl border p-5"
+              style={{
+                backgroundColor: 'var(--color-surface-raised)',
+                borderColor:     'var(--color-border-subtle)',
+              }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
+                    Physiology
+                  </p>
+                  <h2 className="text-display mt-2" style={{ color: 'var(--color-text-primary)' }}>
+                    Baselines
+                  </h2>
+                </div>
+                <span
+                  className="text-label rounded-full border px-3 py-1"
+                  style={{
+                    borderColor: 'var(--color-border-subtle)',
+                    color:       'var(--color-text-secondary)',
+                  }}
+                >
+                  2 inputs
+                </span>
+              </div>
+
+              <p className="text-body mt-3" style={{ color: 'var(--color-text-secondary)' }}>
+                We scale every set, rep, and rest off these numbers. Edit them anytime in Settings.
+              </p>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <NumericField
+                  label="Age"
+                  unit="yrs"
+                  value={ageYearsInput}
+                  onChange={setAgeYearsInput}
+                  placeholder="—"
+                  autoFocus
+                  inputMode="numeric"
+                  step={1}
+                  width={64}
+                />
+                <NumericField
+                  label="Body weight"
+                  unit="kg"
+                  value={bodyWeightKgInput}
+                  onChange={setBodyWeightKgInput}
+                  placeholder="—"
+                  inputMode="decimal"
+                  step={0.1}
+                  width={78}
+                />
+              </div>
+
+              <div
+                className="mt-4 flex items-start gap-2 rounded-2xl border px-3 py-2.5"
+                style={{
+                  borderColor:     'var(--color-border-subtle)',
+                  backgroundColor: 'var(--color-surface-base)',
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="mt-[5px] inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                  style={{ backgroundColor: 'var(--color-accent-primary)' }}
+                />
+                <span
+                  className="text-label"
+                  style={{
+                    color: 'var(--color-text-secondary)',
+                    letterSpacing: '0.01em',
+                    lineHeight: 1.5,
+                    textTransform: 'none',
+                    fontWeight: 500,
+                  }}
+                >
+                  Stored on this device. Never sent to a server.
+                </span>
+              </div>
+            </motion.section>
           )}
 
           {step === 1 && (
-            <div className="grid grid-cols-2 gap-2.5">
-              {EQUIPMENT_OPTIONS.map((option) => {
-                const selected = equipmentAvailability === option.value
-                return (
-                  <motion.button
-                    key={option.value}
-                    whileTap={{ scale: 0.97 }}
-                    type="button"
-                    onClick={() => setEquipmentAvailability(option.value)}
-                    className="relative flex min-h-[96px] flex-col items-start gap-2 rounded-2xl border p-3 text-left transition-colors"
-                    style={{
-                      borderColor: selected ? 'var(--color-accent-primary)' : 'var(--color-border-subtle)',
-                      background: selected
-                        ? 'linear-gradient(180deg, rgba(48,209,88,0.08), var(--color-surface-raised))'
-                        : 'var(--color-surface-raised)',
-                    }}
-                  >
-                    <span
-                      className="flex h-7 w-7 items-center justify-center rounded-[9px]"
+            <motion.section
+              className="rounded-3xl border p-5"
+              style={{
+                backgroundColor: 'var(--color-surface-raised)',
+                borderColor:     'var(--color-border-subtle)',
+              }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
+                    Environment
+                  </p>
+                  <h2 className="text-display mt-2" style={{ color: 'var(--color-text-primary)' }}>
+                    Your setup
+                  </h2>
+                </div>
+                <span
+                  className="text-label rounded-full border px-3 py-1"
+                  style={{
+                    borderColor: 'var(--color-border-subtle)',
+                    color:       'var(--color-text-secondary)',
+                  }}
+                >
+                  Pick one
+                </span>
+              </div>
+
+              <p className="text-body mt-3" style={{ color: 'var(--color-text-secondary)' }}>
+                The planner only prescribes exercises you can actually load. Switch this later if your access changes.
+              </p>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                {EQUIPMENT_OPTIONS.map((option) => {
+                  const selected = equipmentAvailability === option.value
+                  return (
+                    <motion.button
+                      key={option.value}
+                      whileTap={{ scale: 0.97 }}
+                      type="button"
+                      onClick={() => setEquipmentAvailability(option.value)}
+                      className="relative flex min-h-[140px] flex-col items-start gap-3 rounded-2xl border p-4 text-left transition-colors"
                       style={{
-                        backgroundColor: selected ? 'var(--color-accent-soft)' : 'var(--color-surface-overlay)',
-                        color: selected ? 'var(--color-accent-primary)' : 'var(--color-text-secondary)',
+                        borderColor: selected ? 'var(--color-accent-primary)' : 'var(--color-border-subtle)',
+                        background: selected
+                          ? 'linear-gradient(180deg, rgba(48,209,88,0.08), var(--color-surface-base))'
+                          : 'var(--color-surface-base)',
                       }}
                     >
-                      {option.value === 'commercial-gym' ? <BarbellMark size={16} /> : <BodyweightIcon size={16} />}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 12.5,
-                        fontWeight: 600,
-                        color: 'var(--color-text-primary)',
-                        letterSpacing: '-0.005em',
-                      }}
-                    >
-                      {option.name}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 10.5,
-                        lineHeight: 1.35,
-                        color: 'var(--color-text-secondary)',
-                      }}
-                    >
-                      {option.helper}
-                    </span>
-                    {selected && <CheckBadge />}
-                  </motion.button>
-                )
-              })}
-            </div>
+                      <span
+                        className="flex h-10 w-10 items-center justify-center rounded-[11px]"
+                        style={{
+                          backgroundColor: selected ? 'var(--color-accent-soft)' : 'var(--color-surface-overlay)',
+                          color: selected ? 'var(--color-accent-primary)' : 'var(--color-text-secondary)',
+                        }}
+                      >
+                        {option.value === 'commercial-gym' ? <BarbellMark size={22} /> : <BodyweightIcon size={20} />}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 700,
+                          color: 'var(--color-text-primary)',
+                          letterSpacing: '-0.01em',
+                          marginTop: 2,
+                        }}
+                      >
+                        {option.name}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 1.4,
+                          color: 'var(--color-text-secondary)',
+                        }}
+                      >
+                        {option.helper}
+                      </span>
+                      {selected && <CheckBadge />}
+                    </motion.button>
+                  )
+                })}
+              </div>
+
+              <div
+                className="mt-4 flex items-start gap-2 rounded-2xl border px-3 py-2.5"
+                style={{
+                  borderColor:     'var(--color-border-subtle)',
+                  backgroundColor: 'var(--color-surface-base)',
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="mt-[5px] inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                  style={{ backgroundColor: 'var(--color-accent-primary)' }}
+                />
+                <span
+                  className="text-label"
+                  style={{
+                    color: 'var(--color-text-secondary)',
+                    letterSpacing: '0.01em',
+                    lineHeight: 1.5,
+                    textTransform: 'none',
+                    fontWeight: 500,
+                  }}
+                >
+                  Changing this later re-runs the planner with the new exercise pool.
+                </span>
+              </div>
+            </motion.section>
           )}
 
           {step === 2 && <CalibrateBaselinesCard db={db} />}
@@ -586,13 +700,12 @@ function NumericField({
       }}
     >
       <span
+        className="text-label"
         style={{
-          fontFamily: '"Geist Mono", "SF Mono", ui-monospace, monospace',
-          fontSize: 9.5,
-          fontWeight: 600,
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
+          fontSize: 11,
           color: 'var(--color-text-secondary)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
         }}
       >
         {label}
@@ -622,11 +735,9 @@ function NumericField({
           }}
         />
         <span
+          className="text-label"
           style={{
-            fontFamily: '"Geist Mono", "SF Mono", ui-monospace, monospace',
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: '0.06em',
+            fontSize: 12,
             color: 'var(--color-text-secondary)',
           }}
         >

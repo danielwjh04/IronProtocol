@@ -15,6 +15,7 @@ export function useHitCombo() {
     lastId.current = pendingBash.id
     const now = Date.now()
     if (now > expiresAt.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- pendingBash is an event signal guarded by lastId ref
       setComboCount(1)
     } else {
       setComboCount(prev => prev + 1)

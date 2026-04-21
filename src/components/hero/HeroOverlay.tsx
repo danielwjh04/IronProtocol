@@ -20,7 +20,7 @@ export function HeroOverlay() {
   const track = useTrackProgress()
   const { comboCount } = useHitCombo()
   const { crunch, heavyDouble } = useSensoryFeedback()
-  const [damageNumbers, setDamageNumbers] = useState<Array<{ id: string; value: number; intensity: number }>>([])
+  const [damageNumbers, setDamageNumbers] = useState<Array<{ id: string; value: number; intensity: number; offsetX: number }>>([])
   const lastBurstId = useRef<string | null>(null)
   const [prestigeFlashActive, setPrestigeFlashActive] = useState(false)
 
@@ -30,8 +30,10 @@ export function HeroOverlay() {
       const displayValue = pendingBash.tonnage
         ? Math.round(pendingBash.tonnage)
         : Math.round(pendingBash.intensity * 100)
+      const offsetX = (Math.random() - 0.5) * 60
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- pendingBash is an event-like signal guarded by lastBurstId ref; functional update is intentional
       setDamageNumbers(prev =>
-        [...prev, { id: pendingBash.id, value: displayValue, intensity: pendingBash.intensity }].slice(-6)
+        [...prev, { id: pendingBash.id, value: displayValue, intensity: pendingBash.intensity, offsetX }].slice(-6)
       )
     }
   }, [pendingBash])

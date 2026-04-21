@@ -28,6 +28,7 @@ export function useSensoryFeedback() {
       osc.start(ctx.currentTime)
       osc.stop(ctx.currentTime + 0.18)
     } catch {
+      // swallow: audio is optional; silently degrade on unsupported browsers
     }
   }, [])
 

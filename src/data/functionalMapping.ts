@@ -576,6 +576,7 @@ const SINGULAR_TO_PLURAL: Record<string, string> = {
   'db bench': 'dumbbell bench press',
   'db incline press': 'dumbbell incline press',
   'db incline': 'dumbbell incline press',
+  'incline dumbbell press': 'dumbbell incline press',
   'db row': 'dumbbell row',
   'one arm row': 'dumbbell row',
   'single arm row': 'dumbbell row',

@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects, assertThrows } from 'https://deno.land/std@0.168.0/testing/asserts.ts'
+import { assertEquals, assertThrows } from 'https://deno.land/std@0.168.0/testing/asserts.ts'
 import { composePlan } from '../_shared/composePlan.ts'
 import { REP_SCHEMES } from '../_shared/repSchemes.ts'
 

@@ -24,7 +24,9 @@ function publish(event: SetCommitEvent): void {
     for (const listener of snapshot) {
       try {
         listener(event)
-      } catch {}
+      } catch {
+        // isolate listener failures so one bad subscriber doesn't break others
+      }
     }
   })
 }

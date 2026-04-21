@@ -85,6 +85,7 @@ export default function RecoveryLogForm({ workoutId, db, onDone, onSkip }: Props
       }
       await db.recoveryLogs.add(log)
     } catch {
+      // swallow: recovery log is best-effort; UI continues
     } finally {
       setSaving(false)
     }

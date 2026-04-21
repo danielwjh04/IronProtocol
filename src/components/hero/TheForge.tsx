@@ -15,6 +15,7 @@ interface Ember {
 const W = 280
 const H = 200
 
+// eslint-disable-next-line react-refresh/only-export-components -- pure helper co-located with its sole consumer
 export function spawnEmber(progress: number): Ember {
   const speed = 0.6 + progress * 2.8
   return {

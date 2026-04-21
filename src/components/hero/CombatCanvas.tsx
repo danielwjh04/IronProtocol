@@ -16,6 +16,7 @@ interface SequenceFrame {
   shakeX:          number
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- pure helper co-located with its sole consumer
 export function buildSequence(intensity: number): SequenceFrame[] {
   const strike = 20 + intensity * 50
   const recoil = intensity * 28
@@ -143,6 +144,7 @@ export function CombatCanvas({ onStrike }: CombatCanvasProps) {
         animRef.current = null
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-run only when a new bash arrives (narrowed via id), not on every pendingBash reference change
   }, [pendingBash?.id, onStrike])
 
   return (

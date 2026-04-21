@@ -1,5 +1,6 @@
 import { AnimatePresence } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { toast } from 'sonner'
 import CoreIgnition from './components/CoreIgnition'
 import TabBar from './components/nav/TabBar'
@@ -7,6 +8,7 @@ import { HeroErrorBoundary } from './components/UI/HeroErrorBoundary'
 import { HeroOverlay } from './components/hero/HeroOverlay'
 import { UIModeProvider, useUIMode } from './context/UIModeContext'
 import { db } from './db/db'
+import { APP_SETTINGS_ID } from './db/schema'
 import HistoryPage from './pages/HistoryPage'
 import HomePage from './pages/HomePage'
 import RoutinesPage from './pages/RoutinesPage'
@@ -42,6 +44,19 @@ function HeroOverlayWithBoundary() {
 export default function App() {
   const [route, setRoute] = useState<RoutePath>(() => resolveRoute(window.location.pathname))
   const [isIgniting, setIsIgniting] = useState(true)
+
+  // Observe onboarding completion so the persistent tab bar stays hidden until
+  // the user finishes the first-run flow. Returning `undefined` while the query
+  // is pending keeps the chrome off the screen during initial paint.
+  const onboardingComplete = useLiveQuery<boolean | undefined>(
+    async () => {
+      const settings = await db.settings.get(APP_SETTINGS_ID)
+      return settings?.hasCompletedOnboarding === true
+    },
+    [],
+    undefined,
+  )
+  const showTabBar = onboardingComplete === true
 
   useEffect(() => {
     const handlePopState = () => setRoute(resolveRoute(window.location.pathname))
@@ -91,7 +106,7 @@ export default function App() {
         {!isIgniting && (
           <>
             {currentPage}
-            <TabBar currentPath={route} onNavigate={handleNavigate} />
+            {showTabBar && <TabBar currentPath={route} onNavigate={handleNavigate} />}
           </>
         )}
 

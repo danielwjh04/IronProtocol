@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest'
 
 vi.mock('framer-motion', async (importOriginal) => {
   const mod = await importOriginal<typeof import('framer-motion')>()
-  return { ...mod, motion: new Proxy({}, { get: (_t, prop) => (props: React.HTMLAttributes<HTMLElement>) => <div {...props} /> }) }
+  return { ...mod, motion: new Proxy({}, { get: (_t, _prop) => (props: React.HTMLAttributes<HTMLElement>) => <div {...props} /> }) }
 })
 
 import { ObsidianStairs } from '../components/hero/ObsidianStairs'
