@@ -40,8 +40,11 @@ export default function SettingsPage({ db }: Props) {
 
   return (
     <main
-      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-24 pt-16"
-      style={{ backgroundColor: 'var(--color-surface-base)' }}
+      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pt-16"
+      style={{
+        backgroundColor: 'var(--color-surface-base)',
+        paddingBottom: 'calc(var(--space-tabbar) + env(safe-area-inset-bottom, 0px) + var(--space-5))',
+      }}
     >
       <header>
         <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
@@ -127,6 +130,62 @@ export default function SettingsPage({ db }: Props) {
         </h2>
         <div className="mt-4">
           <CalibrateBaselinesCard db={db} />
+        </div>
+      </motion.section>
+
+      <motion.section
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 0.1 }}
+        className={sectionClass}
+        style={sectionStyle}
+      >
+        <p className="text-label" style={{ color: 'var(--color-text-secondary)' }}>
+          Presentation
+        </p>
+        <h2 className="text-display mt-2" style={{ color: 'var(--color-text-primary)' }}>
+          Hero Mode
+        </h2>
+        <p
+          className="text-body mt-3"
+          style={{ color: 'var(--color-text-secondary)' }}
+        >
+          Cinematic overlays and Combat Skin flourishes during workouts. Coming
+          soon once combat skin polish is finished.
+        </p>
+
+        <div className="mt-5">
+          <button
+            type="button"
+            disabled
+            aria-disabled
+            aria-label="Hero Mode is in progress"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3"
+            style={{
+              borderColor: 'var(--color-border-subtle)',
+              backgroundColor: 'var(--color-surface-base)',
+              color: 'var(--color-text-muted)',
+              cursor: 'not-allowed',
+              opacity: 0.7,
+            }}
+          >
+            <span
+              aria-hidden
+              className="inline-flex h-2 w-2 flex-shrink-0 rounded-full"
+              style={{ backgroundColor: 'var(--color-accent-primary)' }}
+            />
+            <span
+              className="text-label"
+              style={{
+                fontSize: '12px',
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
+            >
+              In progress
+            </span>
+          </button>
         </div>
       </motion.section>
     </main>

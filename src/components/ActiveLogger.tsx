@@ -10,13 +10,13 @@ import {
   type TempSessionCompletedSet,
   type TempSession,
 } from '../db/schema'
-import { scoreForGoal } from '../data/goalAccessories'
 import { parseTempSessionDraft } from '../validation/tempSessionSchema'
 import { PersonalBestsService } from '../services/personalBestsService'
 import { publish } from '../events/setCommitEvents'
 import FunctionalWhy from './FunctionalWhy'
 import RecoveryLogForm from './RecoveryLogForm'
 import ConfirmDialog from './UI/ConfirmDialog'
+import TierIcon from './dashboard/TierIcon'
 
 interface Props {
   plan: PlannedWorkout
@@ -38,7 +38,7 @@ function isDatabaseClosedError(error: unknown): boolean {
     && (error as { name?: string }).name === 'DatabaseClosedError'
 }
 
-export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDone, onCancel }: Props) {
+export default function ActiveLogger({ plan, db, initialDraft, onDone, onCancel }: Props) {
   const initialExercises: readonly PlannedExercise[] = plan.exercises.length > 0
     ? plan.exercises
     : [{
@@ -95,7 +95,6 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
   )
   const [completedSets,  setCompletedSets]  = useState<CompletedSet[]>(resumableDraft?.completedSets ?? [])
   const [showWhy,        setShowWhy]        = useState(false)
-  const [expandedExercises, setExpandedExercises] = useState<Record<string, boolean>>({})
 
   const [showRecoveryForm,    setShowRecoveryForm]    = useState(false)
   const [completedWorkoutId,  setCompletedWorkoutId]  = useState<string | null>(null)
@@ -142,10 +141,18 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
 
   const currentEx      = exercises[currentExIndex]
   const displaySetNum  = currentSetInEx + 1
-  const timerRadius = 44
-  const timerCircumference = 2 * Math.PI * timerRadius
-  const timerProgress = restSecondsLeft / restSeconds
-  const timerOffset = timerCircumference * (1 - timerProgress)
+  const timerProgress = restSeconds > 0 ? Math.max(0, Math.min(1, restSecondsLeft / restSeconds)) : 0
+
+  function formatRestTime(seconds: number): string {
+    const clamped = Math.max(0, Math.floor(seconds))
+    const minutes = Math.floor(clamped / 60)
+    const secs    = clamped % 60
+    return `${minutes}:${String(secs).padStart(2, '0')}`
+  }
+
+  function addRestSeconds(deltaSeconds: number): void {
+    setRestSecondsLeft((prev) => Math.max(0, prev + deltaSeconds))
+  }
 
   async function persistDraft(nextState: {
     currentExIndex: number
@@ -327,8 +334,9 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
   }
 
   return (
+    <>
     <main
-      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-28 pt-6"
+      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-[232px] pt-6"
       style={{
         backgroundColor: 'var(--color-surface-base)',
         color:           'var(--color-text-primary)',
@@ -336,7 +344,6 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
     >
       <motion.header
         layout
-        whileTap={{ scale: 0.98 }}
         className="rounded-3xl border p-5"
         style={{
           backgroundColor: 'var(--color-surface-raised)',
@@ -345,25 +352,14 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>Active Session</p>
-            <div className="mt-3 flex items-center gap-2">
-              <h2 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
-                {currentEx.exerciseName}
-              </h2>
-              {scoreForGoal(currentEx, parsedGoal) > 0 && (
-                <span
-                  className="text-label rounded-full px-2 py-0.5"
-                  style={{
-                    backgroundColor: 'var(--color-accent-primary)',
-                    color: 'var(--color-accent-on)',
-                  }}
-                >
-                  GOAL
-                </span>
-              )}
-            </div>
+            <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
+              Active Session · Set {displaySetNum} of {currentEx.sets}
+            </p>
+            <h2 className="text-display mt-3" style={{ color: 'var(--color-text-primary)' }}>
+              {currentEx.exerciseName}
+            </h2>
             <p className="text-body mt-2" style={{ color: 'var(--color-text-secondary)' }}>
-              Set {displaySetNum} of {currentEx.sets}
+              Exercise {currentExIndex + 1} of {exercises.length}
             </p>
           </div>
           <button
@@ -378,7 +374,7 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
               color:           showWhy ? 'var(--color-accent-on)'      : 'var(--color-text-secondary)',
             }}
           >
-            WHY
+            Why
           </button>
         </div>
 
@@ -399,280 +395,118 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
         </AnimatePresence>
       </motion.header>
 
-      <motion.section
-        layout
-        whileTap={{ scale: 0.98 }}
-        className="rounded-3xl border p-4"
-        style={{
-          backgroundColor: 'var(--color-surface-raised)',
-          borderColor:     'var(--color-border-subtle)',
-        }}
-      >
-        <ul className="flex flex-col gap-3">
-          {exercises.map((exercise, index) => {
-            const isCurrent = index === currentExIndex
-            const exerciseCompletedSets = completedSets.filter((set) => set.exerciseId === exercise.exerciseId)
-            const completedSetCount = exerciseCompletedSets.length
-            const remainingSetCount = Math.max(exercise.sets - completedSetCount, 0)
-            const nextSetNumber = Math.min(completedSetCount + 1, exercise.sets)
-            const subtitle = remainingSetCount > 0
-              ? `Set ${nextSetNumber}/${exercise.sets} · ${exercise.weight}kg × ${exercise.reps}`
-              : `Complete · ${exercise.sets} sets`
+      <ul className="flex flex-col gap-2">
+        {exercises.map((exercise, index) => {
+          const isCurrent = index === currentExIndex
+          const exerciseCompletedSets = completedSets.filter((set) => set.exerciseId === exercise.exerciseId)
+          const completedSetCount = exerciseCompletedSets.length
+          const isDone = completedSetCount >= exercise.sets && !isCurrent
+          const lastSet = exerciseCompletedSets[exerciseCompletedSets.length - 1]
 
-            const isExpanded = Boolean(expandedExercises[exercise.exerciseId])
-            const hasCompletedSets = exerciseCompletedSets.length > 0
+          // Ring geometry — viewBox 0 0 40 40, radius 17
+          const ringRadius = 17
+          const ringCircumference = 2 * Math.PI * ringRadius
+          const ringProgress = Math.max(0, Math.min(1, completedSetCount / exercise.sets))
+          const ringDashOffset = ringCircumference * (1 - ringProgress)
 
-            return (
-              <li
-                key={exercise.exerciseId}
-                className="rounded-2xl border p-3"
-                style={{
-                  borderColor:     isCurrent ? 'var(--color-accent-primary)' : 'var(--color-border-subtle)',
-                  backgroundColor: isCurrent ? 'var(--color-accent-soft)'    : 'var(--color-surface-base)',
-                }}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-body font-bold" style={{ color: 'var(--color-text-primary)' }}>
-                        {exercise.exerciseName}
-                      </p>
-                      {scoreForGoal(exercise, parsedGoal) > 0 && (
-                        <span
-                          className="text-label rounded-full px-2 py-0.5"
-                          style={{
-                            backgroundColor: 'var(--color-accent-primary)',
-                            color: 'var(--color-accent-on)',
-                          }}
-                        >
-                          GOAL
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-label mt-1" style={{ color: 'var(--color-text-secondary)' }}>
-                      {subtitle}
-                    </p>
-                  </div>
+          const subtitle = isDone
+            ? `Complete · ${exercise.sets} sets`
+            : `${exercise.weight}kg × ${exercise.reps} · ${isCurrent ? 'Next set' : 'Target'}`
+
+          return (
+            <li
+              key={exercise.exerciseId}
+              className="rounded-2xl border p-3.5 transition-colors"
+              style={{
+                borderColor:     isCurrent ? 'var(--color-accent-primary)' : 'var(--color-border-subtle)',
+                backgroundColor: isCurrent ? 'var(--color-accent-soft)'    : 'var(--color-surface-raised)',
+                opacity:         isDone ? 0.55 : 1,
+              }}
+            >
+              <div className="grid grid-cols-[48px_1fr_auto] items-center gap-3">
+                {/* Progress ring */}
+                <div className="relative" style={{ width: 48, height: 48 }}>
+                  <svg
+                    width={48}
+                    height={48}
+                    viewBox="0 0 40 40"
+                    role="img"
+                    aria-label={`${completedSetCount} of ${exercise.sets} sets complete`}
+                  >
+                    <circle
+                      cx={20}
+                      cy={20}
+                      r={ringRadius}
+                      fill="none"
+                      stroke="var(--color-border-subtle)"
+                      strokeWidth={3}
+                    />
+                    <circle
+                      cx={20}
+                      cy={20}
+                      r={ringRadius}
+                      fill="none"
+                      stroke="var(--color-accent-primary)"
+                      strokeWidth={3}
+                      strokeLinecap="round"
+                      strokeDasharray={ringCircumference}
+                      strokeDashoffset={ringDashOffset}
+                      transform="rotate(-90 20 20)"
+                      style={{ transition: 'stroke-dashoffset 0.4s ease' }}
+                    />
+                  </svg>
                   <span
-                    className="text-label rounded-full border px-2 py-1"
+                    className="absolute inset-0 flex items-center justify-center"
                     style={{
-                      borderColor: 'var(--color-border-subtle)',
-                      color:       'var(--color-text-secondary)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      letterSpacing: '0.01em',
+                      fontVariantNumeric: 'tabular-nums',
+                      color: isCurrent ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                     }}
                   >
-                    T{exercise.tier}
+                    {completedSetCount}/{exercise.sets}
                   </span>
                 </div>
 
-                <AnimatePresence initial={false}>
-                  {hasCompletedSets && isExpanded && (
-                    <motion.div
-                      key="completed-sets"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-                      className="overflow-hidden"
+                {/* Name + subtitle (+ optional last-set caption) */}
+                <div className="min-w-0">
+                  <p className="text-body" style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>
+                    {exercise.exerciseName}
+                  </p>
+                  <p className="text-label mt-1" style={{ color: 'var(--color-text-secondary)' }}>
+                    {subtitle}
+                  </p>
+                  {isCurrent && lastSet && (
+                    <p
+                      className="text-label mt-1"
+                      style={{ color: 'var(--color-text-muted)', fontWeight: 500 }}
                     >
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {exerciseCompletedSets.map((set, completedIndex) => (
-                          <span
-                            key={set.orderIndex}
-                            className="text-label rounded-full border px-3 py-1"
-                            style={{
-                              borderColor:     'var(--color-accent-primary)',
-                              backgroundColor: 'var(--color-accent-soft)',
-                              color:           'var(--color-accent-primary)',
-                            }}
-                          >
-                            S{completedIndex + 1}: {set.weight}kg × {set.reps}
-                          </span>
-                        ))}
-                      </div>
-                    </motion.div>
+                      Last · {lastSet.weight}kg × {lastSet.reps}
+                    </p>
                   )}
-                </AnimatePresence>
+                </div>
 
-                {hasCompletedSets && (
-                  <div className="mt-2 flex items-center justify-between">
-                    <span
-                      className="text-label"
-                      style={{ color: 'var(--color-text-muted)' }}
-                    >
-                      {completedSetCount} logged
-                    </span>
-                    <motion.button
-                      type="button"
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() =>
-                        setExpandedExercises((prev) => ({
-                          ...prev,
-                          [exercise.exerciseId]: !prev[exercise.exerciseId],
-                        }))
-                      }
-                      aria-expanded={isExpanded}
-                      aria-label={isExpanded ? 'Hide completed sets' : 'Show completed sets'}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border"
-                      style={{
-                        borderColor: isExpanded
-                          ? 'var(--color-accent-primary)'
-                          : 'var(--color-border-subtle)',
-                        color: isExpanded
-                          ? 'var(--color-accent-primary)'
-                          : 'var(--color-text-secondary)',
-                        backgroundColor: 'transparent',
-                      }}
-                    >
-                      <motion.svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        animate={{ rotate: isExpanded ? 180 : 0 }}
-                        transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                      >
-                        <polyline points="3 5 7 9 11 5" />
-                      </motion.svg>
-                    </motion.button>
-                  </div>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      </motion.section>
+                {/* Tier icon — shape conveys tier, color conveys state:
+                    current = accent, done = muted, upcoming = secondary. */}
+                <div
+                  style={{
+                    color: isCurrent
+                      ? 'var(--color-accent-primary)'
+                      : isDone
+                        ? 'var(--color-text-muted)'
+                        : 'var(--color-text-secondary)',
+                  }}
+                  aria-label={`Tier ${exercise.tier}`}
+                >
+                  <TierIcon tier={exercise.tier} size={22} />
+                </div>
+              </div>
+            </li>
+          )
+        })}
+      </ul>
 
-      {phase === 'resting' && (
-        <motion.section
-          whileTap={{ scale: 0.98 }}
-          className="rounded-3xl border p-5"
-          style={{
-            backgroundColor: 'var(--color-surface-raised)',
-            borderColor:     'var(--color-border-subtle)',
-          }}
-        >
-          <div className="flex items-center justify-center" style={{ color: 'var(--color-accent-primary)' }}>
-            <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Rest timer">
-              <circle
-                cx="60"
-                cy="60"
-                r={timerRadius}
-                fill="none"
-                stroke="var(--color-border-subtle)"
-                strokeWidth="10"
-              />
-              <circle
-                cx="60"
-                cy="60"
-                r={timerRadius}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="10"
-                strokeLinecap="round"
-                strokeDasharray={timerCircumference}
-                strokeDashoffset={timerOffset}
-                transform="rotate(-90 60 60)"
-              />
-              <text
-                x="60"
-                y="64"
-                textAnchor="middle"
-                fontSize="26"
-                fontWeight="800"
-                fill="var(--color-text-primary)"
-              >
-                {restSecondsLeft}s
-              </text>
-            </svg>
-          </div>
-          <p className="text-body mt-3 text-center" style={{ color: 'var(--color-text-secondary)' }}>
-            Recover now. Set {displaySetNum} begins at zero.
-          </p>
-          <motion.button
-            whileTap={{ scale: 0.96 }}
-            type="button"
-            onClick={() => setPhase('active')}
-            className="text-body mt-4 h-12 w-full cursor-pointer rounded-2xl font-bold"
-            style={{
-              backgroundColor: 'var(--color-accent-primary)',
-              color:           'var(--color-accent-on)',
-            }}
-          >
-            Start Next Set →
-          </motion.button>
-        </motion.section>
-      )}
-
-      <motion.section
-        layout
-        whileTap={{ scale: 0.98 }}
-        className="rounded-3xl border p-4"
-        style={{
-          backgroundColor: 'var(--color-surface-raised)',
-          borderColor:     'var(--color-border-subtle)',
-        }}
-      >
-        <div className="grid grid-cols-2 gap-3">
-          <label className="flex flex-col gap-2">
-            <span className="text-label" style={{ color: 'var(--color-accent-primary)' }}>Weight (kg)</span>
-            <input
-              ref={weightInputRef}
-              type="number"
-              value={weight}
-              onChange={e => {
-                const newWeight = Number(e.target.value)
-                setWeight(newWeight)
-                void persistDraft({ currentExIndex, currentSetInEx, weight: newWeight, reps, phase, restSecondsLeft, completedSets })
-              }}
-              className="text-body w-full rounded-2xl border px-4 py-3 text-center focus:outline-none"
-              style={{
-                backgroundColor: 'var(--color-surface-base)',
-                borderColor:     'var(--color-border-subtle)',
-                color:           'var(--color-text-primary)',
-                fontWeight:      700,
-              }}
-            />
-          </label>
-          <label className="flex flex-col gap-2">
-            <span className="text-label" style={{ color: 'var(--color-accent-primary)' }}>Reps</span>
-            <input
-              type="number"
-              value={reps}
-              onChange={e => {
-                const newReps = Number(e.target.value)
-                setReps(newReps)
-                void persistDraft({ currentExIndex, currentSetInEx, weight, reps: newReps, phase, restSecondsLeft, completedSets })
-              }}
-              className="text-body w-full rounded-2xl border px-4 py-3 text-center focus:outline-none"
-              style={{
-                backgroundColor: 'var(--color-surface-base)',
-                borderColor:     'var(--color-border-subtle)',
-                color:           'var(--color-text-primary)',
-                fontWeight:      700,
-              }}
-            />
-          </label>
-        </div>
-      </motion.section>
-
-      <motion.button
-        whileTap={{ scale: 0.96 }}
-        type="button"
-        onClick={handleCompleteSetClick}
-        disabled={phase === 'resting' || isCommitting}
-        className="text-body h-14 w-full cursor-pointer rounded-2xl disabled:cursor-not-allowed disabled:opacity-40"
-        style={{
-          backgroundColor: 'var(--color-accent-primary)',
-          color:           'var(--color-accent-on)',
-          fontWeight:      700,
-        }}
-      >
-        {isCommitting ? 'Logging…' : 'Complete Set'}
-      </motion.button>
       <AnimatePresence>
         {commitError && (
           <motion.p
@@ -733,5 +567,236 @@ export default function ActiveLogger({ plan, db, initialDraft, parsedGoal, onDon
         )}
       </AnimatePresence>
     </main>
+
+    {/* ── Sticky bottom dock — flush with screen edge. Swaps between the
+         log-set form (active) and the rest timer (resting) so the user never
+         has to scroll to see the countdown. ──────────────────────────────── */}
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center">
+      <div
+        className="pointer-events-auto w-full max-w-[430px] border-t border-x"
+        style={{
+          backgroundColor: 'var(--color-surface-raised)',
+          borderColor:     'var(--color-border-subtle)',
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          boxShadow:       '0 -18px 40px -14px rgba(0,0,0,0.55)',
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingTop: 16,
+          paddingBottom: 'calc(16px + env(safe-area-inset-bottom))',
+        }}
+      >
+        {phase === 'resting' ? (
+          <motion.div
+            key="rest-dock"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
+                Rest
+              </span>
+              <span
+                className="text-label truncate pl-3"
+                style={{ color: 'var(--color-text-muted)', maxWidth: '60%' }}
+              >
+                {currentEx.exerciseName}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Compact progress ring with the countdown inside */}
+              <div
+                className="relative shrink-0"
+                style={{ width: 76, height: 76, color: 'var(--color-accent-primary)' }}
+              >
+                <svg
+                  width="76"
+                  height="76"
+                  viewBox="0 0 76 76"
+                  role="img"
+                  aria-label="Rest timer"
+                >
+                  <circle
+                    cx="38"
+                    cy="38"
+                    r="32"
+                    fill="none"
+                    stroke="var(--color-border-subtle)"
+                    strokeWidth="4"
+                  />
+                  <circle
+                    cx="38"
+                    cy="38"
+                    r="32"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray={2 * Math.PI * 32}
+                    strokeDashoffset={2 * Math.PI * 32 * (1 - timerProgress)}
+                    transform="rotate(-90 38 38)"
+                    style={{
+                      filter: 'drop-shadow(0 0 4px rgba(48,209,88,0.45))',
+                      transition: 'stroke-dashoffset 0.4s linear',
+                    }}
+                  />
+                </svg>
+                <span
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 700,
+                    letterSpacing: '-0.02em',
+                    fontVariantNumeric: 'tabular-nums',
+                    color: 'var(--color-text-primary)',
+                  }}
+                >
+                  {formatRestTime(restSecondsLeft)}
+                </span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-1 flex-col gap-2">
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  type="button"
+                  onClick={() => setPhase('active')}
+                  className="text-body flex h-[44px] w-full items-center justify-center rounded-2xl"
+                  style={{
+                    backgroundColor: 'var(--color-accent-primary)',
+                    color:           'var(--color-accent-on)',
+                    fontWeight:      700,
+                    letterSpacing:   '-0.01em',
+                  }}
+                >
+                  Start Next Set
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  type="button"
+                  onClick={() => addRestSeconds(15)}
+                  className="text-label flex h-9 w-full items-center justify-center rounded-2xl border"
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderColor:     'var(--color-border-subtle)',
+                    color:           'var(--color-text-secondary)',
+                    fontWeight:      600,
+                  }}
+                >
+                  + 15s
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="log-dock"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-label" style={{ color: 'var(--color-accent-primary)' }}>
+                Log Set {displaySetNum}
+              </span>
+              <span
+                className="text-label truncate pl-3"
+                style={{ color: 'var(--color-text-muted)', maxWidth: '60%' }}
+              >
+                {currentEx.exerciseName}
+              </span>
+            </div>
+
+            <div className="mb-3 grid grid-cols-2 gap-2">
+              <label
+                className="flex flex-col gap-1 rounded-2xl border px-3.5 py-2.5"
+                style={{
+                  backgroundColor: 'var(--color-surface-base)',
+                  borderColor:     'var(--color-border-subtle)',
+                }}
+              >
+                <span className="text-label" style={{ color: 'var(--color-text-muted)' }}>
+                  Weight
+                </span>
+                <div className="flex items-baseline gap-1.5">
+                  <input
+                    ref={weightInputRef}
+                    type="number"
+                    inputMode="decimal"
+                    value={weight}
+                    onChange={e => {
+                      const newWeight = Number(e.target.value)
+                      setWeight(newWeight)
+                      void persistDraft({ currentExIndex, currentSetInEx, weight: newWeight, reps, phase, restSecondsLeft, completedSets })
+                    }}
+                    className="no-spinner w-full bg-transparent focus:outline-none"
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 700,
+                      letterSpacing: '-0.02em',
+                      color: 'var(--color-text-primary)',
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  />
+                  <span className="text-label shrink-0" style={{ color: 'var(--color-text-muted)' }}>
+                    kg
+                  </span>
+                </div>
+              </label>
+              <label
+                className="flex flex-col gap-1 rounded-2xl border px-3.5 py-2.5"
+                style={{
+                  backgroundColor: 'var(--color-surface-base)',
+                  borderColor:     'var(--color-border-subtle)',
+                }}
+              >
+                <span className="text-label" style={{ color: 'var(--color-text-muted)' }}>
+                  Reps
+                </span>
+                <div className="flex items-baseline gap-1.5">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    value={reps}
+                    onChange={e => {
+                      const newReps = Number(e.target.value)
+                      setReps(newReps)
+                      void persistDraft({ currentExIndex, currentSetInEx, weight, reps: newReps, phase, restSecondsLeft, completedSets })
+                    }}
+                    className="no-spinner w-full bg-transparent focus:outline-none"
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 700,
+                      letterSpacing: '-0.02em',
+                      color: 'var(--color-text-primary)',
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  />
+                </div>
+              </label>
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={handleCompleteSetClick}
+              disabled={isCommitting}
+              className="text-body flex h-[52px] w-full cursor-pointer items-center justify-center rounded-2xl disabled:cursor-not-allowed disabled:opacity-40"
+              style={{
+                backgroundColor: 'var(--color-accent-primary)',
+                color:           'var(--color-accent-on)',
+                fontWeight:      700,
+                letterSpacing:   '-0.01em',
+              }}
+            >
+              {isCommitting ? 'Logging…' : 'Complete Set'}
+            </motion.button>
+          </motion.div>
+        )}
+      </div>
+    </div>
+    </>
   )
 }

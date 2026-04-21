@@ -67,8 +67,11 @@ export default function HistoryPage({ db }: Props) {
 
   return (
     <main
-      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-28 pt-16"
-      style={{ backgroundColor: 'var(--color-surface-base)' }}
+      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pt-16"
+      style={{
+        backgroundColor: 'var(--color-surface-base)',
+        paddingBottom: 'calc(var(--space-tabbar) + env(safe-area-inset-bottom, 0px) + var(--space-5))',
+      }}
     >
       <header>
         <p className="text-label" style={{ color: 'var(--color-accent-primary)' }}>

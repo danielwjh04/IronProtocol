@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react'
+import { render, screen, cleanup, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import 'fake-indexeddb/auto'
 import { v4 as uuidv4 } from 'uuid'
@@ -35,8 +35,8 @@ afterEach(async () => {
   await db.delete()
 })
 
-describe('TempSession discard redirect', () => {
-  it('lands on DashboardShell after discard — never back to IdentitySplash', async () => {
+describe('TempSession handoff', () => {
+  it('renders Home with a resume affordance when a draft exists', async () => {
     await db.tempSessions.put({
       id: TEMP_SESSION_ID,
       routineType: 'PPL',
@@ -56,20 +56,45 @@ describe('TempSession discard redirect', () => {
     render(<HomePage db={db} />)
 
     await waitFor(() => {
-      expect(screen.getByText(/Unfinished Session/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /resume /i })).toBeInTheDocument()
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /^discard$/i }))
+    // The dashboard remains the rendered surface — no takeover hijack, no splash.
+    expect(screen.queryByRole('heading', { name: /baselines/i })).not.toBeInTheDocument()
+    expect(screen.queryByText(/calibrate/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Unfinished Session/i)).not.toBeInTheDocument()
+  })
 
-    await waitFor(async () => {
-      const row = await db.tempSessions.get(TEMP_SESSION_ID)
-      expect(row).toBeUndefined()
+  it('removes the resume affordance when the draft is cleared', async () => {
+    await db.tempSessions.put({
+      id: TEMP_SESSION_ID,
+      routineType: 'PPL',
+      sessionIndex: 0,
+      estimatedMinutes: 30,
+      exercises: [],
+      currentExIndex: 0,
+      currentSetInEx: 0,
+      weight: 0,
+      reps: 0,
+      phase: 'active',
+      restSecondsLeft: 0,
+      completedSets: [],
+      updatedAt: Date.now(),
     })
+
+    render(<HomePage db={db} />)
 
     await waitFor(() => {
-      expect(screen.queryByText(/Unfinished Session/i)).not.toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /resume /i })).toBeInTheDocument()
     })
 
+    await db.tempSessions.delete(TEMP_SESSION_ID)
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /resume /i })).not.toBeInTheDocument()
+    })
+
+    // Never regresses to the onboarding / calibration branch.
     expect(screen.queryByRole('heading', { name: /baselines/i })).not.toBeInTheDocument()
     expect(screen.queryByText(/calibrate/i)).not.toBeInTheDocument()
   })

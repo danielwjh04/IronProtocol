@@ -7,9 +7,10 @@ import type { IronProtocolDB, Routine } from '../db/schema'
 
 interface Props {
   db: IronProtocolDB
+  onNavigate: (path: string) => void
 }
 
-export default function RoutinesPage({ db }: Props) {
+export default function RoutinesPage({ db, onNavigate }: Props) {
   const [editorOpen, setEditorOpen] = useState(false)
   const [editing, setEditing] = useState<Routine | undefined>(undefined)
 
@@ -34,6 +35,13 @@ export default function RoutinesPage({ db }: Props) {
     })
   }
 
+  async function startTodaysWorkout(routine: Routine): Promise<void> {
+    if (routine.isActive !== 1) {
+      await activateRoutine(routine.id)
+    }
+    onNavigate('/')
+  }
+
   function openEditor(routine?: Routine): void {
     setEditing(routine)
     setEditorOpen(true)
@@ -46,8 +54,11 @@ export default function RoutinesPage({ db }: Props) {
 
   return (
     <main
-      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pb-20 pt-16"
-      style={{ backgroundColor: 'var(--color-surface-base)' }}
+      className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col gap-4 px-4 pt-16"
+      style={{
+        backgroundColor: 'var(--color-surface-base)',
+        paddingBottom: 'calc(var(--space-tabbar) + env(safe-area-inset-bottom, 0px) + var(--space-5))',
+      }}
     >
       <div className="flex items-end justify-between">
         <div>
@@ -127,7 +138,7 @@ export default function RoutinesPage({ db }: Props) {
                   )}
                 </div>
 
-                <div className="mt-2 flex gap-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => openEditor(routine)}
@@ -143,12 +154,23 @@ export default function RoutinesPage({ db }: Props) {
                     <button
                       type="button"
                       onClick={() => { void activateRoutine(routine.id) }}
-                      className="text-label rounded-2xl px-3 py-2 text-white"
-                      style={{ backgroundColor: 'var(--color-accent-primary)' }}
+                      className="text-label rounded-2xl border px-3 py-2"
+                      style={{
+                        borderColor: 'var(--color-border-subtle)',
+                        color: 'var(--color-text-secondary)',
+                      }}
                     >
                       Activate
                     </button>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => { void startTodaysWorkout(routine) }}
+                    className="text-label rounded-2xl px-3 py-2 text-white"
+                    style={{ backgroundColor: 'var(--color-accent-primary)' }}
+                  >
+                    Start Today's Workout
+                  </button>
                 </div>
               </motion.div>
             )
@@ -161,8 +183,11 @@ export default function RoutinesPage({ db }: Props) {
         type="button"
         onClick={() => openEditor()}
         aria-label="Create routine"
-        className="fixed bottom-6 right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-[0_18px_38px_-14px_rgba(0,0,0,0.7)]"
-        style={{ backgroundColor: 'var(--color-accent-primary)' }}
+        className="fixed right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-[0_18px_38px_-14px_rgba(0,0,0,0.7)]"
+        style={{
+          backgroundColor: 'var(--color-accent-primary)',
+          bottom: 'calc(var(--space-tabbar) + env(safe-area-inset-bottom, 0px) + var(--space-4))',
+        }}
       >
         <Plus size={24} strokeWidth={2.2} aria-hidden />
       </motion.button>

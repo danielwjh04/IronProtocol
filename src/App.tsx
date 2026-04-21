@@ -1,8 +1,8 @@
 import { AnimatePresence } from 'framer-motion'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import CoreIgnition from './components/CoreIgnition'
-import NavDropdown from './components/NavDropdown'
+import TabBar from './components/nav/TabBar'
 import { HeroErrorBoundary } from './components/UI/HeroErrorBoundary'
 import { HeroOverlay } from './components/hero/HeroOverlay'
 import { UIModeProvider, useUIMode } from './context/UIModeContext'
@@ -49,14 +49,16 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  function handleNavigate(path: string): void {
+  const handleNavigate = useCallback((path: string): void => {
     const nextRoute = resolveRoute(path)
-    if (nextRoute === route) {
-      return
-    }
-    window.history.pushState({}, '', nextRoute)
-    setRoute(nextRoute)
-  }
+    setRoute((current) => {
+      if (nextRoute === current) {
+        return current
+      }
+      window.history.pushState({}, '', nextRoute)
+      return nextRoute
+    })
+  }, [])
 
   const currentPage = useMemo(() => {
     if (route === '/history') {
@@ -64,7 +66,7 @@ export default function App() {
     }
 
     if (route === '/routines') {
-      return <RoutinesPage db={db} />
+      return <RoutinesPage db={db} onNavigate={handleNavigate} />
     }
 
     if (route === '/settings') {
@@ -72,7 +74,7 @@ export default function App() {
     }
 
     return <HomePage db={db} />
-  }, [route])
+  }, [route, handleNavigate])
 
   return (
     <UIModeProvider>
@@ -89,7 +91,7 @@ export default function App() {
         {!isIgniting && (
           <>
             {currentPage}
-            <NavDropdown currentPath={route} onNavigate={handleNavigate} />
+            <TabBar currentPath={route} onNavigate={handleNavigate} />
           </>
         )}
 

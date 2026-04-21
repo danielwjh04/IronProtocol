@@ -1,4 +1,3 @@
-import HeaderBar from './HeaderBar'
 import HeroCard from './HeroCard'
 import ExerciseList from './ExerciseList'
 import ExerciseSwapSheet from './ExerciseSwapSheet'
@@ -52,17 +51,17 @@ export default function DashboardShell({
   return (
     <main
       className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col"
-      style={{ backgroundColor: 'var(--color-surface-base)' }}
+      style={{
+        backgroundColor: 'var(--color-surface-base)',
+        paddingBottom: 'calc(var(--space-tabbar) + env(safe-area-inset-bottom, 0px))',
+      }}
     >
-      <HeaderBar
-        sessionLabel={sessionLabel}
-        sessionIndex={sessionIndex}
-        cycleLength={cycleLength}
-      />
-
       <HeroCard
         plan={view.resolvedPlan}
         sessionLabel={sessionLabel}
+        sessionIndex={sessionIndex}
+        cycleLength={cycleLength}
+        trainingGoal={trainingGoal}
         error={error}
         primaryActionLabel={primaryActionLabel}
         onStart={onStartWorkout}

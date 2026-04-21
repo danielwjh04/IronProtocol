@@ -4,7 +4,7 @@ import ActiveLogger from '../components/ActiveLogger'
 import WorkoutIgnition from '../components/WorkoutIgnition'
 import IdentitySplash from '../components/IdentitySplash'
 import DashboardShell from '../components/dashboard/DashboardShell'
-import TempSessionTakeover from '../components/dashboard/TempSessionTakeover'
+import ResumePill from '../components/nav/ResumePill'
 import { useHomePageController } from '../hooks/useHomePageController'
 import type { IronProtocolDB } from '../db/schema'
 
@@ -29,7 +29,6 @@ export default function HomePage({ db }: Props) {
     sessionPhase,
     plan,
     fullPlan,
-    tempSession,
     sessionLabel,
     primaryActionLabel,
     cycleLength,
@@ -87,20 +86,14 @@ export default function HomePage({ db }: Props) {
     return <IdentitySplash db={resolvedDb} />
   }
 
-  if (tempSession) {
-    return (
-      <TempSessionTakeover
-        onResume={onResumeDraft}
-        onDiscard={onDiscardDraft}
-      />
-    )
-  }
-
   if (activeRoutine === null) {
     return (
       <main
         className="mx-auto flex min-h-svh w-full max-w-[430px] flex-col items-center justify-center gap-5 px-6"
-        style={{ backgroundColor: 'var(--color-surface-base)' }}
+        style={{
+          backgroundColor: 'var(--color-surface-base)',
+          paddingBottom: 'calc(var(--space-tabbar) + env(safe-area-inset-bottom, 0px))',
+        }}
       >
         <div
           className="w-full rounded-3xl border p-6 text-center"
@@ -134,20 +127,23 @@ export default function HomePage({ db }: Props) {
   }
 
   return (
-    <DashboardShell
-      db={resolvedDb}
-      plan={plan}
-      fullPlan={fullPlan}
-      error={error}
-      sessionLabel={sessionLabel}
-      cycleLength={cycleLength}
-      sessionIndex={detectedSessionIndex}
-      routineType={routineType}
-      trainingGoal={trainingGoal}
-      timeAvailable={timeAvailable}
-      primaryActionLabel={primaryActionLabel}
-      onUpdatePlan={onUpdatePlanFromBlueprint}
-      onStartWorkout={onStartWorkout}
-    />
+    <>
+      <DashboardShell
+        db={resolvedDb}
+        plan={plan}
+        fullPlan={fullPlan}
+        error={error}
+        sessionLabel={sessionLabel}
+        cycleLength={cycleLength}
+        sessionIndex={detectedSessionIndex}
+        routineType={routineType}
+        trainingGoal={trainingGoal}
+        timeAvailable={timeAvailable}
+        primaryActionLabel={primaryActionLabel}
+        onUpdatePlan={onUpdatePlanFromBlueprint}
+        onStartWorkout={onStartWorkout}
+      />
+      <ResumePill db={resolvedDb} onResume={onResumeDraft} />
+    </>
   )
 }

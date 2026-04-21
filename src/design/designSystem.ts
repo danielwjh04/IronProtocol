@@ -71,9 +71,9 @@ export const space = {
 // ──────────────────────────────────────────────────────────────────────────
 
 const SF_DISPLAY_STACK =
-  "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Helvetica Neue', sans-serif"
+  "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
 const SF_TEXT_STACK =
-  "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', sans-serif"
+  "'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif"
 
 export interface TextStyleSpec {
   fontFamily: string

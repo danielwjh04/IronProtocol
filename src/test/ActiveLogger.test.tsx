@@ -122,16 +122,18 @@ describe('ActiveLogger', () => {
     })
   })
 
-  it('shows per-exercise logs in the exercise card with next-set guidance beside the goal', async () => {
+  it('shows ring progress and last-set caption in the exercise card as sets complete', async () => {
     render(<ActiveLogger plan={BENCH_PLAN} db={db} />, { wrapper: Wrapper })
 
-    expect(screen.getByText(/next:\s*set\s*1\s*of\s*3\s*\(3 left\)/i)).toBeInTheDocument()
+    // Before any sets are complete the ring reads 0/3 and the subtitle shows the target.
+    expect(screen.getByLabelText(/0 of 3 sets complete/i)).toBeInTheDocument()
+    expect(screen.getByText(/80kg\s*[×x]\s*10\s*·\s*next set/i)).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: /complete set/i }))
 
-    expect(screen.getByText(/next:\s*set\s*2\s*of\s*3\s*\(2 left\)/i)).toBeInTheDocument()
-    expect(screen.getByText(/s1:\s*80kg\s*[×x]\s*10/i)).toBeInTheDocument()
-    expect(screen.queryByText(/bench press\s*—\s*log/i)).not.toBeInTheDocument()
+    // After one set the ring updates to 1/3 and a "Last · ..." caption appears.
+    expect(screen.getByLabelText(/1 of 3 sets complete/i)).toBeInTheDocument()
+    expect(screen.getByText(/last\s*·\s*80kg\s*[×x]\s*10/i)).toBeInTheDocument()
 
     await waitFor(async () => {
       const draft = await db.tempSessions.get(TEMP_SESSION_ID)
